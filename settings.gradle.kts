@@ -1,0 +1,5 @@
+rootProject.name = "sketchy-life"
+
+include(
+  "game", "javafx", "browser"
+)
