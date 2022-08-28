@@ -28,12 +28,12 @@ public class Chunk {
   public void applyToWorld(World world) {
     for (int row = 0; row < ROWS; row++) {
       for (int column = 0; column < COLUMNS; column++) {
-        String spriteId = tileAssetIds[column][row] + "-1";
+        String spriteId = tileAssetIds[column][row];
         float x = chunkId.columnIndex() * TILE_SIZE * COLUMNS + column * TILE_SIZE;
         float y = chunkId.rowIndex() * TILE_SIZE * ROWS + row * TILE_SIZE;
 
         world.createEntity(
-          new ChunkComponent(chunkId),
+          new TileComponent(chunkId),
           new TransformComponent(x, y),
           new SpriteComponent(Constants.Assets.Sprites.ID, spriteId),
           new LayerComponent(Constants.Layers.BACKGROUND)
@@ -47,7 +47,9 @@ public class Chunk {
       for (int column = 0; column < COLUMNS; column++) {
         boolean isGrass = random.nextInt(100) <= grassPercent;
 
-        tileAssetIds[column][row] = isGrass ? Constants.Assets.Sprites.GRASS : Constants.Assets.Sprites.DIRT;
+        tileAssetIds[column][row] = isGrass
+          ? Constants.Assets.Sprites.GRASS + "-1"
+          : Constants.Assets.Sprites.DIRT + "-1";
       }
     }
   }

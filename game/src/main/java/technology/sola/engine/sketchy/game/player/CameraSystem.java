@@ -1,8 +1,9 @@
-package technology.sola.engine.sketchy.game;
+package technology.sola.engine.sketchy.game.player;
 
 import technology.sola.ecs.EcsSystem;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
+import technology.sola.engine.sketchy.game.Constants;
 import technology.sola.math.linear.Vector2D;
 
 public class CameraSystem extends EcsSystem {

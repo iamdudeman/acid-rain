@@ -43,8 +43,8 @@ public class ChunkSystem extends EcsSystem {
         chunk.applyToWorld(world);
 
         // Cleanup entities no longer in view
-        for (var view : world.createView().of(ChunkComponent.class)) {
-          if (view.c1().chunkId().equals(lastPlayerChunkId)) {
+        for (var view : world.createView().of(TileComponent.class)) {
+          if (view.c1().getChunkId().equals(lastPlayerChunkId)) {
             view.entity().destroy();
           }
         }

@@ -13,6 +13,7 @@ import technology.sola.engine.graphics.components.LayerComponent;
 import technology.sola.engine.graphics.renderer.Renderer;
 import technology.sola.engine.graphics.screen.AspectMode;
 import technology.sola.engine.sketchy.game.chunk.ChunkSystem;
+import technology.sola.engine.sketchy.game.player.CameraSystem;
 import technology.sola.engine.sketchy.game.player.PlayerSystem;
 import technology.sola.engine.sketchy.game.rain.RainRenderer;
 import technology.sola.engine.sketchy.game.rain.RainSystem;
