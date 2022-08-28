@@ -1,7 +1,6 @@
 package technology.sola.engine.sketchy.game.player;
 
 import technology.sola.ecs.EcsSystem;
-import technology.sola.ecs.Entity;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.input.Key;
