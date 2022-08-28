@@ -9,31 +9,48 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ChunkSystem extends EcsSystem {
-  private Map<ChunkId, Chunk> chunkCache = new HashMap<>();
-  private ChunkId lastPlayerChunk = null;
+  private final Map<ChunkId, Chunk> chunkCache = new HashMap<>();
+  private ChunkId lastPlayerChunkId = new ChunkId(0, 0);
+  private boolean isInitialized = false;
 
   @Override
   public void update(World world, float v) {
+    if (!isInitialized) {
+      Chunk initialChunk = new Chunk(lastPlayerChunkId);
+
+      chunkCache.put(lastPlayerChunkId, initialChunk);
+      initialChunk.applyToWorld(world);
+      isInitialized = true;
+    }
+
     world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(playerEntity -> {
       TransformComponent playerTransform = playerEntity.getComponent(TransformComponent.class);
 
       ChunkId playerChunkId = getChunkIdForPlayer(playerTransform);
-      boolean hasPlayerChunkChanged = !playerChunkId.equals(lastPlayerChunk);
+      boolean hasPlayerChunkChanged = !playerChunkId.equals(lastPlayerChunkId);
 
       if (hasPlayerChunkChanged) {
         Chunk chunk = chunkCache.get(playerChunkId);
 
-        // todo check if new chunk needs to be created or loaded or already is loaded
+        // Create chunk if not yet cached
         if (chunk == null) {
           chunk = new Chunk(playerChunkId);
 
           chunkCache.put(playerChunkId, chunk);
-
-          chunk.applyToWorld(world);
         }
 
-        // todo check what chunks are in viewport and delete entities if not
+        // Apply new chunk
+        chunk.applyToWorld(world);
+
+        // Cleanup entities no longer in view
+        for (var view : world.createView().of(ChunkComponent.class)) {
+          if (view.c1().chunkId().equals(lastPlayerChunkId)) {
+            view.entity().destroy();
+          }
+        }
       }
+
+      lastPlayerChunkId = playerChunkId;
     });
   }
 
@@ -49,13 +66,5 @@ public class ChunkSystem extends EcsSystem {
     int rowIndex = (int) Math.floor(playerTransform.getY() / chunkHeight);
 
     return new ChunkId(columnIndex, rowIndex);
-  }
-
-  private void clearChunksOutsideRange(World world) {
-
-  }
-
-  private void createOrLoadChunk(World world, ChunkId chunkId) {
-
   }
 }
