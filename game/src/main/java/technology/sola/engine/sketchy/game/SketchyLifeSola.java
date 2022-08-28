@@ -10,18 +10,15 @@ import technology.sola.engine.graphics.Color;
 import technology.sola.engine.graphics.components.CameraComponent;
 import technology.sola.engine.graphics.components.CircleRendererComponent;
 import technology.sola.engine.graphics.components.LayerComponent;
-import technology.sola.engine.graphics.components.sprite.SpriteComponent;
 import technology.sola.engine.graphics.renderer.Renderer;
 import technology.sola.engine.graphics.screen.AspectMode;
+import technology.sola.engine.sketchy.game.chunk.ChunkSystem;
 import technology.sola.engine.sketchy.game.player.PlayerSystem;
 import technology.sola.engine.sketchy.game.rain.RainRenderer;
 import technology.sola.engine.sketchy.game.rain.RainSystem;
 
 public class SketchyLifeSola extends Sola {
   private SolaGraphics solaGraphics;
-  private final int rows = 16;
-  private final int columns = 24;
-  private final int size = 20;
   private final RainRenderer rainRenderer = new RainRenderer();
 
   @Override
@@ -40,10 +37,11 @@ public class SketchyLifeSola extends Sola {
     );
 
     // Load assets
-    assetLoaderProvider.get(SpriteSheet.class).addAssetMapping("sprites", "assets/sprites.json");
+    assetLoaderProvider.get(SpriteSheet.class).addAssetMapping(Constants.Assets.Sprites.ID, "assets/sprites.json");
 
     // Ecs setup
     solaEcs.addSystems(
+      new ChunkSystem(),
       new RainSystem(platform.getRenderer().getWidth(), platform.getRenderer().getHeight()),
       new CameraSystem(platform.getRenderer().getWidth(), platform.getRenderer().getHeight()),
       new PlayerSystem(keyboardInput)
@@ -62,17 +60,6 @@ public class SketchyLifeSola extends Sola {
 
   private World buildWorld() {
     World world = new World(10000);
-
-    // TODO replace this with procedural generation
-    for (int row = 0; row < rows; row++) {
-      for (int column = 0; column < columns; column++) {
-        world.createEntity(
-          new TransformComponent(column * size, row * size),
-          new SpriteComponent("sprites", "grass-1"),
-          new LayerComponent(Constants.Layers.BACKGROUND)
-        );
-      }
-    }
 
     world.createEntity(
       new TransformComponent(platform.getRenderer().getWidth() / 2f, platform.getRenderer().getHeight() / 2f, 15),

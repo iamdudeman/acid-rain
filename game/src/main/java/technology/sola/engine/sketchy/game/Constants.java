@@ -17,6 +17,14 @@ public class Constants {
     }
   }
 
+  public static final class Assets {
+    public static final class Sprites {
+      public static final String ID = "sprites";
+      public static final String GRASS = "grass";
+      public static final String DIRT = "dirt";
+    }
+  }
+
   private Constants() {
   }
 }
