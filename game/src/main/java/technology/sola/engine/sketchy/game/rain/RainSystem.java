@@ -2,6 +2,8 @@ package technology.sola.engine.sketchy.game.rain;
 
 import technology.sola.ecs.EcsSystem;
 import technology.sola.ecs.World;
+import technology.sola.engine.core.component.TransformComponent;
+import technology.sola.engine.sketchy.game.EntityNames;
 
 import java.util.Random;
 
@@ -17,22 +19,26 @@ public class RainSystem extends EcsSystem {
 
   @Override
   public void update(World world, float dt) {
-    for (var view : world.createView().of(RainComponent.class)) {
-      RainComponent rainComponent = view.c1();
+    world.findEntityByName(EntityNames.CAMERA).ifPresent(cameraEntity -> {
+      TransformComponent cameraTransform = cameraEntity.getComponent(TransformComponent.class);
 
-      rainComponent.height--;
+      for (var view : world.createView().of(RainComponent.class)) {
+        RainComponent rainComponent = view.c1();
 
-      if (rainComponent.height <= 0) {
-        // todo create entity with particles for a splash
+        rainComponent.height--;
 
-        view.entity().destroy();
+        if (rainComponent.height <= 0) {
+          // todo create entity with particles for a splash
+
+          view.entity().destroy();
+        }
       }
-    }
 
-    createRain(world);
+      createRain(world, cameraTransform.getX(), cameraTransform.getY());
+    });
   }
 
-  private void createRain(World world) {
+  private void createRain(World world, float cameraX, float cameraY) {
     final int edge = 200;
     final int dropsPerUpdate = 40;
 
@@ -41,7 +47,7 @@ public class RainSystem extends EcsSystem {
       float y = random.nextFloat(-edge, rendererHeight + edge);
 
       world.createEntity(
-        new RainComponent(x, y)
+        new RainComponent(x + cameraX, y + cameraY)
       );
     }
   }
