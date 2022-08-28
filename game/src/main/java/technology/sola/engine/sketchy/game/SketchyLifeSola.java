@@ -6,11 +6,11 @@ import technology.sola.engine.core.SolaConfiguration;
 import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.core.module.graphics.SolaGraphics;
 import technology.sola.engine.graphics.Color;
+import technology.sola.engine.graphics.components.CameraComponent;
 import technology.sola.engine.graphics.components.CircleRendererComponent;
 import technology.sola.engine.graphics.components.RectangleRendererComponent;
 import technology.sola.engine.graphics.renderer.Renderer;
 import technology.sola.engine.graphics.screen.AspectMode;
-import technology.sola.engine.sketchy.game.player.PlayerComponent;
 import technology.sola.engine.sketchy.game.player.PlayerSystem;
 import technology.sola.engine.sketchy.game.rain.RainRenderer;
 import technology.sola.engine.sketchy.game.rain.RainSystem;
@@ -35,6 +35,7 @@ public class SketchyLifeSola extends Sola {
 
     solaEcs.addSystems(
       new RainSystem(platform.getRenderer().getWidth(), platform.getRenderer().getHeight()),
+      new CameraSystem(platform.getRenderer().getWidth(), platform.getRenderer().getHeight()),
       new PlayerSystem(keyboardInput)
     );
 
@@ -74,9 +75,13 @@ public class SketchyLifeSola extends Sola {
 
     world.createEntity(
       new TransformComponent(platform.getRenderer().getWidth() / 2f, platform.getRenderer().getHeight() / 2f, 15),
-      new CircleRendererComponent(Color.RED, true),
-      new PlayerComponent()
+      new CircleRendererComponent(Color.RED, true)
     ).setName(EntityNames.PLAYER);
+
+    world.createEntity(
+      new TransformComponent(),
+      new CameraComponent()
+    ).setName(EntityNames.CAMERA);
 
     return world;
   }

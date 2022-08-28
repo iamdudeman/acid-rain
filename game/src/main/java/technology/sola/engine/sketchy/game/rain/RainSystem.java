@@ -2,7 +2,6 @@ package technology.sola.engine.sketchy.game.rain;
 
 import technology.sola.ecs.EcsSystem;
 import technology.sola.ecs.World;
-import technology.sola.engine.graphics.renderer.Renderer;
 
 import java.util.Random;
 
@@ -34,8 +33,7 @@ public class RainSystem extends EcsSystem {
   }
 
   private void createRain(World world) {
-    // todo tweak these
-    final int edge = 0;
+    final int edge = 200;
     final int dropsPerUpdate = 40;
 
     for (int i = 0; i < dropsPerUpdate; i++) {
