@@ -8,14 +8,16 @@ import java.util.Random;
 
 public class RainSystem extends EcsSystem {
   private final Random random = new Random();
-  private final Renderer renderer;
+  private final int rendererWidth;
+  private final int rendererHeight;
 
-  public RainSystem(Renderer renderer) {
-    this.renderer = renderer;
+  public RainSystem(int rendererWidth, int rendererHeight) {
+    this.rendererWidth = rendererWidth;
+    this.rendererHeight = rendererHeight;
   }
 
   @Override
-  public void update(World world, float v) {
+  public void update(World world, float dt) {
     for (var view : world.createView().of(RainComponent.class)) {
       RainComponent rainComponent = view.c1();
 
@@ -32,12 +34,13 @@ public class RainSystem extends EcsSystem {
   }
 
   private void createRain(World world) {
+    // todo tweak these
     final int edge = 0;
     final int dropsPerUpdate = 40;
 
     for (int i = 0; i < dropsPerUpdate; i++) {
-      float x = random.nextFloat(-edge, renderer.getWidth() + edge);
-      float y = random.nextFloat(-edge, renderer.getHeight() + edge);
+      float x = random.nextFloat(-edge, rendererWidth + edge);
+      float y = random.nextFloat(-edge, rendererHeight + edge);
 
       world.createEntity(
         new RainComponent(x, y)

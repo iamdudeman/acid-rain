@@ -22,6 +22,12 @@ public class RainRenderer {
     renderer.setBlendMode(previousBlendMode);
   }
 
+  /**
+   *
+   * @see <a href="https://www.youtube.com/watch?v=66f6bI2uIdQ&list=WL&index=39&ab_channel=CameronPenner">Math based on this video</a>
+   * @param renderer
+   * @param rainComponent
+   */
   private void drawRain(Renderer renderer, RainComponent rainComponent) {
     // TODO Get camera values from actual camera in the world
     float cameraX = 0;
