@@ -6,6 +6,7 @@ import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.sketchy.game.Constants;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ChunkSystem extends EcsSystem {
@@ -16,10 +17,12 @@ public class ChunkSystem extends EcsSystem {
   @Override
   public void update(World world, float v) {
     if (!isInitialized) {
+      // TODO more creative chunk creation than just 85 percent grass
       Chunk initialChunk = Chunk.create(lastPlayerChunkId, 85);
 
       chunkCache.put(lastPlayerChunkId, initialChunk);
-      initialChunk.applyToWorld(world);
+      initialChunk.loadChunk(world);
+      processPlayerPositionChange(world, lastPlayerChunkId);
       isInitialized = true;
     }
 
@@ -30,27 +33,10 @@ public class ChunkSystem extends EcsSystem {
       boolean hasPlayerChunkChanged = !playerChunkId.equals(lastPlayerChunkId);
 
       if (hasPlayerChunkChanged) {
-        Chunk chunk = chunkCache.get(playerChunkId);
+        processPlayerPositionChange(world, playerChunkId);
 
-        // Create chunk if not yet cached
-        if (chunk == null) {
-          chunk = Chunk.create(playerChunkId, 50);
-
-          chunkCache.put(playerChunkId, chunk);
-        }
-
-        // Apply new chunk
-        chunk.applyToWorld(world);
-
-        // Cleanup entities no longer in view
-        for (var view : world.createView().of(TileComponent.class)) {
-          if (view.c1().getChunkId().equals(lastPlayerChunkId)) {
-            view.entity().destroy();
-          }
-        }
+        lastPlayerChunkId = playerChunkId;
       }
-
-      lastPlayerChunkId = playerChunkId;
     });
   }
 
@@ -66,5 +52,52 @@ public class ChunkSystem extends EcsSystem {
     int rowIndex = (int) Math.floor(playerTransform.getY() / chunkHeight);
 
     return new ChunkId(columnIndex, rowIndex);
+  }
+
+  private List<ChunkId> getSurroundingChunks(ChunkId centerChunkId) {
+    return List.of(
+      new ChunkId(centerChunkId.columnIndex() - 1, centerChunkId.rowIndex() - 1),
+      new ChunkId(centerChunkId.columnIndex(), centerChunkId.rowIndex() - 1),
+      new ChunkId(centerChunkId.columnIndex() + 1, centerChunkId.rowIndex() - 1),
+      new ChunkId(centerChunkId.columnIndex() - 1, centerChunkId.rowIndex()),
+      centerChunkId,
+      new ChunkId(centerChunkId.columnIndex() + 1, centerChunkId.rowIndex()),
+      new ChunkId(centerChunkId.columnIndex() - 1, centerChunkId.rowIndex() + 1),
+      new ChunkId(centerChunkId.columnIndex(), centerChunkId.rowIndex() + 1),
+      new ChunkId(centerChunkId.columnIndex() + 1, centerChunkId.rowIndex() + 1)
+    );
+  }
+
+  private void processPlayerPositionChange(World world, ChunkId playerChunkId) {
+    List<ChunkId> loadChunks = getSurroundingChunks(playerChunkId);
+    List<ChunkId> unloadChunks = getSurroundingChunks(lastPlayerChunkId)
+      .stream()
+      .filter(chunkId -> !loadChunks.contains(chunkId))
+      .toList();
+
+    for (ChunkId chunkId : unloadChunks) {
+      Chunk chunk = chunkCache.get(chunkId);
+
+      if (chunk != null) {
+        chunk.unloadChunk(world);
+      }
+    }
+
+    for (ChunkId chunkId : loadChunks) {
+      loadChunk(world, chunkId);
+    }
+  }
+
+  private void loadChunk(World world, ChunkId chunkId) {
+    Chunk chunk = chunkCache.get(chunkId);
+
+    if (chunk == null) {
+      // TODO more creative chunk creation than just 50 percent grass
+      chunk = Chunk.create(chunkId, 50);
+
+      chunkCache.put(chunkId, chunk);
+    }
+
+    chunk.loadChunk(world);
   }
 }

@@ -24,7 +24,7 @@ public class SketchyLifeSola extends Sola {
 
   @Override
   protected SolaConfiguration getConfiguration() {
-    return new SolaConfiguration("Sketchy Life", 480, 320, 30, true);
+    return new SolaConfiguration("Sketchy Life", 480, 320, 30, false);
   }
 
   @Override

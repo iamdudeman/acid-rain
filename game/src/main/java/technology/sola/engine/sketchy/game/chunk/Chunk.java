@@ -13,9 +13,10 @@ public class Chunk {
   public static final int COLUMNS = 24;
   public static final int ROWS = 16;
 
-  private static final Random random = new Random();
+  private static final Random RANDOM = new Random();
   private final ChunkId chunkId;
   private final String[][] tileAssetIds = new String[COLUMNS][ROWS];
+  private boolean isLoaded = false;
 
   public static Chunk create(ChunkId chunkId, int grassPercent) {
     Chunk chunk = new Chunk(chunkId);
@@ -25,7 +26,11 @@ public class Chunk {
     return chunk;
   }
 
-  public void applyToWorld(World world) {
+  public void loadChunk(World world) {
+    if (isLoaded) {
+      return;
+    }
+
     for (int row = 0; row < ROWS; row++) {
       for (int column = 0; column < COLUMNS; column++) {
         String spriteId = tileAssetIds[column][row];
@@ -40,12 +45,28 @@ public class Chunk {
         );
       }
     }
+
+    isLoaded = true;
+  }
+
+  public void unloadChunk(World world) {
+    if (!isLoaded) {
+      return;
+    }
+
+    for (var view : world.createView().of(TileComponent.class)) {
+      if (view.c1().getChunkId().equals(chunkId)) {
+        view.entity().destroy();
+      }
+    }
+
+    isLoaded = false;
   }
 
   private void initialShaping(int grassPercent) {
     for (int row = 0; row < ROWS; row++) {
       for (int column = 0; column < COLUMNS; column++) {
-        boolean isGrass = random.nextInt(100) <= grassPercent;
+        boolean isGrass = RANDOM.nextInt(100) <= grassPercent;
 
         tileAssetIds[column][row] = isGrass
           ? Constants.Assets.Sprites.GRASS + "-1"
