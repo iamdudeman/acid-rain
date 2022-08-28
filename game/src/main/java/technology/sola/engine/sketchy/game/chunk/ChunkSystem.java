@@ -16,7 +16,7 @@ public class ChunkSystem extends EcsSystem {
   @Override
   public void update(World world, float v) {
     if (!isInitialized) {
-      Chunk initialChunk = new Chunk(lastPlayerChunkId);
+      Chunk initialChunk = Chunk.create(lastPlayerChunkId, 85);
 
       chunkCache.put(lastPlayerChunkId, initialChunk);
       initialChunk.applyToWorld(world);
@@ -34,7 +34,7 @@ public class ChunkSystem extends EcsSystem {
 
         // Create chunk if not yet cached
         if (chunk == null) {
-          chunk = new Chunk(playerChunkId);
+          chunk = Chunk.create(playerChunkId, 50);
 
           chunkCache.put(playerChunkId, chunk);
         }

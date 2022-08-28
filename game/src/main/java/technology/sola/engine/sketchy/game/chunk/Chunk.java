@@ -17,10 +17,12 @@ public class Chunk {
   private final ChunkId chunkId;
   private final String[][] tileAssetIds = new String[COLUMNS][ROWS];
 
-  public Chunk(ChunkId chunkId) {
-    this.chunkId = chunkId;
+  public static Chunk create(ChunkId chunkId, int grassPercent) {
+    Chunk chunk = new Chunk(chunkId);
 
-    initialShaping(75);
+    chunk.initialShaping(grassPercent);
+
+    return chunk;
   }
 
   public void applyToWorld(World world) {
@@ -48,5 +50,9 @@ public class Chunk {
         tileAssetIds[column][row] = isGrass ? Constants.Assets.Sprites.GRASS : Constants.Assets.Sprites.DIRT;
       }
     }
+  }
+
+  private Chunk(ChunkId chunkId) {
+    this.chunkId = chunkId;
   }
 }
