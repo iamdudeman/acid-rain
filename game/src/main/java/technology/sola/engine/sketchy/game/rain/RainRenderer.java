@@ -5,27 +5,29 @@ import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.graphics.Color;
 import technology.sola.engine.graphics.renderer.BlendMode;
 import technology.sola.engine.graphics.renderer.Renderer;
-import technology.sola.engine.sketchy.game.EntityNames;
+import technology.sola.engine.sketchy.game.Constants;
 
 public class RainRenderer {
   private static final int RAIN_LENGTH = 64;
-  private static final Color RAIN_COLOR = new Color(153, 128, 128, 128);
+  private static final Color RAIN_COLOR = new Color(153, 220, 220, 220);
 
   public void render(Renderer renderer, World world) {
-    BlendMode previousBlendMode = renderer.getBlendMode();
-    renderer.setBlendMode(BlendMode.NORMAL);
+    renderer.drawToLayer(Constants.Layers.FOREGROUND, r -> {
+      BlendMode previousBlendMode = renderer.getBlendMode();
+      renderer.setBlendMode(BlendMode.NORMAL);
 
-    world.findEntityByName(EntityNames.CAMERA).ifPresent(cameraEntity -> {
-      TransformComponent cameraTransform = cameraEntity.getComponent(TransformComponent.class);
+      world.findEntityByName(Constants.EntityNames.CAMERA).ifPresent(cameraEntity -> {
+        TransformComponent cameraTransform = cameraEntity.getComponent(TransformComponent.class);
 
-      for (var view : world.createView().of(RainComponent.class)) {
-        RainComponent rainComponent = view.c1();
+        for (var view : world.createView().of(RainComponent.class)) {
+          RainComponent rainComponent = view.c1();
 
-        drawRain(renderer, rainComponent, cameraTransform.getX(), cameraTransform.getY());
-      }
+          drawRain(renderer, rainComponent, cameraTransform.getX(), cameraTransform.getY());
+        }
+      });
+
+      renderer.setBlendMode(previousBlendMode);
     });
-
-    renderer.setBlendMode(previousBlendMode);
   }
 
   /**

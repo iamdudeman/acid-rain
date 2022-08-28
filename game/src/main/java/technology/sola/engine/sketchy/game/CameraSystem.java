@@ -16,8 +16,8 @@ public class CameraSystem extends EcsSystem {
 
   @Override
   public void update(World world, float dt) {
-    world.findEntityByName(EntityNames.CAMERA).ifPresent(cameraEntity -> {
-      world.findEntityByName(EntityNames.PLAYER).ifPresent(playerEntity -> {
+    world.findEntityByName(Constants.EntityNames.CAMERA).ifPresent(cameraEntity -> {
+      world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(playerEntity -> {
         TransformComponent cameraTransform = cameraEntity.getComponent(TransformComponent.class);
         TransformComponent playerTransform = playerEntity.getComponent(TransformComponent.class);
 

@@ -3,7 +3,7 @@ package technology.sola.engine.sketchy.game.rain;
 import technology.sola.ecs.EcsSystem;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
-import technology.sola.engine.sketchy.game.EntityNames;
+import technology.sola.engine.sketchy.game.Constants;
 
 import java.util.Random;
 
@@ -19,7 +19,7 @@ public class RainSystem extends EcsSystem {
 
   @Override
   public void update(World world, float dt) {
-    world.findEntityByName(EntityNames.CAMERA).ifPresent(cameraEntity -> {
+    world.findEntityByName(Constants.EntityNames.CAMERA).ifPresent(cameraEntity -> {
       TransformComponent cameraTransform = cameraEntity.getComponent(TransformComponent.class);
 
       for (var view : world.createView().of(RainComponent.class)) {
