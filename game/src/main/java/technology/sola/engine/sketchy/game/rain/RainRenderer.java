@@ -45,8 +45,8 @@ public class RainRenderer {
     float y = rainComponent.y - cameraY;
     float height = rainComponent.height;
 
-    float vectorX = (x - (cameraX + halfCameraWidth)) / halfCameraWidth;
-    float vectorY = (y - (-cameraY + halfCameraHeight)) / halfCameraHeight;
+    float vectorX = (x - (halfCameraWidth)) / halfCameraWidth;
+    float vectorY = (y - (halfCameraHeight)) / halfCameraHeight;
 
     float sqrtHeight = (float) Math.sqrt(height);
     float sqrtHeightLength = (float) Math.sqrt(height + RAIN_LENGTH);
