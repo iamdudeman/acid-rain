@@ -35,40 +35,42 @@ public class RainSystem extends EcsSystem {
         Vector2D playerTranslate = playerEntity.getComponent(TransformComponent.class).getTranslate();
         PlayerComponent playerComponent = playerEntity.getComponent(PlayerComponent.class);
 
-        updateDropsPerUpdate(playerComponent.isUsingSunlight());
-        updateRainEffect(world, !playerComponent.isUsingSunlight());
+        updateDropsPerUpdateForSunlight(playerComponent.isUsingSunlight());
+        updateRainHeight(world);
 
         if (!playerComponent.isUsingSunlight()) {
+          createNewRain(world);
           updateTileWetness(world, playerTranslate);
         }
       },
       () -> {
-        updateDropsPerUpdate(false);
-        updateRainEffect(world, true);
+        updateDropsPerUpdateForSunlight(false);
+        updateRainHeight(world);
+        createNewRain(world);
         updateTileWetness(world, null);
       }
     );
   }
 
-  private void updateRainEffect(World world, boolean shouldCreateRain) {
+  private void updateRainHeight(World world) {
+    for (var view : world.createView().of(RainComponent.class)) {
+      RainComponent rainComponent = view.c1();
+
+      rainComponent.height--;
+
+      if (rainComponent.height <= 0) {
+        // todo create entity with particles for a splash
+
+        view.entity().destroy();
+      }
+    }
+  }
+
+  private void createNewRain(World world) {
     world.findEntityByName(Constants.EntityNames.CAMERA).ifPresent(cameraEntity -> {
       TransformComponent cameraTransform = cameraEntity.getComponent(TransformComponent.class);
 
-      for (var view : world.createView().of(RainComponent.class)) {
-        RainComponent rainComponent = view.c1();
-
-        rainComponent.height--;
-
-        if (rainComponent.height <= 0) {
-          // todo create entity with particles for a splash
-
-          view.entity().destroy();
-        }
-      }
-
-      if (shouldCreateRain) {
-        createRain(world, cameraTransform.getX(), cameraTransform.getY());
-      }
+      createRain(world, cameraTransform.getX(), cameraTransform.getY());
     });
   }
 
@@ -130,18 +132,14 @@ public class RainSystem extends EcsSystem {
     }
   }
 
-  private void updateDropsPerUpdate(boolean decreasing) {
-    if (decreasing) {
-      dropsPerUpdate--;
-
-      if (dropsPerUpdate <= 0) {
-        dropsPerUpdate = 0;
+  private void updateDropsPerUpdateForSunlight(boolean isDecreasing) {
+    if (isDecreasing) {
+      if (dropsPerUpdate > 0) {
+        dropsPerUpdate--;
       }
     } else {
-      dropsPerUpdate++;
-
-      if (dropsPerUpdate > 40) {
-        dropsPerUpdate = 40;
+      if (dropsPerUpdate < maxDropsPerUpdate) {
+        dropsPerUpdate++;
       }
     }
   }
