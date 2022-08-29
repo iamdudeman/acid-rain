@@ -96,7 +96,7 @@ public class RainSystem extends EcsSystem {
           spriteComponent.setSpriteKeyFrame(new SpriteKeyFrame(
             spriteComponent.getSpriteSheetId(), Constants.Assets.Sprites.ERASED, 0
           ));
-          view.entity().addComponent(ColliderComponent.aabb(Chunk.TILE_SIZE, Chunk.TILE_SIZE));
+          view.entity().addComponent(ColliderComponent.circle(Chunk.TILE_SIZE / 2f));
         }
       } else if (tileComponent.getWetness() > 205) {
         spriteComponent.setSpriteKeyFrame(new SpriteKeyFrame(

@@ -26,22 +26,20 @@ public class GameStateSystem extends EcsSystem {
   private final EventHub eventHub;
   private final float rendererHalfWidth;
   private final float rendererHalfHeight;
-  private boolean shouldRemovePlayer = false;
-  private boolean isGameOver = false;
 
   public GameStateSystem(SolaEcs solaEcs, MouseInput mouseInput, EventHub eventHub, int rendererWidth, int rendererHeight) {
     this.mouseInput = mouseInput;
     this.eventHub = eventHub;
     this.rendererHalfWidth = rendererWidth / 2f;
     this.rendererHalfHeight = rendererHeight / 2f;
+    setActive(false);
 
     eventHub.add(gameStateEvent -> {
       if (gameStateEvent.getMessage() == GameState.GAME_OVER) {
-        shouldRemovePlayer = true;
-        isGameOver = true;
+        setActive(true);
+        solaEcs.getWorld().findEntityByName(Constants.EntityNames.PLAYER).ifPresent(Entity::destroy);
       } else if (gameStateEvent.getMessage() == GameState.RESTART) {
-        shouldRemovePlayer = false;
-        isGameOver = false;
+        setActive(false);
         solaEcs.setWorld(buildWorld());
       }
     }, GameStateEvent.class);
@@ -56,29 +54,20 @@ public class GameStateSystem extends EcsSystem {
         return false;
       },
       (player, erasedTile) -> {
-        if (Math.abs(collisionManifoldEvent.getMessage().penetration()) > 5) {
-          Vector2D playerTranslate = player.getComponent(TransformComponent.class).getTranslate();
-          float distanceX = Math.abs(playerTranslate.x - rendererHalfWidth);
-          float distanceY = Math.abs(playerTranslate.y - rendererHalfHeight);
-          float score = (distanceX / Chunk.TILE_SIZE) + (distanceY / Chunk.TILE_SIZE);
+        Vector2D playerTranslate = player.getComponent(TransformComponent.class).getTranslate();
+        float distanceX = Math.abs(playerTranslate.x - rendererHalfWidth);
+        float distanceY = Math.abs(playerTranslate.y - rendererHalfHeight);
+        float score = (distanceX / Chunk.TILE_SIZE) + (distanceY / Chunk.TILE_SIZE);
 
-          eventHub.emit(new GameStateEvent(GameState.GAME_OVER, score));
-        }
+        eventHub.emit(new GameStateEvent(GameState.GAME_OVER, score));
       }
     ), CollisionManifoldEvent.class);
   }
 
-  // todo this whole logic is awful, clean it up!
   @Override
   public void update(World world, float v) {
-    if (shouldRemovePlayer) {
-      world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(Entity::destroy);
-      shouldRemovePlayer = false;
-    }
-
-    if (isGameOver && mouseInput.isMouseClicked(MouseButton.PRIMARY)) {
+    if (mouseInput.isMouseClicked(MouseButton.PRIMARY)) {
       eventHub.emit(new GameStateEvent(GameState.RESTART));
-      isGameOver = false;
     }
   }
 
