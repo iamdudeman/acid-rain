@@ -6,7 +6,6 @@ import technology.sola.engine.graphics.Color;
 import technology.sola.engine.graphics.renderer.BlendMode;
 import technology.sola.engine.graphics.renderer.Renderer;
 import technology.sola.engine.sketchy.game.Constants;
-import technology.sola.engine.sketchy.game.chunk.Chunk;
 import technology.sola.engine.sketchy.game.event.GameState;
 import technology.sola.engine.sketchy.game.event.GameStateEvent;
 
@@ -26,12 +25,12 @@ public class GameOverRenderer implements EventListener<GameStateEvent> {
         renderer.setBlendMode(BlendMode.NORMAL);
         renderer.fillRect(
           3, 3,
-          playAgainDimensions.width(), gameOverDimensions.height() + playAgainDimensions.height() + scoreDimensions.height() + 3,
+          playAgainDimensions.width() + 6, gameOverDimensions.height() + playAgainDimensions.height() + scoreDimensions.height() + 6,
           new Color(150, 255, 255, 255)
         );
-        renderer.drawString(gameOverText, 3, 3, Color.BLACK);
-        renderer.drawString(playAgainText, 3, gameOverDimensions.height() + 6, Color.BLACK);
-        renderer.drawString(scoreText, 3, gameOverDimensions.height() + playAgainDimensions.height() + 9, Color.BLACK);
+        renderer.drawString(gameOverText, 6, 3, Color.BLACK);
+        renderer.drawString(scoreText, 6, gameOverDimensions.height() + 6, Color.BLACK);
+        renderer.drawString(playAgainText, 6, gameOverDimensions.height() + scoreDimensions.height() + 9, Color.BLACK);
       });
     }
   }

@@ -52,7 +52,7 @@ public class SketchyLifeSola extends Sola {
     // Ecs setup
     ChunkSystem chunkSystem = new ChunkSystem();
     PlayerSystem playerSystem = new PlayerSystem(keyboardInput);
-    CollisionDetectionSystem collisionDetectionSystem = new CollisionDetectionSystem(eventHub, Chunk.TILE_SIZE * 8);
+    CollisionDetectionSystem collisionDetectionSystem = new CollisionDetectionSystem(eventHub);
     eventHub.add(chunkSystem, GameStateEvent.class);
     solaEcs.addSystems(
       chunkSystem,
@@ -63,7 +63,6 @@ public class SketchyLifeSola extends Sola {
       collisionDetectionSystem
     );
     eventHub.emit(new GameStateEvent(GameState.RESTART));
-
     eventHub.add(gameStateEvent -> collisionDetectionSystem.setActive(gameStateEvent.getMessage() == GameState.RESTART), GameStateEvent.class);
   }
 
