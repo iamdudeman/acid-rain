@@ -9,14 +9,17 @@ import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.engine.sketchy.game.Constants;
 import technology.sola.engine.sketchy.game.chunk.Chunk;
 import technology.sola.engine.sketchy.game.chunk.TileComponent;
+import technology.sola.engine.sketchy.game.player.PlayerComponent;
 import technology.sola.math.linear.Vector2D;
 
 import java.util.Random;
 
 public class RainSystem extends EcsSystem {
   private final Random random = new Random();
+  private final int maxDropsPerUpdate = 40;
   private final int rendererWidth;
   private final int rendererHeight;
+  private int dropsPerUpdate = maxDropsPerUpdate;
 
   public RainSystem(int rendererWidth, int rendererHeight) {
     this.rendererWidth = rendererWidth;
@@ -25,31 +28,47 @@ public class RainSystem extends EcsSystem {
 
   @Override
   public void update(World world, float dt) {
-    updateRainEffect(world);
-
     var playerEntityOptional = world.findEntityByName(Constants.EntityNames.PLAYER);
-    Vector2D playerTranslate = playerEntityOptional.isEmpty()
-      ? null
-      : playerEntityOptional.get().getComponent(TransformComponent.class).getTranslate();
 
-    updateTileWetness(world, playerTranslate);
+    playerEntityOptional.ifPresentOrElse(
+      playerEntity -> {
+        Vector2D playerTranslate = playerEntity.getComponent(TransformComponent.class).getTranslate();
+        PlayerComponent playerComponent = playerEntity.getComponent(PlayerComponent.class);
+
+        updateDropsPerUpdateForSunlight(playerComponent.isUsingSunlight());
+        updateRainHeight(world);
+
+        if (!playerComponent.isUsingSunlight()) {
+          createNewRain(world);
+          updateTileWetness(world, playerTranslate);
+        }
+      },
+      () -> {
+        updateDropsPerUpdateForSunlight(false);
+        updateRainHeight(world);
+        createNewRain(world);
+        updateTileWetness(world, null);
+      }
+    );
   }
 
-  private void updateRainEffect(World world) {
+  private void updateRainHeight(World world) {
+    for (var view : world.createView().of(RainComponent.class)) {
+      RainComponent rainComponent = view.c1();
+
+      rainComponent.height--;
+
+      if (rainComponent.height <= 0) {
+        // todo create entity with particles for a splash
+
+        view.entity().destroy();
+      }
+    }
+  }
+
+  private void createNewRain(World world) {
     world.findEntityByName(Constants.EntityNames.CAMERA).ifPresent(cameraEntity -> {
       TransformComponent cameraTransform = cameraEntity.getComponent(TransformComponent.class);
-
-      for (var view : world.createView().of(RainComponent.class)) {
-        RainComponent rainComponent = view.c1();
-
-        rainComponent.height--;
-
-        if (rainComponent.height <= 0) {
-          // todo create entity with particles for a splash
-
-          view.entity().destroy();
-        }
-      }
 
       createRain(world, cameraTransform.getX(), cameraTransform.getY());
     });
@@ -57,7 +76,6 @@ public class RainSystem extends EcsSystem {
 
   private void createRain(World world, float cameraX, float cameraY) {
     final int edge = 200;
-    final int dropsPerUpdate = 40;
 
     for (int i = 0; i < dropsPerUpdate; i++) {
       float x = random.nextFloat(-edge, rendererWidth + edge);
@@ -110,6 +128,18 @@ public class RainSystem extends EcsSystem {
         spriteComponent.setSpriteKeyFrame(new SpriteKeyFrame(
           spriteComponent.getSpriteSheetId(), spriteComponent.getSpriteId().replace("-1", "-2"), 0
         ));
+      }
+    }
+  }
+
+  private void updateDropsPerUpdateForSunlight(boolean isDecreasing) {
+    if (isDecreasing) {
+      if (dropsPerUpdate > 0) {
+        dropsPerUpdate--;
+      }
+    } else {
+      if (dropsPerUpdate < maxDropsPerUpdate) {
+        dropsPerUpdate++;
       }
     }
   }
