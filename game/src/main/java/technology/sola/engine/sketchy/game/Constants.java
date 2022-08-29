@@ -19,10 +19,23 @@ public class Constants {
 
   public static final class Assets {
     public static final class Sprites {
-      public static final String ID = "sprites";
+      public static final String SPRITE_SHEET_ID = "sprites";
       public static final String GRASS = "grass";
       public static final String DIRT = "dirt";
       public static final String ERASED = "erased";
+
+      private Sprites() {
+      }
+    }
+
+    public static final class Audio {
+      public static final String MAP = "map";
+
+      private Audio() {
+      }
+    }
+
+    private Assets() {
     }
   }
 

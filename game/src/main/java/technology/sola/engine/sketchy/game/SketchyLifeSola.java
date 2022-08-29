@@ -1,6 +1,7 @@
 package technology.sola.engine.sketchy.game;
 
 import technology.sola.ecs.World;
+import technology.sola.engine.assets.audio.AudioClip;
 import technology.sola.engine.assets.graphics.SpriteSheet;
 import technology.sola.engine.core.Sola;
 import technology.sola.engine.core.SolaConfiguration;
@@ -38,7 +39,13 @@ public class SketchyLifeSola extends Sola {
     );
 
     // Load assets
-    assetLoaderProvider.get(SpriteSheet.class).addAssetMapping(Constants.Assets.Sprites.ID, "assets/sprites.json");
+    assetLoaderProvider.get(SpriteSheet.class).addAssetMapping(Constants.Assets.Sprites.SPRITE_SHEET_ID, "assets/sprites.json");
+    assetLoaderProvider.get(AudioClip.class).getNewAsset(Constants.Assets.Audio.MAP, "assets/Test.wav")
+      .executeWhenLoaded(audioClip -> {
+        audioClip.setVolume(.5f);
+
+        audioClip.loop(-1);
+      });
 
     // Ecs setup
     solaEcs.addSystems(

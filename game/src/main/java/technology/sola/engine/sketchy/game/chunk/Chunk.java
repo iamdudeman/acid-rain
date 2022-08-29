@@ -40,7 +40,7 @@ public class Chunk {
         world.createEntity(
           new TileComponent(chunkId),
           new TransformComponent(x, y),
-          new SpriteComponent(Constants.Assets.Sprites.ID, spriteId),
+          new SpriteComponent(Constants.Assets.Sprites.SPRITE_SHEET_ID, spriteId),
           new LayerComponent(Constants.Layers.BACKGROUND)
         );
       }
