@@ -6,7 +6,6 @@ import technology.sola.ecs.SolaEcs;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.event.EventHub;
-import technology.sola.engine.event.EventListener;
 import technology.sola.engine.graphics.Color;
 import technology.sola.engine.graphics.components.CameraComponent;
 import technology.sola.engine.graphics.components.CircleRendererComponent;
@@ -22,8 +21,7 @@ import technology.sola.engine.sketchy.game.event.GameState;
 import technology.sola.engine.sketchy.game.event.GameStateEvent;
 import technology.sola.math.linear.Vector2D;
 
-public class GameStateSystem extends EcsSystem implements EventListener<GameStateEvent> {
-  private final SolaEcs solaEcs;
+public class GameStateSystem extends EcsSystem {
   private final MouseInput mouseInput;
   private final EventHub eventHub;
   private final float rendererHalfWidth;
@@ -32,13 +30,21 @@ public class GameStateSystem extends EcsSystem implements EventListener<GameStat
   private boolean isGameOver = false;
 
   public GameStateSystem(SolaEcs solaEcs, MouseInput mouseInput, EventHub eventHub, int rendererWidth, int rendererHeight) {
-    this.solaEcs = solaEcs;
     this.mouseInput = mouseInput;
     this.eventHub = eventHub;
     this.rendererHalfWidth = rendererWidth / 2f;
     this.rendererHalfHeight = rendererHeight / 2f;
 
-    eventHub.add(this, GameStateEvent.class);
+    eventHub.add(gameStateEvent -> {
+      if (gameStateEvent.getMessage() == GameState.GAME_OVER) {
+        shouldRemovePlayer = true;
+        isGameOver = true;
+      } else if (gameStateEvent.getMessage() == GameState.RESTART) {
+        shouldRemovePlayer = false;
+        isGameOver = false;
+        solaEcs.setWorld(buildWorld());
+      }
+    }, GameStateEvent.class);
 
     eventHub.add(collisionManifoldEvent -> collisionManifoldEvent.getMessage().conditionallyResolveCollision(
       entity -> Constants.EntityNames.PLAYER.equals(entity.getName()),
@@ -73,18 +79,6 @@ public class GameStateSystem extends EcsSystem implements EventListener<GameStat
     if (isGameOver && mouseInput.isMouseClicked(MouseButton.PRIMARY)) {
       eventHub.emit(new GameStateEvent(GameState.RESTART));
       isGameOver = false;
-    }
-  }
-
-  @Override
-  public void onEvent(GameStateEvent gameStateEvent) {
-    if (gameStateEvent.getMessage() == GameState.GAME_OVER) {
-      shouldRemovePlayer = true;
-      isGameOver = true;
-    } else if (gameStateEvent.getMessage() == GameState.RESTART) {
-      shouldRemovePlayer = false;
-      isGameOver = false;
-      solaEcs.setWorld(buildWorld());
     }
   }
 
