@@ -1,7 +1,6 @@
 package technology.sola.engine.sketchy.game.chunk;
 
 import technology.sola.ecs.EcsSystem;
-import technology.sola.ecs.Entity;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.event.EventListener;
@@ -34,17 +33,15 @@ public class ChunkSystem extends EcsSystem implements EventListener<GameStateEve
         }
       });
     } else {
-//      world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(playerEntity -> {
-        chunkCache.clear();
+      chunkCache.clear();
 
-        // TODO more creative chunk creation than just 85 percent grass
-        Chunk initialChunk = Chunk.create(lastPlayerChunkId, 85);
+      // TODO more creative chunk creation than just 85 percent grass
+      Chunk initialChunk = Chunk.create(lastPlayerChunkId, 85);
 
-        chunkCache.put(lastPlayerChunkId, initialChunk);
-        initialChunk.loadChunk(world);
-        processPlayerPositionChange(world, lastPlayerChunkId);
-        isInitialized = true;
-//      });
+      chunkCache.put(lastPlayerChunkId, initialChunk);
+      initialChunk.loadChunk(world);
+      processPlayerPositionChange(world, lastPlayerChunkId);
+      isInitialized = true;
     }
   }
 

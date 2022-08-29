@@ -10,17 +10,23 @@ import technology.sola.engine.sketchy.game.event.GameState;
 import technology.sola.engine.sketchy.game.event.GameStateEvent;
 
 public class GameOverRenderer implements EventListener<GameStateEvent> {
+  private final String gameOverText = "Game Over";
+  private final String playAgainText = "Click anywhere to play again";
   private boolean shouldDraw = false;
 
   public void render(Renderer renderer) {
     if (shouldDraw) {
       renderer.drawToLayer(Constants.Layers.FOREGROUND, r -> {
-        Font.TextDimensions textDimensions = renderer.getFont().getDimensionsForText("Game Over");
-        Font.TextDimensions textDimensionsTwo = renderer.getFont().getDimensionsForText("Click anywhere to play again");
+        Font.TextDimensions textDimensions = renderer.getFont().getDimensionsForText(gameOverText);
+        Font.TextDimensions textDimensionsTwo = renderer.getFont().getDimensionsForText(playAgainText);
         renderer.setBlendMode(BlendMode.NORMAL);
-        renderer.fillRect(3, 3, textDimensionsTwo.width(), textDimensions.height() + textDimensionsTwo.height() + 3, new Color(150, 255, 255, 255));
-        renderer.drawString("Game over", 3, 3, Color.BLACK);
-        renderer.drawString("Click anywhere to play again", 3, textDimensions.height() + 6, Color.BLACK);
+        renderer.fillRect(
+          3, 3,
+          textDimensionsTwo.width(), textDimensions.height() + textDimensionsTwo.height() + 3,
+          new Color(150, 255, 255, 255)
+        );
+        renderer.drawString(gameOverText, 3, 3, Color.BLACK);
+        renderer.drawString(playAgainText, 3, textDimensions.height() + 6, Color.BLACK);
       });
     }
   }
