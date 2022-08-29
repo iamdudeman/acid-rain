@@ -7,6 +7,7 @@ import technology.sola.engine.graphics.components.sprite.SpriteComponent;
 import technology.sola.engine.graphics.components.sprite.SpriteKeyFrame;
 import technology.sola.engine.sketchy.game.Constants;
 import technology.sola.engine.sketchy.game.chunk.TileComponent;
+import technology.sola.math.linear.Vector2D;
 
 import java.util.Random;
 
@@ -22,7 +23,17 @@ public class RainSystem extends EcsSystem {
 
   @Override
   public void update(World world, float dt) {
-    // Update rain effect
+    updateRainEffect(world);
+
+    world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(playerEntity -> {
+      TransformComponent playerTransform = playerEntity.getComponent(TransformComponent.class);
+      Vector2D playerTranslate = playerTransform.getTranslate();
+
+      updateTileWetness(world, playerTranslate);
+    });
+  }
+
+  private void updateRainEffect(World world) {
     world.findEntityByName(Constants.EntityNames.CAMERA).ifPresent(cameraEntity -> {
       TransformComponent cameraTransform = cameraEntity.getComponent(TransformComponent.class);
 
@@ -40,14 +51,40 @@ public class RainSystem extends EcsSystem {
 
       createRain(world, cameraTransform.getX(), cameraTransform.getY());
     });
+  }
 
-    // Update tile sprites for "wetness"
-    for (var view : world.createView().of(TileComponent.class, SpriteComponent.class)) {
+  private void createRain(World world, float cameraX, float cameraY) {
+    final int edge = 200;
+    final int dropsPerUpdate = 40;
+
+    for (int i = 0; i < dropsPerUpdate; i++) {
+      float x = random.nextFloat(-edge, rendererWidth + edge);
+      float y = random.nextFloat(-edge, rendererHeight + edge);
+
+      world.createEntity(
+        new RainComponent(x + cameraX, y + cameraY)
+      );
+    }
+  }
+
+  private void updateTileWetness(World world, Vector2D playerTranslate) {
+    for (var view : world.createView().of(TileComponent.class, SpriteComponent.class, TransformComponent.class)) {
       TileComponent tileComponent = view.c1();
       SpriteComponent spriteComponent = view.c2();
+      TransformComponent transformComponent = view.c3();
+
+      float distanceSquared = playerTranslate.distance(transformComponent.getTranslate());
+      float threshold = 0.25f;
+
+      // todo tune these numbers
+      if (distanceSquared < 20) {
+        threshold = 0.85f;
+      } else if (distanceSquared < 50) {
+        threshold = 0.5f;
+      }
 
       // todo check if raining and maybe even how hard it is raining for this random
-      if (random.nextFloat() < 0.5f) {
+      if (random.nextFloat() < threshold) {
         tileComponent.increaseWetness();
       }
 
@@ -71,20 +108,6 @@ public class RainSystem extends EcsSystem {
           spriteComponent.getSpriteSheetId(), spriteComponent.getSpriteId().replace("-1", "-2"), 0
         ));
       }
-    }
-  }
-
-  private void createRain(World world, float cameraX, float cameraY) {
-    final int edge = 200;
-    final int dropsPerUpdate = 40;
-
-    for (int i = 0; i < dropsPerUpdate; i++) {
-      float x = random.nextFloat(-edge, rendererWidth + edge);
-      float y = random.nextFloat(-edge, rendererHeight + edge);
-
-      world.createEntity(
-        new RainComponent(x + cameraX, y + cameraY)
-      );
     }
   }
 }
