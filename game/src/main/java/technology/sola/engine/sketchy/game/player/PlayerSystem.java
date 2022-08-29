@@ -46,7 +46,9 @@ public class PlayerSystem extends EcsSystem {
         );
       }
 
-      if (keyboardInput.isKeyHeld(Key.SPACE)) {
+      playerComponent.setUsingSunlight(keyboardInput.isKeyHeld(Key.SPACE));
+
+      if (playerComponent.isUsingSunlight()) {
         playerComponent.useSunlight();
       }
     });

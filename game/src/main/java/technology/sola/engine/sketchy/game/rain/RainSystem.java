@@ -9,14 +9,17 @@ import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.engine.sketchy.game.Constants;
 import technology.sola.engine.sketchy.game.chunk.Chunk;
 import technology.sola.engine.sketchy.game.chunk.TileComponent;
+import technology.sola.engine.sketchy.game.player.PlayerComponent;
 import technology.sola.math.linear.Vector2D;
 
 import java.util.Random;
 
 public class RainSystem extends EcsSystem {
   private final Random random = new Random();
+  private final int maxDropsPerUpdate = 40;
   private final int rendererWidth;
   private final int rendererHeight;
+  private int dropsPerUpdate = maxDropsPerUpdate;
 
   public RainSystem(int rendererWidth, int rendererHeight) {
     this.rendererWidth = rendererWidth;
@@ -25,17 +28,29 @@ public class RainSystem extends EcsSystem {
 
   @Override
   public void update(World world, float dt) {
-    updateRainEffect(world);
-
     var playerEntityOptional = world.findEntityByName(Constants.EntityNames.PLAYER);
-    Vector2D playerTranslate = playerEntityOptional.isEmpty()
-      ? null
-      : playerEntityOptional.get().getComponent(TransformComponent.class).getTranslate();
 
-    updateTileWetness(world, playerTranslate);
+    playerEntityOptional.ifPresentOrElse(
+      playerEntity -> {
+        Vector2D playerTranslate = playerEntity.getComponent(TransformComponent.class).getTranslate();
+        PlayerComponent playerComponent = playerEntity.getComponent(PlayerComponent.class);
+
+        updateDropsPerUpdate(playerComponent.isUsingSunlight());
+        updateRainEffect(world, !playerComponent.isUsingSunlight());
+
+        if (!playerComponent.isUsingSunlight()) {
+          updateTileWetness(world, playerTranslate);
+        }
+      },
+      () -> {
+        updateDropsPerUpdate(false);
+        updateRainEffect(world, true);
+        updateTileWetness(world, null);
+      }
+    );
   }
 
-  private void updateRainEffect(World world) {
+  private void updateRainEffect(World world, boolean shouldCreateRain) {
     world.findEntityByName(Constants.EntityNames.CAMERA).ifPresent(cameraEntity -> {
       TransformComponent cameraTransform = cameraEntity.getComponent(TransformComponent.class);
 
@@ -51,13 +66,14 @@ public class RainSystem extends EcsSystem {
         }
       }
 
-      createRain(world, cameraTransform.getX(), cameraTransform.getY());
+      if (shouldCreateRain) {
+        createRain(world, cameraTransform.getX(), cameraTransform.getY());
+      }
     });
   }
 
   private void createRain(World world, float cameraX, float cameraY) {
     final int edge = 200;
-    final int dropsPerUpdate = 40;
 
     for (int i = 0; i < dropsPerUpdate; i++) {
       float x = random.nextFloat(-edge, rendererWidth + edge);
@@ -110,6 +126,22 @@ public class RainSystem extends EcsSystem {
         spriteComponent.setSpriteKeyFrame(new SpriteKeyFrame(
           spriteComponent.getSpriteSheetId(), spriteComponent.getSpriteId().replace("-1", "-2"), 0
         ));
+      }
+    }
+  }
+
+  private void updateDropsPerUpdate(boolean decreasing) {
+    if (decreasing) {
+      dropsPerUpdate--;
+
+      if (dropsPerUpdate <= 0) {
+        dropsPerUpdate = 0;
+      }
+    } else {
+      dropsPerUpdate++;
+
+      if (dropsPerUpdate > 40) {
+        dropsPerUpdate = 40;
       }
     }
   }
