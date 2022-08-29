@@ -3,8 +3,9 @@ package technology.sola.engine.sketchy.game.player;
 import technology.sola.ecs.Component;
 
 public class PlayerComponent implements Component {
+  // TODO tune these values
   public static final int MAX_SUNLIGHT = 1000;
-  private int sunlight = 100;
+  private int sunlight = 500;
   private float speed = 50;
   private boolean isUsingSunlight = false;
 
