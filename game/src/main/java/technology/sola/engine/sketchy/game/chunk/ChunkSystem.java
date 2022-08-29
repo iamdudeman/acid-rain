@@ -1,43 +1,58 @@
 package technology.sola.engine.sketchy.game.chunk;
 
 import technology.sola.ecs.EcsSystem;
+import technology.sola.ecs.Entity;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
+import technology.sola.engine.event.EventListener;
 import technology.sola.engine.sketchy.game.Constants;
+import technology.sola.engine.sketchy.game.event.GameState;
+import technology.sola.engine.sketchy.game.event.GameStateEvent;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ChunkSystem extends EcsSystem {
+public class ChunkSystem extends EcsSystem implements EventListener<GameStateEvent> {
   private final Map<ChunkId, Chunk> chunkCache = new HashMap<>();
   private ChunkId lastPlayerChunkId = new ChunkId(0, 0);
   private boolean isInitialized = false;
 
   @Override
   public void update(World world, float v) {
-    if (!isInitialized) {
-      // TODO more creative chunk creation than just 85 percent grass
-      Chunk initialChunk = Chunk.create(lastPlayerChunkId, 85);
+    if (isInitialized) {
+      world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(playerEntity -> {
+        TransformComponent playerTransform = playerEntity.getComponent(TransformComponent.class);
 
-      chunkCache.put(lastPlayerChunkId, initialChunk);
-      initialChunk.loadChunk(world);
-      processPlayerPositionChange(world, lastPlayerChunkId);
-      isInitialized = true;
+        ChunkId playerChunkId = getChunkIdForPlayer(playerTransform);
+        boolean hasPlayerChunkChanged = !playerChunkId.equals(lastPlayerChunkId);
+
+        if (hasPlayerChunkChanged) {
+          processPlayerPositionChange(world, playerChunkId);
+
+          lastPlayerChunkId = playerChunkId;
+        }
+      });
+    } else {
+//      world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(playerEntity -> {
+        chunkCache.clear();
+
+        // TODO more creative chunk creation than just 85 percent grass
+        Chunk initialChunk = Chunk.create(lastPlayerChunkId, 85);
+
+        chunkCache.put(lastPlayerChunkId, initialChunk);
+        initialChunk.loadChunk(world);
+        processPlayerPositionChange(world, lastPlayerChunkId);
+        isInitialized = true;
+//      });
     }
+  }
 
-    world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(playerEntity -> {
-      TransformComponent playerTransform = playerEntity.getComponent(TransformComponent.class);
-
-      ChunkId playerChunkId = getChunkIdForPlayer(playerTransform);
-      boolean hasPlayerChunkChanged = !playerChunkId.equals(lastPlayerChunkId);
-
-      if (hasPlayerChunkChanged) {
-        processPlayerPositionChange(world, playerChunkId);
-
-        lastPlayerChunkId = playerChunkId;
-      }
-    });
+  @Override
+  public void onEvent(GameStateEvent gameStateEvent) {
+    if (gameStateEvent.getMessage() == GameState.RESTART) {
+      isInitialized = false;
+    }
   }
 
   @Override

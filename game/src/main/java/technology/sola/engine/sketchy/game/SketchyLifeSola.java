@@ -7,17 +7,17 @@ import technology.sola.engine.core.Sola;
 import technology.sola.engine.core.SolaConfiguration;
 import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.core.module.graphics.SolaGraphics;
-import technology.sola.engine.graphics.Color;
 import technology.sola.engine.graphics.components.CameraComponent;
-import technology.sola.engine.graphics.components.CircleRendererComponent;
-import technology.sola.engine.graphics.components.LayerComponent;
 import technology.sola.engine.graphics.renderer.Renderer;
 import technology.sola.engine.graphics.screen.AspectMode;
 import technology.sola.engine.sketchy.game.chunk.ChunkSystem;
+import technology.sola.engine.sketchy.game.event.GameState;
+import technology.sola.engine.sketchy.game.event.GameStateEvent;
 import technology.sola.engine.sketchy.game.player.CameraSystem;
 import technology.sola.engine.sketchy.game.player.PlayerSystem;
 import technology.sola.engine.sketchy.game.rain.RainRenderer;
 import technology.sola.engine.sketchy.game.rain.RainSystem;
+import technology.sola.engine.sketchy.game.state.GameStateSystem;
 
 public class SketchyLifeSola extends Sola {
   private SolaGraphics solaGraphics;
@@ -48,13 +48,17 @@ public class SketchyLifeSola extends Sola {
       });
 
     // Ecs setup
+    ChunkSystem chunkSystem = new ChunkSystem();
+    eventHub.add(chunkSystem, GameStateEvent.class);
     solaEcs.addSystems(
-      new ChunkSystem(),
+      chunkSystem,
+      new GameStateSystem(solaEcs, mouseInput, eventHub, platform.getRenderer().getWidth(), platform.getRenderer().getHeight()),
       new RainSystem(platform.getRenderer().getWidth(), platform.getRenderer().getHeight()),
       new CameraSystem(platform.getRenderer().getWidth(), platform.getRenderer().getHeight()),
       new PlayerSystem(keyboardInput)
     );
-    solaEcs.setWorld(buildWorld());
+    eventHub.emit(new GameStateEvent(GameState.RESTART));
+//    solaEcs.setWorld(buildWorld());
   }
 
   @Override
@@ -68,12 +72,6 @@ public class SketchyLifeSola extends Sola {
 
   private World buildWorld() {
     World world = new World(10000);
-
-    world.createEntity(
-      new TransformComponent(platform.getRenderer().getWidth() / 2f, platform.getRenderer().getHeight() / 2f, 15),
-      new CircleRendererComponent(Color.RED, true),
-      new LayerComponent(Constants.Layers.FOREGROUND)
-    ).setName(Constants.EntityNames.PLAYER);
 
     world.createEntity(
       new TransformComponent(),

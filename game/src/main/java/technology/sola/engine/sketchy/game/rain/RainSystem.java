@@ -25,12 +25,10 @@ public class RainSystem extends EcsSystem {
   public void update(World world, float dt) {
     updateRainEffect(world);
 
-    world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(playerEntity -> {
-      TransformComponent playerTransform = playerEntity.getComponent(TransformComponent.class);
-      Vector2D playerTranslate = playerTransform.getTranslate();
+    var playerEntityOptional = world.findEntityByName(Constants.EntityNames.PLAYER);
+    Vector2D playerTranslate = playerEntityOptional.isEmpty() ? new Vector2D(0, 0) : playerEntityOptional.get().getComponent(TransformComponent.class).getTranslate();
 
-      updateTileWetness(world, playerTranslate);
-    });
+    updateTileWetness(world, playerTranslate);
   }
 
   private void updateRainEffect(World world) {
