@@ -63,6 +63,7 @@ public class Chunk {
     isLoaded = false;
   }
 
+  // todo change to procedural at some point
   private void initialShaping(int grassPercent) {
     for (int row = 0; row < ROWS; row++) {
       for (int column = 0; column < COLUMNS; column++) {
