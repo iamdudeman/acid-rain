@@ -17,11 +17,13 @@ import technology.sola.engine.sketchy.game.player.CameraSystem;
 import technology.sola.engine.sketchy.game.player.PlayerSystem;
 import technology.sola.engine.sketchy.game.rain.RainRenderer;
 import technology.sola.engine.sketchy.game.rain.RainSystem;
+import technology.sola.engine.sketchy.game.state.GameOverRenderer;
 import technology.sola.engine.sketchy.game.state.GameStateSystem;
 
 public class SketchyLifeSola extends Sola {
   private SolaGraphics solaGraphics;
   private final RainRenderer rainRenderer = new RainRenderer();
+  private final GameOverRenderer gameOverRenderer = new GameOverRenderer();
 
   @Override
   protected SolaConfiguration getConfiguration() {
@@ -37,6 +39,7 @@ public class SketchyLifeSola extends Sola {
       Constants.Layers.BACKGROUND,
       Constants.Layers.FOREGROUND
     );
+    eventHub.add(gameOverRenderer, GameStateEvent.class);
 
     // Load assets
     assetLoaderProvider.get(SpriteSheet.class).addAssetMapping(Constants.Assets.Sprites.SPRITE_SHEET_ID, "assets/sprites.json");
@@ -58,7 +61,6 @@ public class SketchyLifeSola extends Sola {
       new PlayerSystem(keyboardInput)
     );
     eventHub.emit(new GameStateEvent(GameState.RESTART));
-//    solaEcs.setWorld(buildWorld());
   }
 
   @Override
@@ -68,6 +70,7 @@ public class SketchyLifeSola extends Sola {
     solaGraphics.render();
 
     rainRenderer.render(renderer, solaEcs.getWorld());
+    gameOverRenderer.render(renderer);
   }
 
   private World buildWorld() {
