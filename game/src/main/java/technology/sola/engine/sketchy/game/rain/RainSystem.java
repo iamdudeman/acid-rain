@@ -90,9 +90,9 @@ public class RainSystem extends EcsSystem {
 
       // todo tune these numbers
       if (tileComponent.getWetness() > 300) {
-        if (!spriteComponent.getSpriteId().endsWith("-5")) {
+        if (!spriteComponent.getSpriteId().equals(Constants.Assets.Sprites.ERASED)) {
           spriteComponent.setSpriteKeyFrame(new SpriteKeyFrame(
-            spriteComponent.getSpriteSheetId(), spriteComponent.getSpriteId().replace("-4", "-5"), 0
+            spriteComponent.getSpriteSheetId(), Constants.Assets.Sprites.ERASED, 0
           ));
         }
       } else if (tileComponent.getWetness() > 205) {
