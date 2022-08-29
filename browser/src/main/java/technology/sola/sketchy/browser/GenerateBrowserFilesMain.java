@@ -15,7 +15,7 @@ public class GenerateBrowserFilesMain {
     solaBrowserFileBuilder.transpileSolaJar(
       "build/libs/" + jarFile,
       BrowserMain.class.getName(),
-      false
+      false // TODO obfuscate before production
     );
 
     solaBrowserFileBuilder.createIndexHtml();
