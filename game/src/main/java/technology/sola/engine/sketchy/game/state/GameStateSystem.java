@@ -50,12 +50,14 @@ public class GameStateSystem extends EcsSystem implements EventListener<GameStat
         return false;
       },
       (player, erasedTile) -> {
-        Vector2D playerTranslate = player.getComponent(TransformComponent.class).getTranslate();
-        float distanceX = Math.abs(playerTranslate.x - rendererHalfWidth);
-        float distanceY = Math.abs(playerTranslate.y - rendererHalfHeight);
-        float score = (distanceX / Chunk.TILE_SIZE) + (distanceY / Chunk.TILE_SIZE);
+        if (Math.abs(collisionManifoldEvent.getMessage().penetration()) > 5) {
+          Vector2D playerTranslate = player.getComponent(TransformComponent.class).getTranslate();
+          float distanceX = Math.abs(playerTranslate.x - rendererHalfWidth);
+          float distanceY = Math.abs(playerTranslate.y - rendererHalfHeight);
+          float score = (distanceX / Chunk.TILE_SIZE) + (distanceY / Chunk.TILE_SIZE);
 
-        eventHub.emit(new GameStateEvent(GameState.GAME_OVER, score));
+          eventHub.emit(new GameStateEvent(GameState.GAME_OVER, score));
+        }
       }
     ), CollisionManifoldEvent.class);
   }
