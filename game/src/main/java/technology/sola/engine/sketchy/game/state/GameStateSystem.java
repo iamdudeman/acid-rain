@@ -19,6 +19,7 @@ import technology.sola.engine.sketchy.game.Constants;
 import technology.sola.engine.sketchy.game.chunk.Chunk;
 import technology.sola.engine.sketchy.game.event.GameState;
 import technology.sola.engine.sketchy.game.event.GameStateEvent;
+import technology.sola.engine.sketchy.game.player.PlayerComponent;
 import technology.sola.math.linear.Vector2D;
 
 public class GameStateSystem extends EcsSystem {
@@ -83,6 +84,7 @@ public class GameStateSystem extends EcsSystem {
       new TransformComponent(rendererHalfWidth, rendererHalfHeight, 15),
       new CircleRendererComponent(Color.RED, true),
       new LayerComponent(Constants.Layers.FOREGROUND),
+      new PlayerComponent(),
       ColliderComponent.circle()
     ).setName(Constants.EntityNames.PLAYER);
 

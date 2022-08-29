@@ -10,7 +10,6 @@ import technology.sola.math.linear.Vector2D;
 
 public class PlayerSystem extends EcsSystem {
   private final KeyboardInput keyboardInput;
-  private final float speed = 50f;
 
   public PlayerSystem(KeyboardInput keyboardInput) {
     this.keyboardInput = keyboardInput;
@@ -19,7 +18,9 @@ public class PlayerSystem extends EcsSystem {
   @Override
   public void update(World world, float dt) {
     world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(entity -> {
+      PlayerComponent playerComponent = entity.getComponent(PlayerComponent.class);
       TransformComponent transformComponent = entity.getComponent(TransformComponent.class);
+      float speed = playerComponent.getSpeed();
 
       if (keyboardInput.isKeyHeld(Key.W)) {
         transformComponent.setTranslate(
@@ -43,6 +44,10 @@ public class PlayerSystem extends EcsSystem {
         transformComponent.setTranslate(
           transformComponent.getTranslate().add(new Vector2D(speed, 0).scalar(dt))
         );
+      }
+
+      if (keyboardInput.isKeyHeld(Key.SPACE)) {
+        playerComponent.useSunlight();
       }
     });
   }
