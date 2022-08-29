@@ -29,7 +29,7 @@ public class RainSystem extends EcsSystem {
 
     var playerEntityOptional = world.findEntityByName(Constants.EntityNames.PLAYER);
     Vector2D playerTranslate = playerEntityOptional.isEmpty()
-      ? new Vector2D(0, 0)
+      ? null
       : playerEntityOptional.get().getComponent(TransformComponent.class).getTranslate();
 
     updateTileWetness(world, playerTranslate);
@@ -75,13 +75,13 @@ public class RainSystem extends EcsSystem {
       SpriteComponent spriteComponent = view.c2();
       TransformComponent transformComponent = view.c3();
 
-      float distanceSquared = playerTranslate.distance(transformComponent.getTranslate());
+      float distance = playerTranslate == null ? 40 : playerTranslate.distance(transformComponent.getTranslate());
       float threshold = 0.25f;
 
       // todo tune these numbers
-      if (distanceSquared < 20) {
+      if (distance < 20) {
         threshold = 0.85f;
-      } else if (distanceSquared < 50) {
+      } else if (distance < 50) {
         threshold = 0.5f;
       }
 
