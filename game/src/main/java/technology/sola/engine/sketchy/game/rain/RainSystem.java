@@ -5,7 +5,9 @@ import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.graphics.components.sprite.SpriteComponent;
 import technology.sola.engine.graphics.components.sprite.SpriteKeyFrame;
+import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.engine.sketchy.game.Constants;
+import technology.sola.engine.sketchy.game.chunk.Chunk;
 import technology.sola.engine.sketchy.game.chunk.TileComponent;
 import technology.sola.math.linear.Vector2D;
 
@@ -94,6 +96,7 @@ public class RainSystem extends EcsSystem {
           spriteComponent.setSpriteKeyFrame(new SpriteKeyFrame(
             spriteComponent.getSpriteSheetId(), Constants.Assets.Sprites.ERASED, 0
           ));
+          view.entity().addComponent(ColliderComponent.aabb(Chunk.TILE_SIZE, Chunk.TILE_SIZE));
         }
       } else if (tileComponent.getWetness() > 205) {
         spriteComponent.setSpriteKeyFrame(new SpriteKeyFrame(

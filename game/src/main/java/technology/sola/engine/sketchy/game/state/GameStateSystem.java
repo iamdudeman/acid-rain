@@ -13,6 +13,7 @@ import technology.sola.engine.graphics.components.CircleRendererComponent;
 import technology.sola.engine.graphics.components.LayerComponent;
 import technology.sola.engine.input.MouseButton;
 import technology.sola.engine.input.MouseInput;
+import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.engine.sketchy.game.Constants;
 import technology.sola.engine.sketchy.game.event.GameState;
 import technology.sola.engine.sketchy.game.event.GameStateEvent;
@@ -48,11 +49,6 @@ public class GameStateSystem extends EcsSystem implements EventListener<GameStat
       eventHub.emit(new GameStateEvent(GameState.RESTART));
       isGameOver = false;
     }
-
-    // TODO temp for testing
-    if (mouseInput.isMouseClicked(MouseButton.SECONDARY)) {
-      eventHub.emit(new GameStateEvent(GameState.GAME_OVER));
-    }
   }
 
   @Override
@@ -78,7 +74,8 @@ public class GameStateSystem extends EcsSystem implements EventListener<GameStat
     world.createEntity(
       new TransformComponent(rendererHalfWidth, rendererHalfHeight, 15),
       new CircleRendererComponent(Color.RED, true),
-      new LayerComponent(Constants.Layers.FOREGROUND)
+      new LayerComponent(Constants.Layers.FOREGROUND),
+      ColliderComponent.circle()
     ).setName(Constants.EntityNames.PLAYER);
 
     world.createEntity(
