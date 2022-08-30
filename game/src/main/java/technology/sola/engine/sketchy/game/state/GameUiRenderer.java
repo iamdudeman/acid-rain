@@ -14,7 +14,10 @@ import technology.sola.engine.sketchy.game.player.PlayerComponent;
 public class GameUiRenderer {
   private final String gameOverText = "Game Over";
   private final String playAgainText = "Click anywhere to play again";
-  private final int sunlightBarHeight = 15;
+  private final Color sunlightBarColor = new Color(220, 255, 215, 0);
+  private final int sunlightBarHeight = 12;
+  private final int sunlightBarWidth = 220;
+  private final int sunlightBarHalfWidth = sunlightBarWidth / 2;
   private boolean shouldDrawGameOver = false;
   private float score = 0f;
 
@@ -51,11 +54,11 @@ public class GameUiRenderer {
         renderer.drawToLayer(Constants.Layers.FOREGROUND, r -> {
           PlayerComponent playerComponent = playerEntity.getComponent(PlayerComponent.class);
           float percentage = playerComponent.getSunlight() / (float) PlayerComponent.MAX_SUNLIGHT;
-          float x = renderer.getWidth() / 2f - 150;
+          float x = renderer.getWidth() / 2f - sunlightBarHalfWidth;
           float y = renderer.getHeight() - sunlightBarHeight - 8;
           renderer.setBlendMode(BlendMode.NORMAL);
-          renderer.fillRect(x, y, percentage * 300, sunlightBarHeight, new Color(200, 255, 255, 0));
-          renderer.drawRect(x, y, 300, sunlightBarHeight, Color.WHITE);
+          renderer.fillRect(x, y, percentage * sunlightBarWidth, sunlightBarHeight, sunlightBarColor);
+          renderer.drawRect(x, y, sunlightBarWidth, sunlightBarHeight, Color.BLACK);
         });
       });
     }
