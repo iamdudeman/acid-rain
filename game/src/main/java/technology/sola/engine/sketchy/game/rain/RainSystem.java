@@ -36,7 +36,7 @@ public class RainSystem extends EcsSystem {
         PlayerComponent playerComponent = playerEntity.getComponent(PlayerComponent.class);
 
         updateDropsPerUpdateForSunlight(playerComponent.isUsingSunlight());
-        updateRainHeight(world);
+        updateRainHeight(world, true);
 
         if (!playerComponent.isUsingSunlight()) {
           createNewRain(world);
@@ -45,22 +45,22 @@ public class RainSystem extends EcsSystem {
       },
       () -> {
         updateDropsPerUpdateForSunlight(false);
-        updateRainHeight(world);
+        updateRainHeight(world, false);
         createNewRain(world);
         updateTileWetness(world, null);
       }
     );
   }
 
-  private void updateRainHeight(World world) {
+  private void updateRainHeight(World world, boolean showAnimation) {
     for (var view : world.createView().of(RainComponent.class)) {
       RainComponent rainComponent = view.c1();
 
       rainComponent.height--;
 
-      if (rainComponent.height <= 0) {
-        // todo create entity with particles for a splash
+      int heightThreshold = showAnimation ? RainRenderer.RAIN_ANIMATION_HEIGHT_THRESHOLD_2 - 2 : 0;
 
+      if (rainComponent.height <= heightThreshold) {
         view.entity().destroy();
       }
     }

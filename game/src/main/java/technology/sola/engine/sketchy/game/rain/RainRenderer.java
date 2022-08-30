@@ -8,8 +8,11 @@ import technology.sola.engine.graphics.renderer.Renderer;
 import technology.sola.engine.sketchy.game.Constants;
 
 public class RainRenderer {
+  public static final int RAIN_ANIMATION_HEIGHT_THRESHOLD_1 = -2;
+  public static final int RAIN_ANIMATION_HEIGHT_THRESHOLD_2 = -4;
   private static final int RAIN_LENGTH = 64;
   private static final Color RAIN_COLOR = new Color(153, 220, 220, 220);
+  private boolean animationToggle = false;
 
   public void render(Renderer renderer, World world) {
     renderer.drawToLayer(Constants.Layers.FOREGROUND, r -> {
@@ -39,23 +42,45 @@ public class RainRenderer {
    * @param cameraY
    */
   private void drawRain(Renderer renderer, RainComponent rainComponent, float cameraX, float cameraY) {
-    float halfCameraWidth = renderer.getWidth() * 0.5f;
-    float halfCameraHeight = renderer.getHeight() * 0.5f;
+    float height = rainComponent.height;
     float x = rainComponent.x - cameraX;
     float y = rainComponent.y - cameraY;
-    float height = rainComponent.height;
 
-    float vectorX = (x - (halfCameraWidth)) / halfCameraWidth;
-    float vectorY = (y - (halfCameraHeight)) / halfCameraHeight;
+    if (height > 0) {
+      float halfCameraWidth = renderer.getWidth() * 0.5f;
+      float halfCameraHeight = renderer.getHeight() * 0.5f;
 
-    float sqrtHeight = (float) Math.sqrt(height);
-    float sqrtHeightLength = (float) Math.sqrt(height + RAIN_LENGTH);
+      float vectorX = (x - (halfCameraWidth)) / halfCameraWidth;
+      float vectorY = (y - (halfCameraHeight)) / halfCameraHeight;
 
-    float lineX = x + vectorX * sqrtHeight;
-    float lineY = y + vectorY * sqrtHeight;
-    float lineX2 = x + vectorX * sqrtHeightLength;
-    float lineY2 = y + vectorY * sqrtHeightLength;
+      float sqrtHeight = (float) Math.sqrt(height);
+      float sqrtHeightLength = (float) Math.sqrt(height + RAIN_LENGTH);
 
-    renderer.drawLine(lineX, lineY, lineX2, lineY2, RAIN_COLOR);
+      float lineX = x + vectorX * sqrtHeight;
+      float lineY = y + vectorY * sqrtHeight;
+      float lineX2 = x + vectorX * sqrtHeightLength;
+      float lineY2 = y + vectorY * sqrtHeightLength;
+
+      renderer.drawLine(lineX, lineY, lineX2, lineY2, RAIN_COLOR);
+    } else {
+      if (height > RAIN_ANIMATION_HEIGHT_THRESHOLD_1) {
+        // Initial splash animation
+        renderer.fillRect(x, y, 2, 2, RAIN_COLOR);
+      } else if (height > RAIN_ANIMATION_HEIGHT_THRESHOLD_2) {
+        // End of splash animation
+        renderer.fillRect(x - 1, y, 2, 1, RAIN_COLOR);
+
+        // Alternate between two animations to add some flare :)
+        if (animationToggle) {
+          renderer.fillRect(x + 2, y - 3, 1, 1, RAIN_COLOR);
+          renderer.fillRect(x + 1, y + 2, 1, 1, RAIN_COLOR);
+        } else {
+          renderer.fillRect(x - 2, y + 3, 1, 1, RAIN_COLOR);
+          renderer.fillRect(x - 1, y - 2, 1, 1, RAIN_COLOR);
+        }
+
+        animationToggle = !animationToggle;
+      }
+    }
   }
 }
