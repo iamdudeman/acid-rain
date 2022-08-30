@@ -15,7 +15,7 @@ public class Chunk {
 
   private static final Random RANDOM = new Random();
   private final ChunkId chunkId;
-  private final String[][] tileAssetIds = new String[COLUMNS][ROWS];
+  private final TileType[][] tileTypes = new TileType[COLUMNS][ROWS];
   private boolean isLoaded = false;
 
   public static Chunk create(ChunkId chunkId, int grassPercent) {
@@ -33,12 +33,13 @@ public class Chunk {
 
     for (int row = 0; row < ROWS; row++) {
       for (int column = 0; column < COLUMNS; column++) {
-        String spriteId = tileAssetIds[column][row];
+        TileType tileType = tileTypes[column][row];
+        String spriteId = tileType.assetId + "-" + tileType.variation;
         float x = chunkId.columnIndex() * TILE_SIZE * COLUMNS + column * TILE_SIZE;
         float y = chunkId.rowIndex() * TILE_SIZE * ROWS + row * TILE_SIZE;
 
         world.createEntity(
-          new TileComponent(chunkId),
+          new TileComponent(chunkId, tileType),
           new TransformComponent(x, y),
           new SpriteComponent(Constants.Assets.Sprites.SPRITE_SHEET_ID, spriteId),
           new LayerComponent(Constants.Layers.BACKGROUND)
@@ -67,11 +68,15 @@ public class Chunk {
   private void initialShaping(int grassPercent) {
     for (int row = 0; row < ROWS; row++) {
       for (int column = 0; column < COLUMNS; column++) {
-        boolean isGrass = RANDOM.nextInt(100) <= grassPercent;
+        int value = RANDOM.nextInt(100);
 
-        tileAssetIds[column][row] = isGrass
-          ? Constants.Assets.Sprites.GRASS + "-1"
-          : Constants.Assets.Sprites.DIRT + "-1";
+        if (value < 10) {
+          tileTypes[column][row] = TileType.CLIFF_CENTER;
+        } else if (value < grassPercent) {
+          tileTypes[column][row] = TileType.GRASS;
+        } else {
+          tileTypes[column][row] = TileType.DIRT;
+        }
       }
     }
   }

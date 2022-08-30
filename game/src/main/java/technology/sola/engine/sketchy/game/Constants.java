@@ -22,6 +22,7 @@ public class Constants {
       public static final String SPRITE_SHEET_ID = "sprites";
       public static final String GRASS = "grass";
       public static final String DIRT = "dirt";
+      public static final String CLIFF = "cliff";
       public static final String ERASED = "erased";
 
       private Sprites() {
