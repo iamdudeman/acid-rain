@@ -1,9 +1,11 @@
 package technology.sola.engine.sketchy.game.chunk;
 
+import technology.sola.ecs.Entity;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.graphics.components.LayerComponent;
 import technology.sola.engine.graphics.components.sprite.SpriteComponent;
+import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.engine.sketchy.game.Constants;
 
 public class Chunk {
@@ -32,12 +34,16 @@ public class Chunk {
         float x = chunkId.columnIndex() * TILE_SIZE * COLUMNS + column * TILE_SIZE;
         float y = chunkId.rowIndex() * TILE_SIZE * ROWS + row * TILE_SIZE;
 
-        world.createEntity(
+        Entity newEntity = world.createEntity(
           new TileComponent(chunkId, tileType),
           new TransformComponent(x, y),
           new SpriteComponent(Constants.Assets.Sprites.SPRITE_SHEET_ID, spriteId),
           new LayerComponent(Constants.Layers.BACKGROUND)
         );
+
+        if (tileType.assetId.equals(Constants.Assets.Sprites.CLIFF)) {
+          newEntity.addComponent(ColliderComponent.aabb(Chunk.TILE_SIZE, Chunk.TILE_SIZE));
+        }
       }
     }
 

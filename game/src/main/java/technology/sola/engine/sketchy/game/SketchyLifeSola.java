@@ -57,7 +57,7 @@ public class SketchyLifeSola extends Sola {
 
     // Ecs setup
     ChunkSystem chunkSystem = new ChunkSystem();
-    PlayerSystem playerSystem = new PlayerSystem(keyboardInput);
+    PlayerSystem playerSystem = new PlayerSystem(eventHub, keyboardInput);
     CollisionDetectionSystem collisionDetectionSystem = new CollisionDetectionSystem(eventHub);
     eventHub.add(chunkSystem, GameStateEvent.class);
     solaEcs.addSystems(
