@@ -6,24 +6,18 @@ import technology.sola.engine.graphics.components.LayerComponent;
 import technology.sola.engine.graphics.components.sprite.SpriteComponent;
 import technology.sola.engine.sketchy.game.Constants;
 
-import java.util.Random;
-
 public class Chunk {
   public static final int TILE_SIZE = 20;
   public static final int COLUMNS = 24;
   public static final int ROWS = 16;
 
-  private static final Random RANDOM = new Random();
   private final ChunkId chunkId;
-  private final TileType[][] tileTypes = new TileType[COLUMNS][ROWS];
+  private final TileType[][] tileTypes;
   private boolean isLoaded = false;
 
-  public static Chunk create(ChunkId chunkId, int grassPercent) {
-    Chunk chunk = new Chunk(chunkId);
-
-    chunk.initialShaping(grassPercent);
-
-    return chunk;
+  public Chunk(ChunkId chunkId, TileType[][] tileTypes) {
+    this.chunkId = chunkId;
+    this.tileTypes = tileTypes;
   }
 
   public void loadChunk(World world) {
@@ -62,26 +56,5 @@ public class Chunk {
     }
 
     isLoaded = false;
-  }
-
-  // todo change to procedural at some point
-  private void initialShaping(int grassPercent) {
-    for (int row = 0; row < ROWS; row++) {
-      for (int column = 0; column < COLUMNS; column++) {
-        int value = RANDOM.nextInt(100);
-
-        if (value < 10) {
-          tileTypes[column][row] = TileType.CLIFF_CENTER;
-        } else if (value < grassPercent) {
-          tileTypes[column][row] = TileType.GRASS;
-        } else {
-          tileTypes[column][row] = TileType.DIRT;
-        }
-      }
-    }
-  }
-
-  private Chunk(ChunkId chunkId) {
-    this.chunkId = chunkId;
   }
 }
