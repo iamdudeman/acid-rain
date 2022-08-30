@@ -12,7 +12,6 @@ import technology.sola.engine.physics.system.CollisionDetectionSystem;
 import technology.sola.engine.sketchy.game.chunk.ChunkSystem;
 import technology.sola.engine.sketchy.game.event.GameState;
 import technology.sola.engine.sketchy.game.event.GameStateEvent;
-import technology.sola.engine.sketchy.game.gui.MainMenuGui;
 import technology.sola.engine.sketchy.game.player.CameraSystem;
 import technology.sola.engine.sketchy.game.player.PlayerSystem;
 import technology.sola.engine.sketchy.game.rain.RainRenderer;
@@ -72,8 +71,9 @@ public class SketchyLifeSola extends Sola {
     eventHub.add(gameStateEvent -> collisionDetectionSystem.setActive(gameStateEvent.getMessage() == GameState.RESTART), GameStateEvent.class);
 
     // Initialize gui stuff
-    solaGui = SolaGui.createInstance(assetLoaderProvider, platform);
-    solaGui.setGuiRoot(MainMenuGui.buildRootElement(solaGui, gameSettings));
+    // TODO do not enable solaGui until BrowserPlatform bug is fixed!
+    // solaGui = SolaGui.createInstance(assetLoaderProvider, platform);
+    // solaGui.setGuiRoot(MainMenuGui.buildRootElement(solaGui, gameSettings));
 
     // TODO temporarily now showing the menu first
     // gameSettings.showMenu();

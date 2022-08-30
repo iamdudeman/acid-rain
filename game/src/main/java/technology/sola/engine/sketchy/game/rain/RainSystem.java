@@ -116,7 +116,11 @@ public class RainSystem extends EcsSystem {
           ));
           view.entity().addComponent(ColliderComponent.circle(Chunk.TILE_SIZE / 2f));
         }
-      } else if (tileComponent.getWetness() > 205) {
+      } else if (tileComponent.getWetness() > 250) {
+        spriteComponent.setSpriteKeyFrame(new SpriteKeyFrame(
+          spriteComponent.getSpriteSheetId(), spriteComponent.getSpriteId().replace("-4", "-5"), 0
+        ));
+      } else if (tileComponent.getWetness() > 195) {
         spriteComponent.setSpriteKeyFrame(new SpriteKeyFrame(
           spriteComponent.getSpriteSheetId(), spriteComponent.getSpriteId().replace("-3", "-4"), 0
         ));
