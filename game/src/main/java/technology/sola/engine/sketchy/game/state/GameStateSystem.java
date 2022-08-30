@@ -33,7 +33,6 @@ public class GameStateSystem extends EcsSystem {
     this.eventHub = eventHub;
     this.rendererHalfWidth = rendererWidth / 2f;
     this.rendererHalfHeight = rendererHeight / 2f;
-    setActive(false);
 
     eventHub.add(gameStateEvent -> {
       if (gameStateEvent.getMessage() == GameState.GAME_OVER) {

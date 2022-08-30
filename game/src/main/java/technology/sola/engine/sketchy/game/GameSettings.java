@@ -1,6 +1,7 @@
 package technology.sola.engine.sketchy.game;
 
 import technology.sola.ecs.SolaEcs;
+import technology.sola.engine.sketchy.game.state.GameStateSystem;
 
 public class GameSettings {
   private final SolaEcs solaEcs;
@@ -31,6 +32,7 @@ public class GameSettings {
     if (!isPlaying) {
       isPlaying = true;
       hideMenu();
+      solaEcs.getSystem(GameStateSystem.class).setActive(false);
       // TODO stop main menu music and play map music
     }
   }
