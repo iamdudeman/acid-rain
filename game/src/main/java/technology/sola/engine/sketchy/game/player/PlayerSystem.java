@@ -9,6 +9,8 @@ import technology.sola.engine.input.KeyboardInput;
 import technology.sola.engine.physics.event.CollisionManifoldEvent;
 import technology.sola.engine.sketchy.game.Constants;
 import technology.sola.engine.sketchy.game.chunk.TileComponent;
+import technology.sola.engine.sketchy.game.chunk.TileType;
+import technology.sola.engine.sketchy.game.rain.RainSystem;
 import technology.sola.math.linear.Vector2D;
 
 public class PlayerSystem extends EcsSystem {
@@ -21,14 +23,20 @@ public class PlayerSystem extends EcsSystem {
       entity -> Constants.EntityNames.PLAYER.equals(entity.getName()),
       entity -> {
         TileComponent tileComponent = entity.getComponent(TileComponent.class);
-        if (tileComponent != null) {
-          return tileComponent.getTileType().assetId.equals(Constants.Assets.Sprites.CLIFF);
-        }
-        return false;
+
+        return tileComponent != null;
       },
       (player, erasedTile) -> {
-        // todo adjust player position
-        System.out.println("cliff collision");
+        TileComponent tileComponent = erasedTile.getComponent(TileComponent.class);
+
+        TileType tileType = tileComponent.getTileType();
+
+        if (tileType.assetId.equals(Constants.Assets.Sprites.CLIFF)) {
+          // todo adjust player position
+          System.out.println("cliff collision");
+        } else if (tileType.assetId.equals(Constants.Assets.Sprites.DIRT) && tileComponent.getWetness() > RainSystem.THRESHOLD_THREE) {
+          player.getComponent(PlayerComponent.class).setIsSlowed(true);
+        }
       }
     ), CollisionManifoldEvent.class);
   }
@@ -69,6 +77,8 @@ public class PlayerSystem extends EcsSystem {
       if (playerComponent.isUsingSunlight()) {
         playerComponent.useSunlight();
       }
+
+      playerComponent.setIsSlowed(false);
     });
   }
 }

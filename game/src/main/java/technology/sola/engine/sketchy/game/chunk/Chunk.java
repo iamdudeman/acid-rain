@@ -32,7 +32,6 @@ public class Chunk {
     for (int row = 0; row < ROWS; row++) {
       for (int column = 0; column < COLUMNS; column++) {
         TileType tileType = tileTypes[column][row];
-        String spriteId = tileType.assetId + "-" + tileType.variation;
         float x = chunkId.columnIndex() * TILE_SIZE * COLUMNS + column * TILE_SIZE;
         float y = chunkId.rowIndex() * TILE_SIZE * ROWS + row * TILE_SIZE;
 
@@ -43,7 +42,7 @@ public class Chunk {
           new LayerComponent(Constants.Layers.BACKGROUND)
         );
 
-        if (tileType.assetId.equals(Constants.Assets.Sprites.CLIFF)) {
+        if (tileType.assetId.equals(Constants.Assets.Sprites.CLIFF) || tileType.assetId.equals(Constants.Assets.Sprites.DIRT)) {
           newEntity.addComponent(ColliderComponent.circle(Chunk.HALF_TILE_SIZE));
         }
       }

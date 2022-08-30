@@ -18,23 +18,23 @@ public enum TileType {
 
   public final String assetId;
   public final String variation;
-  public final boolean isDissolvable;
+  public final boolean isErasable;
 
   TileType(String assetId) {
     this(assetId, "1");
   }
 
-  TileType(String assetId, boolean isDissolvable) {
-    this(assetId, "1", isDissolvable);
+  TileType(String assetId, boolean isErasable) {
+    this(assetId, "1", isErasable);
   }
 
   TileType(String assetId, String variation) {
     this(assetId, variation, false);
   }
 
-  TileType(String assetId, String variation, boolean isDissolvable) {
+  TileType(String assetId, String variation, boolean isErasable) {
     this.assetId = assetId;
     this.variation = variation;
-    this.isDissolvable = isDissolvable;
+    this.isErasable = isErasable;
   }
 }

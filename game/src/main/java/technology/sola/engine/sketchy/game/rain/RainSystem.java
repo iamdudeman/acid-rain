@@ -15,6 +15,13 @@ import technology.sola.math.linear.Vector2D;
 import java.util.Random;
 
 public class RainSystem extends EcsSystem {
+  // todo tune these numbers
+  public static final int THRESHOLD_FIVE = 300;
+  public static final int THRESHOLD_FOUR = 250;
+  public static final int THRESHOLD_THREE = 195;
+  public static final int THRESHOLD_TWO = 115;
+  public static final int THRESHOLD_ONE = 50;
+
   private final Random random = new Random();
   private final int maxDropsPerUpdate = 40;
   private final int rendererWidth;
@@ -107,28 +114,27 @@ public class RainSystem extends EcsSystem {
         tileComponent.increaseWetness();
       }
 
-      // todo tune these numbers
-      if (tileComponent.getWetness() > 300) {
+      if (tileComponent.getWetness() > THRESHOLD_FIVE) {
         if (!spriteComponent.getSpriteId().equals(Constants.Assets.Sprites.ERASED)) {
           spriteComponent.setSpriteKeyFrame(SpriteCache.ERASED);
           view.entity().addComponent(ColliderComponent.circle(Chunk.HALF_TILE_SIZE));
         }
       } else {
 
-        if (tileComponent.getTileType().isDissolvable) {
-          if (tileComponent.getWetness() > 250) {
+        if (tileComponent.getTileType().isErasable) {
+          if (tileComponent.getWetness() > THRESHOLD_FOUR) {
             spriteComponent.setSpriteKeyFrame(
               SpriteCache.get(tileComponent.getTileType().assetId, "5")
             );
-          } else if (tileComponent.getWetness() > 195) {
+          } else if (tileComponent.getWetness() > THRESHOLD_THREE) {
             spriteComponent.setSpriteKeyFrame(
               SpriteCache.get(tileComponent.getTileType().assetId, "4")
             );
-          } else if (tileComponent.getWetness() > 115) {
+          } else if (tileComponent.getWetness() > THRESHOLD_TWO) {
             spriteComponent.setSpriteKeyFrame(
               SpriteCache.get(tileComponent.getTileType().assetId, "3")
             );
-          } else if (tileComponent.getWetness() > 50) {
+          } else if (tileComponent.getWetness() > THRESHOLD_ONE) {
             spriteComponent.setSpriteKeyFrame(
               SpriteCache.get(tileComponent.getTileType().assetId, "2")
             );

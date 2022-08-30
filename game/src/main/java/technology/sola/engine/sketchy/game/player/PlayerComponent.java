@@ -6,8 +6,10 @@ public class PlayerComponent implements Component {
   // TODO tune these values
   public static final int MAX_SUNLIGHT = 1000;
   private int sunlight = 500;
-  private float speed = 50;
+  private final float speed = 50;
+  private final float slowSpeed = 10;
   private boolean isUsingSunlight = false;
+  private boolean isSlowed = false;
 
   public int getSunlight() {
     return sunlight;
@@ -26,10 +28,10 @@ public class PlayerComponent implements Component {
   }
 
   public float getSpeed() {
-    return speed;
+    return isSlowed ? slowSpeed : speed;
   }
 
-  public void setSpeed(float speed) {
-    this.speed = speed;
+  public void setIsSlowed(boolean isSlowed) {
+    this.isSlowed = isSlowed;
   }
 }
