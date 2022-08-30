@@ -10,6 +10,7 @@ import technology.sola.engine.sketchy.game.Constants;
 
 public class Chunk {
   public static final int TILE_SIZE = 20;
+  public static final int HALF_TILE_SIZE = TILE_SIZE / 2;
   public static final int COLUMNS = 24;
   public static final int ROWS = 16;
 
@@ -42,7 +43,7 @@ public class Chunk {
         );
 
         if (tileType.assetId.equals(Constants.Assets.Sprites.CLIFF)) {
-          newEntity.addComponent(ColliderComponent.aabb(Chunk.TILE_SIZE, Chunk.TILE_SIZE));
+          newEntity.addComponent(ColliderComponent.circle(Chunk.HALF_TILE_SIZE));
         }
       }
     }

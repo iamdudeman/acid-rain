@@ -1,5 +1,6 @@
 package technology.sola.engine.sketchy.game;
 
+import technology.sola.engine.assets.BulkAssetLoader;
 import technology.sola.engine.assets.audio.AudioClip;
 import technology.sola.engine.assets.graphics.SpriteSheet;
 import technology.sola.engine.core.Sola;
@@ -34,6 +35,7 @@ public class SketchyLifeSola extends Sola {
 
   @Override
   protected void onInit() {
+    solaInitialization.useAsyncInitialization();
     gameSettings = new GameSettings(solaEcs);
 
     // Initialize stuff for rendering
@@ -44,16 +46,6 @@ public class SketchyLifeSola extends Sola {
       Constants.Layers.BACKGROUND,
       Constants.Layers.FOREGROUND
     );
-
-    // Load assets
-    assetLoaderProvider.get(SpriteSheet.class).addAssetMapping(Constants.Assets.Sprites.SPRITE_SHEET_ID, "assets/sprites.json");
-    // TODO play menu music first
-    assetLoaderProvider.get(AudioClip.class).getNewAsset(Constants.Assets.Audio.MAP, "assets/Test.wav")
-      .executeWhenLoaded(audioClip -> {
-        audioClip.setVolume(.5f);
-
-        audioClip.loop(-1);
-      });
 
     // Ecs setup
     ChunkSystem chunkSystem = new ChunkSystem();
@@ -75,8 +67,25 @@ public class SketchyLifeSola extends Sola {
     solaGui = SolaGui.createInstance(assetLoaderProvider, platform);
     solaGui.setGuiRoot(MainMenuGui.buildRootElement(solaGui, gameSettings));
 
-    // TODO temporarily not showing the menu first
-    // gameSettings.showMenu();
+    // Load assets
+    new BulkAssetLoader(assetLoaderProvider)
+      .addAsset(SpriteSheet.class, Constants.Assets.Sprites.SPRITE_SHEET_ID, "assets/sprites.json")
+      .addAsset(AudioClip.class, Constants.Assets.Audio.MAP, "assets/Test.wav")
+      .loadAll()
+      .onComplete(assets -> {
+        // TODO play menu music first
+        if (assets[1] instanceof AudioClip audioClip) {
+          audioClip.setVolume(.5f);
+
+          audioClip.loop(-1);
+        }
+
+        // TODO temporarily not showing the menu first
+        // gameSettings.showMenu();
+
+        // TODO consider some sort of game loading splash screen state of some sort?
+        solaInitialization.completeAsyncInitialization();
+      });
   }
 
   @Override
