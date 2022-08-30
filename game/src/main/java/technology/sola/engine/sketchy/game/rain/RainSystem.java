@@ -4,9 +4,9 @@ import technology.sola.ecs.EcsSystem;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.graphics.components.sprite.SpriteComponent;
-import technology.sola.engine.graphics.components.sprite.SpriteKeyFrame;
 import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.engine.sketchy.game.Constants;
+import technology.sola.engine.sketchy.game.SpriteCache;
 import technology.sola.engine.sketchy.game.chunk.Chunk;
 import technology.sola.engine.sketchy.game.chunk.TileComponent;
 import technology.sola.engine.sketchy.game.player.PlayerComponent;
@@ -103,7 +103,6 @@ public class RainSystem extends EcsSystem {
         threshold = 0.5f;
       }
 
-      // todo check if raining and maybe even how hard it is raining for this random
       if (random.nextFloat() < threshold) {
         tileComponent.increaseWetness();
       }
@@ -111,27 +110,30 @@ public class RainSystem extends EcsSystem {
       // todo tune these numbers
       if (tileComponent.getWetness() > 300) {
         if (!spriteComponent.getSpriteId().equals(Constants.Assets.Sprites.ERASED)) {
-          spriteComponent.setSpriteKeyFrame(new SpriteKeyFrame(
-            spriteComponent.getSpriteSheetId(), Constants.Assets.Sprites.ERASED, 0
-          ));
+          spriteComponent.setSpriteKeyFrame(SpriteCache.ERASED);
           view.entity().addComponent(ColliderComponent.circle(Chunk.HALF_TILE_SIZE));
         }
-      } else if (tileComponent.getWetness() > 250) {
-        spriteComponent.setSpriteKeyFrame(new SpriteKeyFrame(
-          spriteComponent.getSpriteSheetId(), spriteComponent.getSpriteId().replace("-4", "-5"), 0
-        ));
-      } else if (tileComponent.getWetness() > 195) {
-        spriteComponent.setSpriteKeyFrame(new SpriteKeyFrame(
-          spriteComponent.getSpriteSheetId(), spriteComponent.getSpriteId().replace("-3", "-4"), 0
-        ));
-      } else if (tileComponent.getWetness() > 115) {
-        spriteComponent.setSpriteKeyFrame(new SpriteKeyFrame(
-          spriteComponent.getSpriteSheetId(), spriteComponent.getSpriteId().replace("-2", "-3"), 0
-        ));
-      } else if (tileComponent.getWetness() > 50) {
-        spriteComponent.setSpriteKeyFrame(new SpriteKeyFrame(
-          spriteComponent.getSpriteSheetId(), spriteComponent.getSpriteId().replace("-1", "-2"), 0
-        ));
+      } else {
+
+        if (tileComponent.getTileType().isDissolvable) {
+          if (tileComponent.getWetness() > 250) {
+            spriteComponent.setSpriteKeyFrame(
+              SpriteCache.get(tileComponent.getTileType().assetId, "5")
+            );
+          } else if (tileComponent.getWetness() > 195) {
+            spriteComponent.setSpriteKeyFrame(
+              SpriteCache.get(tileComponent.getTileType().assetId, "4")
+            );
+          } else if (tileComponent.getWetness() > 115) {
+            spriteComponent.setSpriteKeyFrame(
+              SpriteCache.get(tileComponent.getTileType().assetId, "3")
+            );
+          } else if (tileComponent.getWetness() > 50) {
+            spriteComponent.setSpriteKeyFrame(
+              SpriteCache.get(tileComponent.getTileType().assetId, "2")
+            );
+          }
+        }
       }
     }
   }

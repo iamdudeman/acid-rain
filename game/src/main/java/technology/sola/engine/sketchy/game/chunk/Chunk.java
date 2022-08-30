@@ -7,6 +7,7 @@ import technology.sola.engine.graphics.components.LayerComponent;
 import technology.sola.engine.graphics.components.sprite.SpriteComponent;
 import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.engine.sketchy.game.Constants;
+import technology.sola.engine.sketchy.game.SpriteCache;
 
 public class Chunk {
   public static final int TILE_SIZE = 20;
@@ -38,7 +39,7 @@ public class Chunk {
         Entity newEntity = world.createEntity(
           new TileComponent(chunkId, tileType),
           new TransformComponent(x, y),
-          new SpriteComponent(Constants.Assets.Sprites.SPRITE_SHEET_ID, spriteId),
+          new SpriteComponent(SpriteCache.get(tileType.assetId, tileType.variation)),
           new LayerComponent(Constants.Layers.BACKGROUND)
         );
 

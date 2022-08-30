@@ -3,8 +3,8 @@ package technology.sola.engine.sketchy.game.chunk;
 import technology.sola.engine.sketchy.game.Constants;
 
 public enum TileType {
-  GRASS(Constants.Assets.Sprites.GRASS),
-  DIRT(Constants.Assets.Sprites.DIRT),
+  GRASS(Constants.Assets.Sprites.GRASS, true),
+  DIRT(Constants.Assets.Sprites.DIRT, true),
   CLIFF_TOP_LEFT(Constants.Assets.Sprites.CLIFF, "top-left"),
   CLIFF_TOP(Constants.Assets.Sprites.CLIFF, "top"),
   CLIFF_TOP_RIGHT(Constants.Assets.Sprites.CLIFF, "top-right"),
@@ -18,13 +18,23 @@ public enum TileType {
 
   public final String assetId;
   public final String variation;
+  public final boolean isDissolvable;
 
   TileType(String assetId) {
     this(assetId, "1");
   }
 
+  TileType(String assetId, boolean isDissolvable) {
+    this(assetId, "1", isDissolvable);
+  }
+
   TileType(String assetId, String variation) {
+    this(assetId, variation, false);
+  }
+
+  TileType(String assetId, String variation, boolean isDissolvable) {
     this.assetId = assetId;
     this.variation = variation;
+    this.isDissolvable = isDissolvable;
   }
 }
