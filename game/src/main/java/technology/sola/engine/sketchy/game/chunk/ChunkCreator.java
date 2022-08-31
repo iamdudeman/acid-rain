@@ -11,7 +11,7 @@ public class ChunkCreator {
   private static final Random RANDOM = new Random(1337);
   private static final int cultureGenerations = 5;
   private static final int joinCliffsTilesAway = 2;
-  private static final int minCliffTilesFromPlayer = 10;
+  private static final int minCliffTilesFromPlayer = 8;
   private static final float baseInitCliffPercent = 0.01f;
   private static final float baseInitDirtPercent = 0.03f;
   private static final float baseCultureCliffPercent = 0.10f;
@@ -25,6 +25,7 @@ public class ChunkCreator {
     stepInitialize(chunkId, playerTranslate, tileComponents);
     stepCulture(tileComponents, 0);
     stepShapeCliffs(tileComponents);
+    stepFillDirtBetweenCliffs(tileComponents);
     stepPlacePickups(tileComponents);
     stepTextureGrassAndDirt(tileComponents);
     stepCleanup(tileComponents);
@@ -105,7 +106,7 @@ public class ChunkCreator {
         TileComponent tileComponent = tileComponents[column][row];
 
         if (tileComponent.getTileType() == TileType.CLIFF_CENTER) {
-          fillKittyCornerCenters(tileComponents, row, column);
+          patchKittyCornerCenters(tileComponents, row, column);
         }
       }
     }
@@ -137,6 +138,14 @@ public class ChunkCreator {
         if (tileComponent.getTileType() == TileType.CLIFF_CENTER) {
           shapeCliffCorners(tileComponents, row, column);
         }
+      }
+    }
+  }
+
+  private void stepFillDirtBetweenCliffs(TileComponent[][] tileComponents) {
+    for (int row = 0; row < Chunk.ROWS; row++) {
+      for (int column = 0; column < Chunk.COLUMNS; column++) {
+        // todo
       }
     }
   }
@@ -173,6 +182,23 @@ public class ChunkCreator {
     }
   }
 
+  private void fillRowBetween(TileComponent[][] tileComponents, int row, int start, int end, TileType tileType, float chance) {
+    for (int column = start; column < end; column++) {
+      if (chance >= 1 || RANDOM.nextFloat() < chance) {
+        peak(tileComponents, row, column).setTileType(tileType);
+      }
+    }
+  }
+
+  private void fillColumnBetween(TileComponent[][] tileComponents, int column, int start, int end, TileType tileType, float chance) {
+    for (int row = start; row < end; row++) {
+      if (chance >= 1 || RANDOM.nextFloat() < chance) {
+        peak(tileComponents, row, column).setTileType(tileType);
+      }
+    }
+  }
+
+  // TODO cleanup with fillBetween methods
   private void joinNearbyCliffs(TileComponent[][] tileComponents, int startRow, int startColumn) {
     for (int i = joinCliffsTilesAway + 1; i > 1; i--) {
       TileComponent upTile = peak(tileComponents, startRow - i, startColumn);
@@ -205,7 +231,7 @@ public class ChunkCreator {
     }
   }
 
-  private void fillKittyCornerCenters(TileComponent[][] tileComponents, int startRow, int startColumn) {
+  private void patchKittyCornerCenters(TileComponent[][] tileComponents, int startRow, int startColumn) {
     TileComponent bottomLeftTile = peak(tileComponents, startRow + 1, startColumn - 1);
     TileComponent bottomRightTile = peak(tileComponents, startRow + 1, startColumn + 1);
 
