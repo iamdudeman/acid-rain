@@ -26,6 +26,7 @@ public class ChunkCreator {
     stepCulture(tileComponents, 0);
     stepShapeCliffs(tileComponents);
     stepPlacePickups(tileComponents);
+    stepTextureGrassAndDirt(tileComponents);
     stepCleanup(tileComponents);
 
     return new Chunk(chunkId, tileComponents);
@@ -119,6 +120,14 @@ public class ChunkCreator {
     }
   }
 
+  private void stepTextureGrassAndDirt(TileComponent[][] tileComponents) {
+    for (int row = 0; row < Chunk.ROWS; row++) {
+      for (int column = 0; column < Chunk.COLUMNS; column++) {
+        // todo
+      }
+    }
+  }
+
   private void stepCleanup(TileComponent[][] tileComponents) {
     // todo this might not be needed
   }
@@ -136,33 +145,33 @@ public class ChunkCreator {
   }
 
   private void joinNearbyCliffs(TileComponent[][] tileComponents, int startRow, int startColumn) {
-    for (int i = joinCliffsTilesAway; i >= 0; i--) {
-      TileComponent upTile = peak(tileComponents, startRow - (i + 1), startColumn);
+    for (int i = joinCliffsTilesAway + 1; i > 1; i--) {
+      TileComponent upTile = peak(tileComponents, startRow - i, startColumn);
 
       if (upTile != null && upTile.getTileType() == TileType.CLIFF_CENTER) {
-        peak(tileComponents, startRow - i - 1, startColumn).setTileType(TileType.CLIFF_CENTER);
-        peak(tileComponents, startRow - i, startColumn).setTileType(TileType.CLIFF_CENTER);
+        peak(tileComponents, startRow - i + 1, startColumn).setTileType(TileType.CLIFF_CENTER);
+        peak(tileComponents, startRow - i + 2, startColumn).setTileType(TileType.CLIFF_CENTER);
       }
 
-      TileComponent downTile = peak(tileComponents, startRow + i + 1, startColumn);
+      TileComponent downTile = peak(tileComponents, startRow + i, startColumn);
 
       if (downTile != null && downTile.getTileType() == TileType.CLIFF_CENTER) {
-        peak(tileComponents, startRow + i + 1, startColumn).setTileType(TileType.CLIFF_CENTER);
-        peak(tileComponents, startRow + i, startColumn).setTileType(TileType.CLIFF_CENTER);
+        peak(tileComponents, startRow + i - 2, startColumn).setTileType(TileType.CLIFF_CENTER);
+        peak(tileComponents, startRow + i - 1, startColumn).setTileType(TileType.CLIFF_CENTER);
       }
 
-      TileComponent leftTile = peak(tileComponents, startRow, startColumn - (i + 1));
+      TileComponent leftTile = peak(tileComponents, startRow, startColumn - i);
 
       if (leftTile != null && leftTile.getTileType() == TileType.CLIFF_CENTER) {
-        peak(tileComponents, startRow, startColumn - i - 1).setTileType(TileType.CLIFF_CENTER);
-        peak(tileComponents, startRow, startColumn - i).setTileType(TileType.CLIFF_CENTER);
+        peak(tileComponents, startRow, startColumn - i + 2).setTileType(TileType.CLIFF_CENTER);
+        peak(tileComponents, startRow, startColumn - i + 1).setTileType(TileType.CLIFF_CENTER);
       }
 
-      TileComponent rightTile = peak(tileComponents, startRow, startColumn + i + 1);
+      TileComponent rightTile = peak(tileComponents, startRow, startColumn + i);
 
       if (rightTile != null && rightTile.getTileType() == TileType.CLIFF_CENTER) {
-        peak(tileComponents, startRow, startColumn + i + 1).setTileType(TileType.CLIFF_CENTER);
-        peak(tileComponents, startRow, startColumn + i).setTileType(TileType.CLIFF_CENTER);
+        peak(tileComponents, startRow, startColumn + i - 2).setTileType(TileType.CLIFF_CENTER);
+        peak(tileComponents, startRow, startColumn + i - 1).setTileType(TileType.CLIFF_CENTER);
       }
     }
   }
