@@ -9,6 +9,7 @@ import technology.sola.engine.sketchy.game.Constants;
 import technology.sola.engine.sketchy.game.SpriteCache;
 import technology.sola.engine.sketchy.game.chunk.Chunk;
 import technology.sola.engine.sketchy.game.chunk.TileComponent;
+import technology.sola.engine.sketchy.game.chunk.TileType;
 import technology.sola.engine.sketchy.game.player.PlayerComponent;
 import technology.sola.math.linear.Vector2D;
 
@@ -130,6 +131,9 @@ public class RainSystem extends EcsSystem {
             spriteComponent.setSpriteKeyFrame(
               SpriteCache.get(tileComponent.getTileType().assetId, "4")
             );
+            if (tileComponent.getTileType() == TileType.DIRT) {
+              view.entity().addComponent(ColliderComponent.circle(Chunk.HALF_TILE_SIZE));
+            }
           } else if (tileComponent.getWetness() > THRESHOLD_TWO) {
             spriteComponent.setSpriteKeyFrame(
               SpriteCache.get(tileComponent.getTileType().assetId, "3")

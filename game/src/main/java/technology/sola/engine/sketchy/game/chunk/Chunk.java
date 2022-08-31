@@ -42,7 +42,7 @@ public class Chunk {
           new LayerComponent(Constants.Layers.BACKGROUND)
         );
 
-        if (tileType.assetId.equals(Constants.Assets.Sprites.CLIFF) || tileType.assetId.equals(Constants.Assets.Sprites.DIRT)) {
+        if (tileType.assetId.equals(Constants.Assets.Sprites.CLIFF)) {
           newEntity.addComponent(ColliderComponent.circle(Chunk.HALF_TILE_SIZE));
         }
       }

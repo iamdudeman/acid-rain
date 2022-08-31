@@ -40,7 +40,7 @@ public class PlayerSystem extends EcsSystem {
           playerTransform.setTranslate(
             playerTransform.getTranslate().add(collisionManifold.normal().scalar(scalar * collisionManifold.penetration()))
           );
-        } else if (tileType.assetId.equals(Constants.Assets.Sprites.DIRT) && tileComponent.getWetness() > RainSystem.THRESHOLD_THREE) {
+        } else if (tileType.assetId.equals(Constants.Assets.Sprites.DIRT)) {
           player.getComponent(PlayerComponent.class).setIsSlowed(true);
         }
       }
