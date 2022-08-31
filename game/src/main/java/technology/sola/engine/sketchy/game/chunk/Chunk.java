@@ -52,7 +52,7 @@ public class Chunk {
 
         if (tileComponent.hasPickup()) {
           world.createEntity(
-            new TransformComponent(x + 6, y + 6, 4),
+            new TransformComponent(x + 6, y + 6, 8),
             new CircleRendererComponent(GameUiRenderer.SUNLIGHT_BAR_COLOR, true),
             new PickupComponent(tileComponent),
             ColliderComponent.circle(),
