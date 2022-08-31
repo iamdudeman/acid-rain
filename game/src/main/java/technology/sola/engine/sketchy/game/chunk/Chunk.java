@@ -3,11 +3,14 @@ package technology.sola.engine.sketchy.game.chunk;
 import technology.sola.ecs.Entity;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
+import technology.sola.engine.graphics.components.CircleRendererComponent;
 import technology.sola.engine.graphics.components.LayerComponent;
 import technology.sola.engine.graphics.components.sprite.SpriteComponent;
 import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.engine.sketchy.game.Constants;
 import technology.sola.engine.sketchy.game.SpriteCache;
+import technology.sola.engine.sketchy.game.player.PickupComponent;
+import technology.sola.engine.sketchy.game.state.GameUiRenderer;
 
 public class Chunk {
   public static final int TILE_SIZE = 20;
@@ -16,12 +19,12 @@ public class Chunk {
   public static final int ROWS = 16;
 
   private final ChunkId chunkId;
-  private final TileType[][] tileTypes;
+  private final TileComponent[][] tileComponents;
   private boolean isLoaded = false;
 
-  public Chunk(ChunkId chunkId, TileType[][] tileTypes) {
+  public Chunk(ChunkId chunkId, TileComponent[][] tileComponents) {
     this.chunkId = chunkId;
-    this.tileTypes = tileTypes;
+    this.tileComponents = tileComponents;
   }
 
   public void loadChunk(World world) {
@@ -31,12 +34,13 @@ public class Chunk {
 
     for (int row = 0; row < ROWS; row++) {
       for (int column = 0; column < COLUMNS; column++) {
-        TileType tileType = tileTypes[column][row];
+        TileComponent tileComponent = tileComponents[column][row];
+        TileType tileType = tileComponent.getTileType();
         float x = chunkId.columnIndex() * TILE_SIZE * COLUMNS + column * TILE_SIZE;
         float y = chunkId.rowIndex() * TILE_SIZE * ROWS + row * TILE_SIZE;
 
         Entity newEntity = world.createEntity(
-          new TileComponent(chunkId, tileType),
+          tileComponent,
           new TransformComponent(x, y),
           new SpriteComponent(SpriteCache.get(tileType.assetId, tileType.variation)),
           new LayerComponent(Constants.Layers.BACKGROUND)
@@ -44,6 +48,16 @@ public class Chunk {
 
         if (tileType.assetId.equals(Constants.Assets.Sprites.CLIFF)) {
           newEntity.addComponent(ColliderComponent.circle(Chunk.HALF_TILE_SIZE));
+        }
+
+        if (tileComponent.hasPickup()) {
+          world.createEntity(
+            new TransformComponent(x + 6, y + 6, 8),
+            new CircleRendererComponent(GameUiRenderer.SUNLIGHT_BAR_COLOR, true),
+            new PickupComponent(tileComponent),
+            ColliderComponent.circle(),
+            new LayerComponent(Constants.Layers.BACKGROUND, 50)
+          );
         }
       }
     }

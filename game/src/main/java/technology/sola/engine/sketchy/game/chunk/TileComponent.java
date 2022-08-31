@@ -6,10 +6,17 @@ public class TileComponent implements Component {
   private final ChunkId chunkId;
   private final TileType tileType;
   private int wetness;
+  private boolean hasPickup = false;
 
   public TileComponent(ChunkId chunkId, TileType tileType) {
     this.chunkId = chunkId;
     this.tileType = tileType;
+  }
+
+  public TileComponent(ChunkId chunkId, TileType tileType, boolean hasPickup) {
+    this.chunkId = chunkId;
+    this.tileType = tileType;
+    this.hasPickup = hasPickup;
   }
 
   public ChunkId getChunkId() {
@@ -18,6 +25,14 @@ public class TileComponent implements Component {
 
   public TileType getTileType() {
     return tileType;
+  }
+
+  public boolean hasPickup() {
+    return hasPickup;
+  }
+
+  public void consumePickup() {
+    hasPickup = false;
   }
 
   public int getWetness() {

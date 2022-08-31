@@ -19,6 +19,7 @@ import technology.sola.engine.sketchy.game.Constants;
 import technology.sola.engine.sketchy.game.chunk.Chunk;
 import technology.sola.engine.sketchy.game.event.GameState;
 import technology.sola.engine.sketchy.game.event.GameStateEvent;
+import technology.sola.engine.sketchy.game.player.PickupComponent;
 import technology.sola.engine.sketchy.game.player.PlayerComponent;
 import technology.sola.math.linear.Vector2D;
 
@@ -38,6 +39,7 @@ public class GameStateSystem extends EcsSystem {
       if (gameStateEvent.getMessage() == GameState.GAME_OVER) {
         setActive(true);
         solaEcs.getWorld().findEntityByName(Constants.EntityNames.PLAYER).ifPresent(Entity::destroy);
+        solaEcs.getWorld().findEntitiesWithComponents(PickupComponent.class).forEach(Entity::destroy);
       } else if (gameStateEvent.getMessage() == GameState.RESTART) {
         setActive(false);
         solaEcs.setWorld(buildWorld());
