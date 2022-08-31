@@ -36,8 +36,8 @@ public class Chunk {
       for (int column = 0; column < COLUMNS; column++) {
         TileComponent tileComponent = tileComponents[column][row];
         TileType tileType = tileComponent.getTileType();
-        float x = chunkId.columnIndex() * TILE_SIZE * COLUMNS + column * TILE_SIZE;
-        float y = chunkId.rowIndex() * TILE_SIZE * ROWS + row * TILE_SIZE;
+        float x = chunkId.getX(column);
+        float y = chunkId.getY(row);
 
         Entity newEntity = world.createEntity(
           tileComponent,
