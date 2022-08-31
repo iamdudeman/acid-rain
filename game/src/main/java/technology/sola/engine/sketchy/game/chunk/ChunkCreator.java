@@ -12,16 +12,16 @@ public class ChunkCreator {
   public Chunk createChunk(ChunkId chunkId, Vector2D playerTranslate) {
     TileComponent[][] tileComponents = new TileComponent[Chunk.COLUMNS][Chunk.ROWS];
 
-    initialize(chunkId, playerTranslate, tileComponents);
-    culture(tileComponents, 0);
-    shapeCliffs(tileComponents);
-    placePickups(tileComponents);
-    cleanup(tileComponents);
+    stepInitialize(chunkId, playerTranslate, tileComponents);
+    stepCulture(tileComponents, 0);
+    stepShapeCliffs(tileComponents);
+    stepPlacePickups(tileComponents);
+    stepCleanup(tileComponents);
 
     return new Chunk(chunkId, tileComponents);
   }
 
-  private void initialize(ChunkId chunkId, Vector2D playerTranslate, TileComponent[][] tileComponents) {
+  private void stepInitialize(ChunkId chunkId, Vector2D playerTranslate, TileComponent[][] tileComponents) {
     for (int row = 0; row < Chunk.ROWS; row++) {
       for (int column = 0; column < Chunk.COLUMNS; column++) {
         TileType initialTileType;
@@ -44,7 +44,7 @@ public class ChunkCreator {
     }
   }
 
-  private void culture(TileComponent[][] tileComponents, int depth) {
+  private void stepCulture(TileComponent[][] tileComponents, int depth) {
     if (depth > 3) {
       return;
     }
@@ -78,19 +78,19 @@ public class ChunkCreator {
       }
     }
 
-    culture(tileComponents, depth + 1);
+    stepCulture(tileComponents, depth + 1);
   }
 
-  private void shapeCliffs(TileComponent[][] tileComponents) {
+  private void stepShapeCliffs(TileComponent[][] tileComponents) {
     // todo
   }
 
-  private void placePickups(TileComponent[][] tileComponents) {
+  private void stepPlacePickups(TileComponent[][] tileComponents) {
     // todo
   }
 
-  private void cleanup(TileComponent[][] tileComponents) {
-    // todo
+  private void stepCleanup(TileComponent[][] tileComponents) {
+    // todo this might not be needed
   }
 
   private void propagateTileType(TileComponent[][] tileComponents, int startRow, int startColumn, TileType tileType) {
