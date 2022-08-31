@@ -99,14 +99,43 @@ public class ChunkCreator {
       }
     }
 
+    // Note: Order matters!
     for (int row = 0; row < Chunk.ROWS; row++) {
       for (int column = 0; column < Chunk.COLUMNS; column++) {
         TileComponent tileComponent = tileComponents[column][row];
 
         if (tileComponent.getTileType() == TileType.CLIFF_CENTER) {
-          if (!shapeCliff(tileComponents, row, column)) {
-            tileComponent.setTileType(TileType.GRASS);
-          }
+          fillKittyCornerCenters(tileComponents, row, column);
+        }
+      }
+    }
+
+    for (int row = 0; row < Chunk.ROWS; row++) {
+      for (int column = 0; column < Chunk.COLUMNS; column++) {
+        TileComponent tileComponent = tileComponents[column][row];
+
+        if (tileComponent.getTileType() == TileType.CLIFF_CENTER) {
+          shapeCliffTopAndBottom(tileComponents, row, column);
+        }
+      }
+    }
+
+    for (int row = 0; row < Chunk.ROWS; row++) {
+      for (int column = 0; column < Chunk.COLUMNS; column++) {
+        TileComponent tileComponent = tileComponents[column][row];
+
+        if (tileComponent.getTileType() == TileType.CLIFF_CENTER) {
+          shapeCliffLeftAndRight(tileComponents, row, column);
+        }
+      }
+    }
+
+    for (int row = 0; row < Chunk.ROWS; row++) {
+      for (int column = 0; column < Chunk.COLUMNS; column++) {
+        TileComponent tileComponent = tileComponents[column][row];
+
+        if (tileComponent.getTileType() == TileType.CLIFF_CENTER) {
+          shapeCliffCorners(tileComponents, row, column);
         }
       }
     }
@@ -129,7 +158,7 @@ public class ChunkCreator {
   }
 
   private void stepCleanup(TileComponent[][] tileComponents) {
-    // todo this might not be needed
+    // todo replace cliff tiles that are not completed
   }
 
   private void propagateTileType(TileComponent[][] tileComponents, int startRow, int startColumn, TileType tileType) {
@@ -176,38 +205,129 @@ public class ChunkCreator {
     }
   }
 
-  /**
-   *
-   * @param tileComponents
-   * @param startRow
-   * @param startColumn
-   * @return false if cliff cannot be shaped
-   */
-  private boolean shapeCliff(TileComponent[][] tileComponents, int startRow, int startColumn) {
+  private void fillKittyCornerCenters(TileComponent[][] tileComponents, int startRow, int startColumn) {
+    TileComponent bottomLeftTile = peak(tileComponents, startRow + 1, startColumn - 1);
+    TileComponent bottomRightTile = peak(tileComponents, startRow + 1, startColumn + 1);
+
+    boolean mightNeedFilling = (bottomLeftTile != null && bottomLeftTile.getTileType() == TileType.CLIFF_CENTER) ||
+      (bottomRightTile != null && bottomRightTile.getTileType() == TileType.CLIFF_CENTER);
+
+    if (mightNeedFilling) {
+      TileComponent topTile = peak(tileComponents, startRow - 1, startColumn);
+      TileComponent leftTile = peak(tileComponents, startRow, startColumn - 1);
+      TileComponent rightTile = peak(tileComponents, startRow, startColumn + 1);
+
+      boolean needsReplacing = topTile != null && topTile.getTileType() != TileType.CLIFF_CENTER
+        && leftTile != null && leftTile.getTileType() != TileType.CLIFF_CENTER
+        && rightTile != null && rightTile.getTileType() != TileType.CLIFF_CENTER;
+
+      if (needsReplacing) {
+        TileComponent bottomTile = peak(tileComponents, startRow + 1, startColumn);
+
+        if (bottomTile != null) {
+          bottomTile.setTileType(TileType.CLIFF_CENTER);
+        }
+      }
+    }
+  }
+
+  private void shapeCliffTopAndBottom(TileComponent[][] tileComponents, int startRow, int startColumn) {
     TileComponent topTile = peak(tileComponents, startRow - 1, startColumn);
 
-    if (topTile == null) {
-      return false;
+    if (topTile != null && isReplaceable(topTile.getTileType())) {
+      topTile.setTileType(TileType.CLIFF_TOP);
     }
 
-    if (isReplaceable(topTile.getTileType())) {
-      topTile.setTileType(TileType.CLIFF_TOP);
+    TileComponent bottomTile = peak(tileComponents, startRow + 1, startColumn);
 
+    if (bottomTile != null && isReplaceable(bottomTile.getTileType())) {
+      bottomTile.setTileType(TileType.CLIFF_BOTTOM);
+    }
+  }
+
+  private void shapeCliffLeftAndRight(TileComponent[][] tileComponents, int startRow, int startColumn) {
+    TileComponent leftTile = peak(tileComponents, startRow, startColumn - 1);
+
+    if (leftTile != null) {
+      switch (leftTile.getTileType()) {
+        case GRASS, DIRT -> leftTile.setTileType(TileType.CLIFF_LEFT);
+        case CLIFF_TOP -> {
+          leftTile.setTileType(TileType.CLIFF_CENTER);
+          TileComponent topLeftTile = peak(tileComponents, startRow - 1, startColumn - 1);
+          if (topLeftTile != null && isReplaceable(topLeftTile.getTileType())) {
+            topLeftTile.setTileType(TileType.CLIFF_TOP_LEFT);
+          }
+        }
+        case CLIFF_BOTTOM -> {
+          leftTile.setTileType(TileType.CLIFF_CENTER);
+          TileComponent bottomLeftTile = peak(tileComponents, startRow + 1, startColumn - 1);
+          if (bottomLeftTile != null && isReplaceable(bottomLeftTile.getTileType())) {
+            bottomLeftTile.setTileType(TileType.CLIFF_BOTTOM_LEFT);
+          }
+        }
+      }
+    }
+
+    TileComponent rightTile = peak(tileComponents, startRow, startColumn + 1);
+
+    if (rightTile != null) {
+      switch (rightTile.getTileType()) {
+        case GRASS, DIRT -> rightTile.setTileType(TileType.CLIFF_RIGHT);
+        case CLIFF_TOP -> {
+          rightTile.setTileType(TileType.CLIFF_CENTER);
+          TileComponent topRightTile = peak(tileComponents, startRow - 1, startColumn + 1);
+          if (topRightTile != null && isReplaceable(topRightTile.getTileType())) {
+            topRightTile.setTileType(TileType.CLIFF_TOP_RIGHT);
+          }
+        }
+        case CLIFF_BOTTOM -> {
+          rightTile.setTileType(TileType.CLIFF_CENTER);
+          TileComponent bottomRightTile = peak(tileComponents, startRow + 1, startColumn + 1);
+          if (bottomRightTile != null && isReplaceable(bottomRightTile.getTileType())) {
+            bottomRightTile.setTileType(TileType.CLIFF_BOTTOM_RIGHT);
+          }
+        }
+      }
+    }
+  }
+
+  private void shapeCliffCorners(TileComponent[][] tileComponents, int startRow, int startColumn) {
+    TileComponent topTile = peak(tileComponents, startRow - 1, startColumn);
+    TileComponent bottomTile = peak(tileComponents, startRow + 1, startColumn);
+    TileComponent leftTile = peak(tileComponents, startRow, startColumn - 1);
+    TileComponent rightTile = peak(tileComponents, startRow, startColumn + 1);
+
+    if (topTile != null && leftTile != null && (topTile.getTileType() == TileType.CLIFF_TOP || leftTile.getTileType() == TileType.CLIFF_LEFT)) {
       TileComponent topLeftTile = peak(tileComponents, startRow - 1, startColumn - 1);
 
-      if (topLeftTile == null) {
-        topTile.setTileType(TileType.GRASS);
-        return false;
-      }
-
-      if (isReplaceable(topLeftTile.getTileType())) {
+      if (topLeftTile != null && isReplaceable(topLeftTile.getTileType())) {
         topLeftTile.setTileType(TileType.CLIFF_TOP_LEFT);
-      } else if (topLeftTile.getTileType() == TileType.CLIFF_CENTER) {
-        return shapeCliff(tileComponents, startRow - 1, startColumn - 1);
       }
     }
 
-    return true;
+    if (topTile != null && rightTile != null && (topTile.getTileType() == TileType.CLIFF_TOP || rightTile.getTileType() == TileType.CLIFF_RIGHT)) {
+      TileComponent topRightTile = peak(tileComponents, startRow - 1, startColumn + 1);
+
+      if (topRightTile != null && isReplaceable(topRightTile.getTileType())) {
+        topRightTile.setTileType(TileType.CLIFF_TOP_RIGHT);
+      }
+    }
+
+    if (bottomTile != null && leftTile != null && (bottomTile.getTileType() == TileType.CLIFF_BOTTOM || leftTile.getTileType() == TileType.CLIFF_LEFT)) {
+      TileComponent bottomLeftTile = peak(tileComponents, startRow + 1, startColumn - 1);
+
+      if (bottomLeftTile != null && isReplaceable(bottomLeftTile.getTileType())) {
+        bottomLeftTile.setTileType(TileType.CLIFF_BOTTOM_LEFT);
+      }
+    }
+
+    if (bottomTile != null && rightTile != null && (bottomTile.getTileType() == TileType.CLIFF_BOTTOM || rightTile.getTileType() == TileType.CLIFF_RIGHT)) {
+      TileComponent bottomRightTile = peak(tileComponents, startRow + 1, startColumn + 1);
+
+      if (bottomRightTile != null && isReplaceable(bottomRightTile.getTileType())) {
+        bottomRightTile.setTileType(TileType.CLIFF_BOTTOM_RIGHT);
+      }
+    }
   }
 
   private boolean isReplaceable(TileType tileType) {
