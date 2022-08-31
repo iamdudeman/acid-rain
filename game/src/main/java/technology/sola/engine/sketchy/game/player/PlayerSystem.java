@@ -6,6 +6,7 @@ import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.event.EventHub;
 import technology.sola.engine.input.Key;
 import technology.sola.engine.input.KeyboardInput;
+import technology.sola.engine.physics.CollisionManifold;
 import technology.sola.engine.physics.event.CollisionManifoldEvent;
 import technology.sola.engine.sketchy.game.Constants;
 import technology.sola.engine.sketchy.game.chunk.TileComponent;
@@ -32,8 +33,13 @@ public class PlayerSystem extends EcsSystem {
         TileType tileType = tileComponent.getTileType();
 
         if (tileType.assetId.equals(Constants.Assets.Sprites.CLIFF)) {
-          // todo adjust player position
-          System.out.println("cliff collision");
+          CollisionManifold collisionManifold = collisionManifoldEvent.getMessage();
+          int scalar = collisionManifold.entityA() == player ? -1 : 1;
+          TransformComponent playerTransform = player.getComponent(TransformComponent.class);
+
+          playerTransform.setTranslate(
+            playerTransform.getTranslate().add(collisionManifold.normal().scalar(scalar * collisionManifold.penetration()))
+          );
         } else if (tileType.assetId.equals(Constants.Assets.Sprites.DIRT) && tileComponent.getWetness() > RainSystem.THRESHOLD_THREE) {
           player.getComponent(PlayerComponent.class).setIsSlowed(true);
         }
