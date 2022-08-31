@@ -4,7 +4,7 @@ import technology.sola.ecs.Component;
 
 public class TileComponent implements Component {
   private final ChunkId chunkId;
-  private final TileType tileType;
+  private TileType tileType;
   private int wetness;
   private boolean hasPickup = false;
 
@@ -25,6 +25,10 @@ public class TileComponent implements Component {
 
   public TileType getTileType() {
     return tileType;
+  }
+
+  public void setTileType(TileType tileType) {
+    this.tileType = tileType;
   }
 
   public boolean hasPickup() {

@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class ChunkSystem extends EcsSystem implements EventListener<GameStateEvent> {
   private final Map<ChunkId, Chunk> chunkCache = new HashMap<>();
-  private final ChunkShaper chunkShaper = new ChunkShaper();
+  private final ChunkCreator chunkCreator = new ChunkCreator();
   private ChunkId lastPlayerChunkId = new ChunkId(0, 0);
   private boolean isInitialized = false;
 
@@ -37,7 +37,7 @@ public class ChunkSystem extends EcsSystem implements EventListener<GameStateEve
       } else {
         chunkCache.clear();
 
-        Chunk initialChunk = chunkShaper.shapeChunk(lastPlayerChunkId, playerTranslate);
+        Chunk initialChunk = chunkCreator.createChunk(lastPlayerChunkId, playerTranslate);
 
         chunkCache.put(lastPlayerChunkId, initialChunk);
         initialChunk.loadChunk(world);
@@ -107,7 +107,7 @@ public class ChunkSystem extends EcsSystem implements EventListener<GameStateEve
 
     if (chunk == null) {
       // TODO more creative chunk creation than just 50 percent grass
-      chunk = chunkShaper.shapeChunk(chunkId, playerTranslate);
+      chunk = chunkCreator.createChunk(chunkId, playerTranslate);
 
       chunkCache.put(chunkId, chunk);
     }
