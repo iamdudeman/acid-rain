@@ -3,6 +3,8 @@ package technology.sola.engine.sketchy.game.chunk;
 import technology.sola.engine.sketchy.game.Constants;
 import technology.sola.math.linear.Vector2D;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import static technology.sola.engine.sketchy.game.chunk.Chunk.TILE_SIZE;
@@ -13,13 +15,12 @@ public class ChunkCreator {
   private static final int cultureGenerations = 5;
   private static final int joinCliffsTilesAway = 2;
   private static final int minCliffTilesFromPlayer = 8;
-  private static final float baseInitCliffPercent = 0.01f;
-  private static final float baseInitDirtPercent = 0.03f;
-  private static final float baseCultureCliffPercent = 0.10f;
+  private static final float baseInitCliffPercent = 0.05f;
+  private static final float baseInitDirtPercent = 0.08f;
+  private static final float baseCultureCliffPercent = 0.05f;
   private static final float baseCultureCliffClearPercent = 0.05f;
-  private static final float baseCultureDirtPercent = 0.03f;
+  private static final float baseCultureDirtPercent = 0.02f;
   private static final float baseCultureDirtClearPercent = 0.05f;
-  private static final int dirtTileFillSearchDistance = 5;
   private static final float dirtTileFillPercentage = 0.5f;
 
   public Chunk createChunk(ChunkId chunkId, Vector2D playerTranslate) {
@@ -126,14 +127,20 @@ public class ChunkCreator {
       }
     }
 
+    List<ShapeLeftRightChange> leftRightChanges = new ArrayList<>();
+
     for (int row = 0; row < Chunk.ROWS; row++) {
       for (int column = 0; column < Chunk.COLUMNS; column++) {
         TileComponent tileComponent = tileComponents[column][row];
 
         if (tileComponent.getTileType() == TileType.CLIFF_CENTER) {
-          shapeCliffLeftAndRight(tileComponents, row, column);
+          shapeCliffLeftAndRight(leftRightChanges, tileComponents, row, column);
         }
       }
+    }
+
+    for (ShapeLeftRightChange change : leftRightChanges) {
+      tileComponents[change.column][change.row].setTileType(change.tileType);
     }
 
     for (int row = 0; row < Chunk.ROWS; row++) {
@@ -209,15 +216,15 @@ public class ChunkCreator {
   }
 
 
-  private void propagateTileType(TileComponent[][] tileComponents, int startRow, int startColumn, TileType tileType) {
+  private void propagateTileType(TileComponent[][] tileComponents, int startRow, int startColumn, TileType tileTypeToPropagate) {
     int direction = RANDOM.nextInt(4); // up, down, left, right
     int rowOffset = direction == 0 ? -1 : direction == 1 ? 1 : 0; // 0 -> -1, 1 -> 1, else 0
     int columnOffset = direction == 2 ? -1 : direction == 3 ? 1 : 0; // 2 -> -1, 3 -> 1, else 0
 
     TileComponent tileComponent = peak(tileComponents, startRow + rowOffset, startColumn + columnOffset);
 
-    if (tileComponent != null) {
-      tileComponent.setTileType(tileType);
+    if (tileComponent != null && isReplaceable(tileComponent.getTileType())) {
+      tileComponent.setTileType(tileTypeToPropagate);
     }
   }
 
@@ -293,24 +300,27 @@ public class ChunkCreator {
     }
   }
 
-  private void shapeCliffLeftAndRight(TileComponent[][] tileComponents, int startRow, int startColumn) {
+  private void shapeCliffLeftAndRight(List<ShapeLeftRightChange> leftRightChanges, TileComponent[][] tileComponents, int startRow, int startColumn) {
     TileComponent leftTile = peak(tileComponents, startRow, startColumn - 1);
 
     if (leftTile != null) {
       switch (leftTile.getTileType()) {
-        case GRASS, DIRT -> leftTile.setTileType(TileType.CLIFF_LEFT);
+        case GRASS, DIRT -> {
+          leftRightChanges.add(new ShapeLeftRightChange(startRow, startColumn - 1, TileType.CLIFF_LEFT));
+        }
         case CLIFF_TOP -> {
-          leftTile.setTileType(TileType.CLIFF_CENTER);
+          leftRightChanges.add(new ShapeLeftRightChange(startRow, startColumn - 1, TileType.CLIFF_CENTER));
           TileComponent topLeftTile = peak(tileComponents, startRow - 1, startColumn - 1);
           if (topLeftTile != null && isReplaceable(topLeftTile.getTileType())) {
-            topLeftTile.setTileType(TileType.CLIFF_TOP_LEFT);
+            leftRightChanges.add(new ShapeLeftRightChange(startRow - 1, startColumn - 1, TileType.CLIFF_TOP_LEFT));
           }
         }
         case CLIFF_BOTTOM -> {
-          leftTile.setTileType(TileType.CLIFF_CENTER);
+          leftRightChanges.add(new ShapeLeftRightChange(startRow, startColumn - 1, TileType.CLIFF_CENTER));
+
           TileComponent bottomLeftTile = peak(tileComponents, startRow + 1, startColumn - 1);
           if (bottomLeftTile != null && isReplaceable(bottomLeftTile.getTileType())) {
-            bottomLeftTile.setTileType(TileType.CLIFF_BOTTOM_LEFT);
+            leftRightChanges.add(new ShapeLeftRightChange(startRow + 1, startColumn - 1, TileType.CLIFF_BOTTOM_LEFT));
           }
         }
       }
@@ -320,19 +330,21 @@ public class ChunkCreator {
 
     if (rightTile != null) {
       switch (rightTile.getTileType()) {
-        case GRASS, DIRT -> rightTile.setTileType(TileType.CLIFF_RIGHT);
+        case GRASS, DIRT -> {
+          leftRightChanges.add(new ShapeLeftRightChange(startRow, startColumn + 1, TileType.CLIFF_RIGHT));
+        }
         case CLIFF_TOP -> {
-          rightTile.setTileType(TileType.CLIFF_CENTER);
+          leftRightChanges.add(new ShapeLeftRightChange(startRow, startColumn + 1, TileType.CLIFF_CENTER));
           TileComponent topRightTile = peak(tileComponents, startRow - 1, startColumn + 1);
           if (topRightTile != null && isReplaceable(topRightTile.getTileType())) {
-            topRightTile.setTileType(TileType.CLIFF_TOP_RIGHT);
+            leftRightChanges.add(new ShapeLeftRightChange(startRow - 1, startColumn + 1, TileType.CLIFF_TOP_RIGHT));
           }
         }
         case CLIFF_BOTTOM -> {
-          rightTile.setTileType(TileType.CLIFF_CENTER);
+          leftRightChanges.add(new ShapeLeftRightChange(startRow, startColumn + 1, TileType.CLIFF_CENTER));
           TileComponent bottomRightTile = peak(tileComponents, startRow + 1, startColumn + 1);
           if (bottomRightTile != null && isReplaceable(bottomRightTile.getTileType())) {
-            bottomRightTile.setTileType(TileType.CLIFF_BOTTOM_RIGHT);
+            leftRightChanges.add(new ShapeLeftRightChange(startRow + 1, startColumn + 1, TileType.CLIFF_BOTTOM_RIGHT));
           }
         }
       }
@@ -392,5 +404,9 @@ public class ChunkCreator {
     }
 
     return tileComponents[column][row];
+  }
+
+  private record ShapeLeftRightChange(int row, int column, TileType tileType) {
+
   }
 }
