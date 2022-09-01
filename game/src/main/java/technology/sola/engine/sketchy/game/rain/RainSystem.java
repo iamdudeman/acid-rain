@@ -24,12 +24,17 @@ public class RainSystem extends EcsSystem {
   public static final int THRESHOLD_THREE = 195;
   public static final int THRESHOLD_TWO = 115;
   public static final int THRESHOLD_ONE = 50;
+  private static final float COMMON_WETNESS_THRESHOLD = 0.25f;
+  private static final float SOMEWHAT_CLOSE_WETNESS_THRESHOLD = 0.5f;
+  private static final float SOMEWHAT_CLOSE_WETNESS_DISTANCE = 50;
+  private static final float CLOSE_WETNESS_THRESHOLD = 0.85f;
+  private static final float CLOSE_WETNESS_DISTANCE = 25;
+  private static final int MAX_DROPS_PER_UPDATE = 30;
 
   private final Random random = new Random();
-  private final int maxDropsPerUpdate = 40;
   private final int rendererWidth;
   private final int rendererHeight;
-  private int dropsPerUpdate = maxDropsPerUpdate;
+  private int dropsPerUpdate = MAX_DROPS_PER_UPDATE;
 
   public RainSystem(int rendererWidth, int rendererHeight) {
     this.rendererWidth = rendererWidth;
@@ -85,7 +90,7 @@ public class RainSystem extends EcsSystem {
   }
 
   private void createRain(World world, float cameraX, float cameraY) {
-    final int edge = 200;
+    final int edge = Chunk.TILE_SIZE * 3;
 
     for (int i = 0; i < dropsPerUpdate; i++) {
       float x = random.nextFloat(-edge, rendererWidth + edge);
@@ -104,54 +109,55 @@ public class RainSystem extends EcsSystem {
       TransformComponent transformComponent = view.c3();
 
       float distance = playerTranslate == null ? 40 : playerTranslate.distance(transformComponent.getTranslate());
-      float threshold = 0.25f;
+      float threshold = COMMON_WETNESS_THRESHOLD;
 
-      // todo tune these numbers
-      if (distance < 20) {
-        threshold = 0.85f;
-      } else if (distance < 50) {
-        threshold = 0.5f;
+      if (distance < CLOSE_WETNESS_DISTANCE) {
+        threshold = CLOSE_WETNESS_THRESHOLD;
+      } else if (distance < SOMEWHAT_CLOSE_WETNESS_DISTANCE) {
+        threshold = SOMEWHAT_CLOSE_WETNESS_THRESHOLD;
       }
 
       if (random.nextFloat() < threshold) {
         tileComponent.increaseWetness();
       }
 
-      if (tileComponent.getWetness() > THRESHOLD_EIGHT) {
+      int wetness = tileComponent.getWetness();
+
+      if (wetness > THRESHOLD_EIGHT) {
         if (!spriteComponent.getSpriteId().equals(Constants.Assets.Sprites.ERASED)) {
           spriteComponent.setSpriteKeyFrame(SpriteCache.ERASED);
           view.entity().addComponent(ColliderComponent.circle(Chunk.HALF_TILE_SIZE));
         }
       } else {
         if (tileComponent.getTileType().isErasable) {
-          if (tileComponent.getWetness() > THRESHOLD_SEVEN) {
+          if (wetness > THRESHOLD_SEVEN) {
             spriteComponent.setSpriteKeyFrame(
               SpriteCache.get(tileComponent.getTileType().assetId, "8")
             );
-          } else if (tileComponent.getWetness() > THRESHOLD_SIX) {
+          } else if (wetness > THRESHOLD_SIX) {
             spriteComponent.setSpriteKeyFrame(
               SpriteCache.get(tileComponent.getTileType().assetId, "7")
             );
-          } else if (tileComponent.getWetness() > THRESHOLD_FIVE) {
+          } else if (wetness > THRESHOLD_FIVE) {
             spriteComponent.setSpriteKeyFrame(
               SpriteCache.get(tileComponent.getTileType().assetId, "6")
             );
-          } else if (tileComponent.getWetness() > THRESHOLD_FOUR) {
+          } else if (wetness > THRESHOLD_FOUR) {
             spriteComponent.setSpriteKeyFrame(
               SpriteCache.get(tileComponent.getTileType().assetId, "5")
             );
-          } else if (tileComponent.getWetness() > THRESHOLD_THREE) {
+          } else if (wetness > THRESHOLD_THREE) {
             spriteComponent.setSpriteKeyFrame(
               SpriteCache.get(tileComponent.getTileType().assetId, "4")
             );
             if (tileComponent.getTileType().assetId.startsWith(Constants.Assets.Sprites.DIRT)) {
               view.entity().addComponent(ColliderComponent.circle(Chunk.HALF_TILE_SIZE));
             }
-          } else if (tileComponent.getWetness() > THRESHOLD_TWO) {
+          } else if (wetness > THRESHOLD_TWO) {
             spriteComponent.setSpriteKeyFrame(
               SpriteCache.get(tileComponent.getTileType().assetId, "3")
             );
-          } else if (tileComponent.getWetness() > THRESHOLD_ONE) {
+          } else if (wetness > THRESHOLD_ONE) {
             spriteComponent.setSpriteKeyFrame(
               SpriteCache.get(tileComponent.getTileType().assetId, "2")
             );
@@ -167,7 +173,7 @@ public class RainSystem extends EcsSystem {
         dropsPerUpdate--;
       }
     } else {
-      if (dropsPerUpdate < maxDropsPerUpdate) {
+      if (dropsPerUpdate < MAX_DROPS_PER_UPDATE) {
         dropsPerUpdate++;
       }
     }
