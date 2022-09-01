@@ -87,7 +87,7 @@ public class GameStateSystem extends EcsSystem {
       new SpriteComponent(SpriteCache.get(Constants.Assets.Sprites.DUCK, "top")),
       new LayerComponent(Constants.Layers.FOREGROUND),
       new PlayerComponent(),
-      ColliderComponent.circle(8)
+      ColliderComponent.circle(5)
     ).setName(Constants.EntityNames.PLAYER);
 
     world.createEntity(
