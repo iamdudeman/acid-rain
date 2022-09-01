@@ -1,5 +1,6 @@
 package technology.sola.engine.sketchy.game.chunk;
 
+import technology.sola.engine.sketchy.game.Constants;
 import technology.sola.math.linear.Vector2D;
 
 import java.util.Random;
@@ -18,14 +19,16 @@ public class ChunkCreator {
   private static final float baseCultureCliffClearPercent = 0.05f;
   private static final float baseCultureDirtPercent = 0.03f;
   private static final float baseCultureDirtClearPercent = 0.05f;
+  private static final int dirtTileFillSearchDistance = 5;
+  private static final float dirtTileFillPercentage = 0.5f;
 
   public Chunk createChunk(ChunkId chunkId, Vector2D playerTranslate) {
     TileComponent[][] tileComponents = new TileComponent[Chunk.COLUMNS][Chunk.ROWS];
 
     stepInitialize(chunkId, playerTranslate, tileComponents);
-    stepCulture(tileComponents, 0);
+    stepCulture(tileComponents, 0, false);
     stepShapeCliffs(tileComponents);
-    stepFillDirtBetweenCliffs(tileComponents);
+    stepAddDirtAroundCliffs(tileComponents);
     stepPlacePickups(tileComponents);
     stepTextureGrassAndDirt(tileComponents);
     stepCleanup(tileComponents);
@@ -54,7 +57,7 @@ public class ChunkCreator {
     }
   }
 
-  private void stepCulture(TileComponent[][] tileComponents, int depth) {
+  private void stepCulture(TileComponent[][] tileComponents, int depth, boolean skipCliff) {
     if (depth > cultureGenerations - 1) {
       return;
     }
@@ -64,7 +67,7 @@ public class ChunkCreator {
         TileComponent tileComponent = tileComponents[column][row];
         TileType tileType = tileComponent.getTileType();
 
-        if (tileType == TileType.CLIFF_CENTER) {
+        if (!skipCliff && tileType == TileType.CLIFF_CENTER) {
           float value = RANDOM.nextFloat();
 
           if (value < baseCultureCliffPercent) {
@@ -86,10 +89,12 @@ public class ChunkCreator {
       }
     }
 
-    stepCulture(tileComponents, depth + 1);
+    stepCulture(tileComponents, depth + 1, skipCliff);
   }
 
   private void stepShapeCliffs(TileComponent[][] tileComponents) {
+    // TODO BUGFIX: each part of this needs to identify tiles needing changing first, THEN apply the update
+
     for (int row = 0; row < Chunk.ROWS; row++) {
       for (int column = 0; column < Chunk.COLUMNS; column++) {
         TileComponent tileComponent = tileComponents[column][row];
@@ -142,12 +147,45 @@ public class ChunkCreator {
     }
   }
 
-  private void stepFillDirtBetweenCliffs(TileComponent[][] tileComponents) {
+  private void stepAddDirtAroundCliffs(TileComponent[][] tileComponents) {
     for (int row = 0; row < Chunk.ROWS; row++) {
       for (int column = 0; column < Chunk.COLUMNS; column++) {
-        // todo
+        TileComponent tileComponent = tileComponents[column][row];
+        TileType tileType = tileComponent.getTileType();
+
+        if (tileType == TileType.GRASS) {
+          TileComponent tileToCheck = peak(tileComponents, row - 1, column);
+          if (tileToCheck != null && tileToCheck.getTileType().assetId.equals(Constants.Assets.Sprites.CLIFF)) {
+            if (RANDOM.nextFloat() < dirtTileFillPercentage) {
+              tileComponent.setTileType(TileType.DIRT);
+            }
+            continue;
+          }
+          tileToCheck = peak(tileComponents, row + 1, column);
+          if (tileToCheck != null && tileToCheck.getTileType().assetId.equals(Constants.Assets.Sprites.CLIFF)) {
+            if (RANDOM.nextFloat() < dirtTileFillPercentage) {
+              tileComponent.setTileType(TileType.DIRT);
+            }
+            continue;
+          }
+          tileToCheck = peak(tileComponents, row, column - 1);
+          if (tileToCheck != null && tileToCheck.getTileType().assetId.equals(Constants.Assets.Sprites.CLIFF)) {
+            if (RANDOM.nextFloat() < dirtTileFillPercentage) {
+              tileComponent.setTileType(TileType.DIRT);
+            }
+            continue;
+          }
+          tileToCheck = peak(tileComponents, row, column + 1);
+          if (tileToCheck != null && tileToCheck.getTileType().assetId.equals(Constants.Assets.Sprites.CLIFF)) {
+            if (RANDOM.nextFloat() < dirtTileFillPercentage) {
+              tileComponent.setTileType(TileType.DIRT);
+            }
+          }
+        }
       }
     }
+
+    stepCulture(tileComponents, 0, true);
   }
 
   private void stepPlacePickups(TileComponent[][] tileComponents) {
@@ -170,6 +208,7 @@ public class ChunkCreator {
     // todo replace cliff tiles that are not completed
   }
 
+
   private void propagateTileType(TileComponent[][] tileComponents, int startRow, int startColumn, TileType tileType) {
     int direction = RANDOM.nextInt(4); // up, down, left, right
     int rowOffset = direction == 0 ? -1 : direction == 1 ? 1 : 0; // 0 -> -1, 1 -> 1, else 0
@@ -182,23 +221,6 @@ public class ChunkCreator {
     }
   }
 
-  private void fillRowBetween(TileComponent[][] tileComponents, int row, int start, int end, TileType tileType, float chance) {
-    for (int column = start; column < end; column++) {
-      if (chance >= 1 || RANDOM.nextFloat() < chance) {
-        peak(tileComponents, row, column).setTileType(tileType);
-      }
-    }
-  }
-
-  private void fillColumnBetween(TileComponent[][] tileComponents, int column, int start, int end, TileType tileType, float chance) {
-    for (int row = start; row < end; row++) {
-      if (chance >= 1 || RANDOM.nextFloat() < chance) {
-        peak(tileComponents, row, column).setTileType(tileType);
-      }
-    }
-  }
-
-  // TODO cleanup with fillBetween methods
   private void joinNearbyCliffs(TileComponent[][] tileComponents, int startRow, int startColumn) {
     for (int i = joinCliffsTilesAway + 1; i > 1; i--) {
       TileComponent upTile = peak(tileComponents, startRow - i, startColumn);
