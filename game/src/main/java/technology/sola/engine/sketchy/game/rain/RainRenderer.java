@@ -1,5 +1,6 @@
 package technology.sola.engine.sketchy.game.rain;
 
+import technology.sola.ecs.Entity;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.graphics.Color;
@@ -22,10 +23,8 @@ public class RainRenderer {
       world.findEntityByName(Constants.EntityNames.CAMERA).ifPresent(cameraEntity -> {
         TransformComponent cameraTransform = cameraEntity.getComponent(TransformComponent.class);
 
-        for (var view : world.createView().of(RainComponent.class)) {
-          RainComponent rainComponent = view.c1();
-
-          drawRain(renderer, rainComponent, cameraTransform.getX(), cameraTransform.getY());
+        for (Entity entity : world.findEntitiesWithComponents(RainComponent.class)) {
+          drawRain(renderer, entity.getComponent(RainComponent.class), cameraTransform.getX(), cameraTransform.getY());
         }
       });
 
