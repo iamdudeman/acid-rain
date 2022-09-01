@@ -13,12 +13,6 @@ public class TileComponent implements Component {
     this.tileType = tileType;
   }
 
-  public TileComponent(ChunkId chunkId, TileType tileType, boolean hasPickup) {
-    this.chunkId = chunkId;
-    this.tileType = tileType;
-    this.hasPickup = hasPickup;
-  }
-
   public ChunkId getChunkId() {
     return chunkId;
   }
@@ -29,6 +23,10 @@ public class TileComponent implements Component {
 
   public void setTileType(TileType tileType) {
     this.tileType = tileType;
+  }
+
+  public void setHasPickup(boolean hasPickup) {
+    this.hasPickup = hasPickup;
   }
 
   public boolean hasPickup() {

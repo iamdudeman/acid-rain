@@ -22,6 +22,7 @@ public class ChunkCreator {
   private static final float baseCultureDirtPercent = 0.02f;
   private static final float baseCultureDirtClearPercent = 0.05f;
   private static final float dirtTileFillPercentage = 0.5f;
+  private static final int maxPickupsPerChunk = 2;
 
   public Chunk createChunk(ChunkId chunkId, Vector2D playerTranslate) {
     TileComponent[][] tileComponents = new TileComponent[Chunk.COLUMNS][Chunk.ROWS];
@@ -94,8 +95,6 @@ public class ChunkCreator {
   }
 
   private void stepShapeCliffs(TileComponent[][] tileComponents) {
-    // TODO BUGFIX: each part of this needs to identify tiles needing changing first, THEN apply the update
-
     for (int row = 0; row < Chunk.ROWS; row++) {
       for (int column = 0; column < Chunk.COLUMNS; column++) {
         TileComponent tileComponent = tileComponents[column][row];
@@ -196,9 +195,31 @@ public class ChunkCreator {
   }
 
   private void stepPlacePickups(TileComponent[][] tileComponents) {
+    int pickupsToPlace = maxPickupsPerChunk;
+
     for (int row = 0; row < Chunk.ROWS; row++) {
       for (int column = 0; column < Chunk.COLUMNS; column++) {
-        // todo
+        if (pickupsToPlace <= 0) {
+          return;
+        }
+
+        TileComponent currentTile = tileComponents[column][row];
+
+        if (currentTile.getTileType() == TileType.GRASS) {
+          int numberOfDirt = countSurroundingDirt(tileComponents, row, column);
+
+          if (numberOfDirt >= 3) {
+            currentTile.setHasPickup(true);
+            pickupsToPlace--;
+          }
+
+          int numberOfCliff = countSurroundingCliff(tileComponents, row, column);
+
+          if (numberOfCliff == 3) {
+            currentTile.setHasPickup(true);
+            pickupsToPlace--;
+          }
+        }
       }
     }
   }
@@ -388,6 +409,48 @@ public class ChunkCreator {
         bottomRightTile.setTileType(TileType.CLIFF_BOTTOM_RIGHT);
       }
     }
+  }
+
+  private int countSurroundingDirt(TileComponent[][] tileComponents, int row, int column) {
+    int count = 0;
+    TileComponent tileToCheck = peak(tileComponents, row - 1, column);
+    if (tileToCheck != null && tileToCheck.getTileType() == TileType.DIRT) {
+      count++;
+    }
+    tileToCheck = peak(tileComponents, row + 1, column);
+    if (tileToCheck != null && tileToCheck.getTileType() == TileType.DIRT) {
+      count++;
+    }
+    tileToCheck = peak(tileComponents, row, column - 1);
+    if (tileToCheck != null && tileToCheck.getTileType() == TileType.DIRT) {
+      count++;
+    }
+    tileToCheck = peak(tileComponents, row, column + 1);
+    if (tileToCheck != null && tileToCheck.getTileType() == TileType.DIRT) {
+      count++;
+    }
+    return count;
+  }
+
+  private int countSurroundingCliff(TileComponent[][] tileComponents, int row, int column) {
+    int count = 0;
+    TileComponent tileToCheck = peak(tileComponents, row - 1, column);
+    if (tileToCheck != null && tileToCheck.getTileType().assetId.equals(Constants.Assets.Sprites.CLIFF)) {
+      count++;
+    }
+    tileToCheck = peak(tileComponents, row + 1, column);
+    if (tileToCheck != null && tileToCheck.getTileType().assetId.equals(Constants.Assets.Sprites.CLIFF)) {
+      count++;
+    }
+    tileToCheck = peak(tileComponents, row, column - 1);
+    if (tileToCheck != null && tileToCheck.getTileType().assetId.equals(Constants.Assets.Sprites.CLIFF)) {
+      count++;
+    }
+    tileToCheck = peak(tileComponents, row, column + 1);
+    if (tileToCheck != null && tileToCheck.getTileType().assetId.equals(Constants.Assets.Sprites.CLIFF)) {
+      count++;
+    }
+    return count;
   }
 
   private boolean isReplaceable(TileType tileType) {
