@@ -37,7 +37,7 @@ public class GameUiRenderer {
     if (shouldDrawGameOver) {
       renderer.drawToLayer(Constants.Layers.FOREGROUND, r -> {
         String donutsConsumedText = "Donuts eated: " + donutsConsumed;
-        String distanceTraveledText = String.format("Distance traveled for noms: %,.2f", this.distanceTraveled);
+        String distanceTraveledText = "Distance traveled for noms: " + Math.round(this.distanceTraveled);
         Font font = renderer.getFont();
         Font.TextDimensions gameOverDimensions = font.getDimensionsForText(gameOverText);
         Font.TextDimensions donutsConsumedDimensions = font.getDimensionsForText(donutsConsumedText);
