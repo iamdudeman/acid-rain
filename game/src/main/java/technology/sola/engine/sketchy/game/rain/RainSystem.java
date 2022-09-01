@@ -9,7 +9,6 @@ import technology.sola.engine.sketchy.game.Constants;
 import technology.sola.engine.sketchy.game.SpriteCache;
 import technology.sola.engine.sketchy.game.chunk.Chunk;
 import technology.sola.engine.sketchy.game.chunk.TileComponent;
-import technology.sola.engine.sketchy.game.chunk.TileType;
 import technology.sola.engine.sketchy.game.player.PlayerComponent;
 import technology.sola.math.linear.Vector2D;
 
@@ -17,6 +16,9 @@ import java.util.Random;
 
 public class RainSystem extends EcsSystem {
   // todo tune these numbers
+  public static final int THRESHOLD_EIGHT = 350;
+  public static final int THRESHOLD_SEVEN = 340;
+  public static final int THRESHOLD_SIX = 325;
   public static final int THRESHOLD_FIVE = 300;
   public static final int THRESHOLD_FOUR = 250;
   public static final int THRESHOLD_THREE = 195;
@@ -115,15 +117,26 @@ public class RainSystem extends EcsSystem {
         tileComponent.increaseWetness();
       }
 
-      if (tileComponent.getWetness() > THRESHOLD_FIVE) {
+      if (tileComponent.getWetness() > THRESHOLD_EIGHT) {
         if (!spriteComponent.getSpriteId().equals(Constants.Assets.Sprites.ERASED)) {
           spriteComponent.setSpriteKeyFrame(SpriteCache.ERASED);
           view.entity().addComponent(ColliderComponent.circle(Chunk.HALF_TILE_SIZE));
         }
       } else {
-
         if (tileComponent.getTileType().isErasable) {
-          if (tileComponent.getWetness() > THRESHOLD_FOUR) {
+          if (tileComponent.getWetness() > THRESHOLD_SEVEN) {
+            spriteComponent.setSpriteKeyFrame(
+              SpriteCache.get(tileComponent.getTileType().assetId, "8")
+            );
+          } else if (tileComponent.getWetness() > THRESHOLD_SIX) {
+            spriteComponent.setSpriteKeyFrame(
+              SpriteCache.get(tileComponent.getTileType().assetId, "7")
+            );
+          } else if (tileComponent.getWetness() > THRESHOLD_FIVE) {
+            spriteComponent.setSpriteKeyFrame(
+              SpriteCache.get(tileComponent.getTileType().assetId, "6")
+            );
+          } else if (tileComponent.getWetness() > THRESHOLD_FOUR) {
             spriteComponent.setSpriteKeyFrame(
               SpriteCache.get(tileComponent.getTileType().assetId, "5")
             );
@@ -131,7 +144,7 @@ public class RainSystem extends EcsSystem {
             spriteComponent.setSpriteKeyFrame(
               SpriteCache.get(tileComponent.getTileType().assetId, "4")
             );
-            if (tileComponent.getTileType() == TileType.DIRT) {
+            if (tileComponent.getTileType().assetId.startsWith(Constants.Assets.Sprites.DIRT)) {
               view.entity().addComponent(ColliderComponent.circle(Chunk.HALF_TILE_SIZE));
             }
           } else if (tileComponent.getWetness() > THRESHOLD_TWO) {

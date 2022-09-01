@@ -106,7 +106,6 @@ public class ChunkSystem extends EcsSystem implements EventListener<GameStateEve
     Chunk chunk = chunkCache.get(chunkId);
 
     if (chunk == null) {
-      // TODO more creative chunk creation than just 50 percent grass
       chunk = chunkCreator.createChunk(chunkId, playerTranslate);
 
       chunkCache.put(chunkId, chunk);

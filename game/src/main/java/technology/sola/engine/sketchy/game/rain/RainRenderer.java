@@ -11,7 +11,7 @@ public class RainRenderer {
   public static final int RAIN_ANIMATION_HEIGHT_THRESHOLD_1 = -2;
   public static final int RAIN_ANIMATION_HEIGHT_THRESHOLD_2 = -4;
   private static final int RAIN_LENGTH = 64;
-  private static final Color RAIN_COLOR = new Color(153, 128, 128, 128);
+  private static final Color RAIN_COLOR = new Color(153, 220, 220, 220);
   private boolean animationToggle = false;
 
   public void render(Renderer renderer, World world) {
