@@ -2,7 +2,7 @@ package technology.sola.engine.sketchy.game.chunk;
 
 import technology.sola.engine.sketchy.game.Constants;
 
-public enum   TileType {
+public enum TileType {
   GRASS(Constants.Assets.Sprites.GRASS, true),
   GRASS2(Constants.Assets.Sprites.GRASS2, true),
   GRASS3(Constants.Assets.Sprites.GRASS3, true),

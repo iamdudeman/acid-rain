@@ -2,7 +2,10 @@ package technology.sola.engine.sketchy.game.chunk;
 
 import technology.sola.ecs.Component;
 
+import java.util.Random;
+
 public class TileComponent implements Component {
+  private static final Random RANDOM = new Random();
   private final ChunkId chunkId;
   private TileType tileType;
   private int wetness;
@@ -11,6 +14,7 @@ public class TileComponent implements Component {
   public TileComponent(ChunkId chunkId, TileType tileType) {
     this.chunkId = chunkId;
     this.tileType = tileType;
+    this.wetness = RANDOM.nextInt(30);
   }
 
   public ChunkId getChunkId() {

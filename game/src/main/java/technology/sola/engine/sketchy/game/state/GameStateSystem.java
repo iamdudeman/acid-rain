@@ -6,9 +6,7 @@ import technology.sola.ecs.SolaEcs;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.event.EventHub;
-import technology.sola.engine.graphics.Color;
 import technology.sola.engine.graphics.components.CameraComponent;
-import technology.sola.engine.graphics.components.CircleRendererComponent;
 import technology.sola.engine.graphics.components.LayerComponent;
 import technology.sola.engine.graphics.components.sprite.SpriteComponent;
 import technology.sola.engine.input.MouseButton;
@@ -17,7 +15,6 @@ import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.engine.physics.event.CollisionManifoldEvent;
 import technology.sola.engine.sketchy.game.Constants;
 import technology.sola.engine.sketchy.game.SpriteCache;
-import technology.sola.engine.sketchy.game.chunk.Chunk;
 import technology.sola.engine.sketchy.game.event.GameState;
 import technology.sola.engine.sketchy.game.event.GameStateEvent;
 import technology.sola.engine.sketchy.game.player.PickupComponent;
@@ -58,11 +55,13 @@ public class GameStateSystem extends EcsSystem {
       },
       (player, erasedTile) -> {
         Vector2D playerTranslate = player.getComponent(TransformComponent.class).getTranslate();
-        float distanceX = Math.abs(playerTranslate.x - rendererHalfWidth);
-        float distanceY = Math.abs(playerTranslate.y - rendererHalfHeight);
-        float score = (distanceX / Chunk.TILE_SIZE) + (distanceY / Chunk.TILE_SIZE);
+        int donutsConsumed = player.getComponent(PlayerComponent.class).getDonutsConsumed();
 
-        eventHub.emit(new GameStateEvent(GameState.GAME_OVER, score));
+        eventHub.emit(new GameStateEvent(
+          GameState.GAME_OVER,
+          playerTranslate.subtract(new Vector2D(rendererHalfWidth, rendererHalfHeight)).magnitude(),
+          donutsConsumed
+        ));
       }
     ), CollisionManifoldEvent.class);
   }
