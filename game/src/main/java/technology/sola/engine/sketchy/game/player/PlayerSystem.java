@@ -58,69 +58,34 @@ public class PlayerSystem extends EcsSystem {
   public void update(World world, float dt) {
     world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(entity -> {
       PlayerComponent playerComponent = entity.getComponent(PlayerComponent.class);
-      TransformComponent transformComponent = entity.getComponent(TransformComponent.class);
-      SpriteComponent theDuck = entity.getComponent(SpriteComponent.class);
-      float speed = playerComponent.getSpeed();
-
-      boolean wentUp = false;
-      boolean wentDown = false;
-      boolean wentLeft = false;
-      boolean wentRight = false;
+      int xMod = 0;
+      int yMod = 0;
 
       if (keyboardInput.isKeyHeld(Key.W)) {
-        wentUp = true;
-        transformComponent.setTranslate(
-          transformComponent.getTranslate().add(new Vector2D(0, -speed).scalar(dt))
-        );
+        yMod--;
       }
 
       if (keyboardInput.isKeyHeld(Key.S)) {
-        wentDown = true;
-        transformComponent.setTranslate(
-          transformComponent.getTranslate().add(new Vector2D(0, speed).scalar(dt))
-        );
+        yMod++;
       }
 
       if (keyboardInput.isKeyHeld(Key.A)) {
-        wentLeft = true;
-        transformComponent.setTranslate(
-          transformComponent.getTranslate().add(new Vector2D(-speed, 0).scalar(dt))
-        );
+        xMod--;
       }
 
       if (keyboardInput.isKeyHeld(Key.D)) {
-        wentRight = true;
-        transformComponent.setTranslate(
-          transformComponent.getTranslate().add(new Vector2D(speed, 0).scalar(dt))
-        );
+        xMod++;
       }
 
-      if (wentUp) {
-        theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, "top"));
-      }
+      if (xMod != 0 || yMod != 0) {
+        TransformComponent transformComponent = entity.getComponent(TransformComponent.class);
+        SpriteComponent theDuck = entity.getComponent(SpriteComponent.class);
+        String variation = getSpriteVariation(xMod, yMod);
+        float speed = playerComponent.getSpeed();
 
-      if (wentDown) {
-        theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, "bottom"));
-      }
-
-      if (wentLeft) {
-        if (wentUp) {
-          theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, "top-left"));
-        } else if (wentDown) {
-          theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, "bottom-left"));
-        } else {
-          theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, "left"));
-        }
-      }
-
-      if (wentRight) {
-        if (wentUp) {
-          theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, "top-right"));
-        } else if (wentDown) {
-          theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, "bottom-right"));
-        } else {
-          theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, "right"));
-        }
+        Vector2D velocity = new Vector2D(xMod * speed, yMod * speed).scalar(dt);
+        transformComponent.setTranslate(transformComponent.getTranslate().add(velocity));
+        theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, variation));
       }
 
       playerComponent.setUsingSunlight(keyboardInput.isKeyHeld(Key.SPACE));
@@ -131,5 +96,27 @@ public class PlayerSystem extends EcsSystem {
 
       playerComponent.setIsSlowed(false);
     });
+  }
+
+  private String getSpriteVariation(int xMod, int yMod) {
+    if (xMod == 0) {
+      return yMod < 0 ? "top" : "bottom";
+    } else if (xMod > 0) {
+      if (yMod == 0) {
+        return "right";
+      } else if (yMod < 0) {
+        return "top-right";
+      } else {
+        return "bottom-right";
+      }
+    } else {
+      if (yMod == 0) {
+        return "left";
+      } else if (yMod < 0) {
+        return "top-left";
+      } else {
+        return "bottom-left";
+      }
+    }
   }
 }
