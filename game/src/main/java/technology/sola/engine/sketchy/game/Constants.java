@@ -9,14 +9,6 @@ public class Constants {
     }
   }
 
-  public static final class Layers {
-    public static final String BACKGROUND = "back";
-    public static final String FOREGROUND = "front";
-
-    private Layers() {
-    }
-  }
-
   public static final class Assets {
     public static final class Sprites {
       public static final String SPRITE_SHEET_ID = "sprites";

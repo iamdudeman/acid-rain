@@ -1,5 +1,6 @@
 package technology.sola.engine.sketchy.game;
 
+import technology.sola.ecs.World;
 import technology.sola.engine.assets.BulkAssetLoader;
 import technology.sola.engine.assets.audio.AudioClip;
 import technology.sola.engine.assets.graphics.SpriteSheet;
@@ -28,10 +29,11 @@ public class SketchyLifeSola extends Sola {
   private SolaGraphics solaGraphics;
   private SolaGui solaGui;
   private GameUiRenderer gameUiRenderer;
+  private SketchyLifeRenderer sketchyLifeRenderer;
 
   @Override
   protected SolaConfiguration getConfiguration() {
-    return new SolaConfiguration("Sketchy Life", 480, 320, 25, false);
+    return new SolaConfiguration("Sketchy Life", 480, 320, 20, false);
   }
 
   @Override
@@ -40,13 +42,10 @@ public class SketchyLifeSola extends Sola {
     gameSettings = new GameSettings(solaEcs);
 
     // Initialize stuff for rendering
+    sketchyLifeRenderer = new SketchyLifeRenderer(assetLoaderProvider.get(SpriteSheet.class));
     gameUiRenderer = new GameUiRenderer(eventHub);
     solaGraphics = SolaGraphics.createInstance(solaEcs, platform.getRenderer(), assetLoaderProvider);
     platform.getViewport().setAspectMode(AspectMode.MAINTAIN);
-    platform.getRenderer().createLayers(
-      Constants.Layers.BACKGROUND,
-      Constants.Layers.FOREGROUND
-    );
 
     // Ecs setup
     ChunkSystem chunkSystem = new ChunkSystem();
@@ -94,10 +93,11 @@ public class SketchyLifeSola extends Sola {
     renderer.clear();
 
     if (gameSettings.isPlaying()) {
-      solaGraphics.render();
-
-      rainRenderer.render(renderer, solaEcs.getWorld());
-      gameUiRenderer.render(renderer, solaEcs.getWorld());
+      World world = solaEcs.getWorld();
+      sketchyLifeRenderer.render(renderer, world);
+//      solaGraphics.render();
+      rainRenderer.render(renderer, world);
+      gameUiRenderer.render(renderer, world);
     }
 
     if (gameSettings.isShowMenu()) {

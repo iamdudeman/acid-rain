@@ -16,20 +16,18 @@ public class RainRenderer {
   private boolean animationToggle = false;
 
   public void render(Renderer renderer, World world) {
-    renderer.drawToLayer(Constants.Layers.FOREGROUND, r -> {
-      BlendMode previousBlendMode = renderer.getBlendMode();
-      renderer.setBlendMode(BlendMode.NORMAL);
+    BlendMode previousBlendMode = renderer.getBlendMode();
+    renderer.setBlendMode(BlendMode.NORMAL);
 
-      world.findEntityByName(Constants.EntityNames.CAMERA).ifPresent(cameraEntity -> {
-        TransformComponent cameraTransform = cameraEntity.getComponent(TransformComponent.class);
+    world.findEntityByName(Constants.EntityNames.CAMERA).ifPresent(cameraEntity -> {
+      TransformComponent cameraTransform = cameraEntity.getComponent(TransformComponent.class);
 
-        for (Entity entity : world.findEntitiesWithComponents(RainComponent.class)) {
-          drawRain(renderer, entity.getComponent(RainComponent.class), cameraTransform.getX(), cameraTransform.getY());
-        }
-      });
-
-      renderer.setBlendMode(previousBlendMode);
+      for (Entity entity : world.findEntitiesWithComponents(RainComponent.class)) {
+        drawRain(renderer, entity.getComponent(RainComponent.class), cameraTransform.getX(), cameraTransform.getY());
+      }
     });
+
+    renderer.setBlendMode(previousBlendMode);
   }
 
   /**
