@@ -23,6 +23,8 @@ public class ChunkCreator {
   private static final float baseCultureDirtClearPercent = 0.05f;
   private static final float dirtTileFillPercentage = 0.5f;
   private static final int maxPickupsPerChunk = 2;
+  private static final float texture2Percent = 0.1f;
+  private static final float texture3Percent = 0.05f;
 
   public Chunk createChunk(ChunkId chunkId, Vector2D playerTranslate) {
     TileComponent[][] tileComponents = new TileComponent[Chunk.COLUMNS][Chunk.ROWS];
@@ -227,7 +229,25 @@ public class ChunkCreator {
   private void stepTextureGrassAndDirt(TileComponent[][] tileComponents) {
     for (int row = 0; row < Chunk.ROWS; row++) {
       for (int column = 0; column < Chunk.COLUMNS; column++) {
-        // todo
+        TileComponent currentTile = tileComponents[column][row];
+
+        if (currentTile.getTileType() == TileType.GRASS) {
+          float value = RANDOM.nextFloat();
+
+          if (value < texture2Percent) {
+            currentTile.setTileType(TileType.GRASS2);
+          } else if (value < texture2Percent + texture3Percent) {
+            currentTile.setTileType(TileType.GRASS3);
+          }
+        } else if (currentTile.getTileType() == TileType.DIRT) {
+          float value = RANDOM.nextFloat();
+
+          if (value < texture2Percent) {
+            currentTile.setTileType(TileType.DIRT2);
+          } else if (value < texture2Percent + texture3Percent) {
+            currentTile.setTileType(TileType.DIRT3);
+          }
+        }
       }
     }
   }
