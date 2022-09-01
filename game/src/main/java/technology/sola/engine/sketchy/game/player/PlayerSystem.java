@@ -4,11 +4,13 @@ import technology.sola.ecs.EcsSystem;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.event.EventHub;
+import technology.sola.engine.graphics.components.sprite.SpriteComponent;
 import technology.sola.engine.input.Key;
 import technology.sola.engine.input.KeyboardInput;
 import technology.sola.engine.physics.CollisionManifold;
 import technology.sola.engine.physics.event.CollisionManifoldEvent;
 import technology.sola.engine.sketchy.game.Constants;
+import technology.sola.engine.sketchy.game.SpriteCache;
 import technology.sola.engine.sketchy.game.chunk.TileComponent;
 import technology.sola.engine.sketchy.game.chunk.TileType;
 import technology.sola.math.linear.Vector2D;
@@ -57,30 +59,68 @@ public class PlayerSystem extends EcsSystem {
     world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(entity -> {
       PlayerComponent playerComponent = entity.getComponent(PlayerComponent.class);
       TransformComponent transformComponent = entity.getComponent(TransformComponent.class);
+      SpriteComponent theDuck = entity.getComponent(SpriteComponent.class);
       float speed = playerComponent.getSpeed();
 
+      boolean wentUp = false;
+      boolean wentDown = false;
+      boolean wentLeft = false;
+      boolean wentRight = false;
+
       if (keyboardInput.isKeyHeld(Key.W)) {
+        wentUp = true;
         transformComponent.setTranslate(
           transformComponent.getTranslate().add(new Vector2D(0, -speed).scalar(dt))
         );
       }
 
       if (keyboardInput.isKeyHeld(Key.S)) {
+        wentDown = true;
         transformComponent.setTranslate(
           transformComponent.getTranslate().add(new Vector2D(0, speed).scalar(dt))
         );
       }
 
       if (keyboardInput.isKeyHeld(Key.A)) {
+        wentLeft = true;
         transformComponent.setTranslate(
           transformComponent.getTranslate().add(new Vector2D(-speed, 0).scalar(dt))
         );
       }
 
       if (keyboardInput.isKeyHeld(Key.D)) {
+        wentRight = true;
         transformComponent.setTranslate(
           transformComponent.getTranslate().add(new Vector2D(speed, 0).scalar(dt))
         );
+      }
+
+      if (wentUp) {
+        theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, "top"));
+      }
+
+      if (wentDown) {
+        theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, "bottom"));
+      }
+
+      if (wentLeft) {
+        if (wentUp) {
+          theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, "top-left"));
+        } else if (wentDown) {
+          theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, "bottom-left"));
+        } else {
+          theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, "left"));
+        }
+      }
+
+      if (wentRight) {
+        if (wentUp) {
+          theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, "top-right"));
+        } else if (wentDown) {
+          theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, "bottom-right"));
+        } else {
+          theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, "right"));
+        }
       }
 
       playerComponent.setUsingSunlight(keyboardInput.isKeyHeld(Key.SPACE));
