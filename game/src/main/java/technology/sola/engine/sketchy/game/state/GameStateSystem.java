@@ -58,8 +58,13 @@ public class GameStateSystem extends EcsSystem {
       },
       (player, erasedTile) -> {
         Vector2D playerTranslate = player.getComponent(TransformComponent.class).getTranslate();
+        int donutsConsumed = player.getComponent(PlayerComponent.class).getDonutsConsumed();
 
-        eventHub.emit(new GameStateEvent(GameState.GAME_OVER, playerTranslate.subtract(new Vector2D(rendererHalfWidth, rendererHalfHeight)).magnitude()));
+        eventHub.emit(new GameStateEvent(
+          GameState.GAME_OVER,
+          playerTranslate.subtract(new Vector2D(rendererHalfWidth, rendererHalfHeight)).magnitude(),
+          donutsConsumed
+        ));
       }
     ), CollisionManifoldEvent.class);
   }

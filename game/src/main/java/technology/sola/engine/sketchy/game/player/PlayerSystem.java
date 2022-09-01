@@ -47,7 +47,7 @@ public class PlayerSystem extends EcsSystem {
       entity -> Constants.EntityNames.PLAYER.equals(entity.getName()),
       entity -> entity.hasComponent(PickupComponent.class),
       (player, pickup) -> {
-        player.getComponent(PlayerComponent.class).pickupSunlight();
+        player.getComponent(PlayerComponent.class).pickupDonut();
         pickup.getComponent(PickupComponent.class).hostTile().consumePickup();
         pickup.destroy();
       }

@@ -12,7 +12,7 @@ import technology.sola.engine.sketchy.game.event.GameStateEvent;
 import technology.sola.engine.sketchy.game.player.PlayerComponent;
 
 public class GameUiRenderer {
-  public static final Color SUNLIGHT_BAR_COLOR = new Color(220, 255, 215, 0);
+  private static final Color SUNLIGHT_BAR_COLOR = new Color(200, 255, 215, 0);
   private final String gameOverText = "Game Over";
   private final String playAgainText = "Click anywhere to play again";
   private final int sunlightBarHeight = 12;
@@ -20,6 +20,7 @@ public class GameUiRenderer {
   private final int sunlightBarHalfWidth = sunlightBarWidth / 2;
   private boolean shouldDrawGameOver = false;
   private float distanceTraveled = 0f;
+  private int donutsConsumed = 0;
 
   public GameUiRenderer(EventHub eventHub) {
     eventHub.add(gameStateEvent -> {
@@ -27,6 +28,7 @@ public class GameUiRenderer {
 
       if (shouldDrawGameOver) {
         distanceTraveled = gameStateEvent.getDistanceTraveled();
+        donutsConsumed = gameStateEvent.getDonutsConsumed();
       }
     }, GameStateEvent.class);
   }
@@ -34,21 +36,24 @@ public class GameUiRenderer {
   public void render(Renderer renderer, World world) {
     if (shouldDrawGameOver) {
       renderer.drawToLayer(Constants.Layers.FOREGROUND, r -> {
-        String scoreText = String.format("Distance traveled for noms: %,.2f", distanceTraveled);
+        String donutsConsumedText = "Donuts eated: " + donutsConsumed;
+        String distanceTraveledText = String.format("Distance traveled for noms: %,.2f", this.distanceTraveled);
         Font font = renderer.getFont();
         Font.TextDimensions gameOverDimensions = font.getDimensionsForText(gameOverText);
+        Font.TextDimensions donutsConsumedDimensions = font.getDimensionsForText(donutsConsumedText);
+        Font.TextDimensions distanceTraveledDimensions = font.getDimensionsForText(distanceTraveledText);
         Font.TextDimensions playAgainDimensions = font.getDimensionsForText(playAgainText);
-        Font.TextDimensions scoreDimensions = font.getDimensionsForText(scoreText);
-        float maxWidth = Math.max(playAgainDimensions.width(), scoreDimensions.width());
+        float maxWidth = Math.max(playAgainDimensions.width(), distanceTraveledDimensions.width());
         renderer.setBlendMode(BlendMode.NORMAL);
         renderer.fillRect(
           3, 3,
-          maxWidth + 6, gameOverDimensions.height() + playAgainDimensions.height() + scoreDimensions.height() + 6,
+          maxWidth + 6, gameOverDimensions.height() + donutsConsumedDimensions.height() + playAgainDimensions.height() + distanceTraveledDimensions.height() + 15,
           new Color(150, 255, 255, 255)
         );
         renderer.drawString(gameOverText, 6, 3, Color.BLACK);
-        renderer.drawString(scoreText, 6, gameOverDimensions.height() + 6, Color.BLACK);
-        renderer.drawString(playAgainText, 6, gameOverDimensions.height() + scoreDimensions.height() + 9, Color.BLACK);
+        renderer.drawString(donutsConsumedText, 6, gameOverDimensions.height() + 6, Color.BLACK);
+        renderer.drawString(distanceTraveledText, 6, gameOverDimensions.height() + donutsConsumedDimensions.height() + 9, Color.BLACK);
+        renderer.drawString(playAgainText, 6, gameOverDimensions.height() + donutsConsumedDimensions.height() + distanceTraveledDimensions.height() + 12, Color.BLACK);
       });
     } else {
       world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(playerEntity -> {
@@ -57,6 +62,10 @@ public class GameUiRenderer {
           float percentage = playerComponent.getSunlight() / (float) PlayerComponent.MAX_SUNLIGHT;
           float x = renderer.getWidth() / 2f - sunlightBarHalfWidth;
           float y = renderer.getHeight() - sunlightBarHeight - 8;
+
+          String donutsConsumedText = "Donuts eated: " + playerComponent.getDonutsConsumed();
+          renderer.drawString(donutsConsumedText, 3, 3, Color.BLACK);
+          // TODO Note: this is why sprite transparency is working (should use BlendModeComponent later for sure when fixed in engine)
           renderer.setBlendMode(BlendMode.NORMAL);
           renderer.fillRect(x, y, percentage * sunlightBarWidth, sunlightBarHeight, SUNLIGHT_BAR_COLOR);
           renderer.drawRect(x, y, sunlightBarWidth, sunlightBarHeight, Color.BLACK);

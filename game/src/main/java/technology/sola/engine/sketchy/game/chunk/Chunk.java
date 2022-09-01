@@ -3,14 +3,12 @@ package technology.sola.engine.sketchy.game.chunk;
 import technology.sola.ecs.Entity;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
-import technology.sola.engine.graphics.components.CircleRendererComponent;
 import technology.sola.engine.graphics.components.LayerComponent;
 import technology.sola.engine.graphics.components.sprite.SpriteComponent;
 import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.engine.sketchy.game.Constants;
 import technology.sola.engine.sketchy.game.SpriteCache;
 import technology.sola.engine.sketchy.game.player.PickupComponent;
-import technology.sola.engine.sketchy.game.state.GameUiRenderer;
 
 public class Chunk {
   public static final int TILE_SIZE = 20;
@@ -53,7 +51,6 @@ public class Chunk {
         if (tileComponent.hasPickup()) {
           world.createEntity(
             new TransformComponent(x + 6, y + 6),
-            new CircleRendererComponent(GameUiRenderer.SUNLIGHT_BAR_COLOR, true),
             new PickupComponent(tileComponent),
             new SpriteComponent(SpriteCache.get(Constants.Assets.Sprites.DONUT, "main")),
             ColliderComponent.circle(3),
