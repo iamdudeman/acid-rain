@@ -7,6 +7,7 @@ import technology.sola.engine.event.EventListener;
 import technology.sola.engine.sketchy.game.Constants;
 import technology.sola.engine.sketchy.game.event.GameState;
 import technology.sola.engine.sketchy.game.event.GameStateEvent;
+import technology.sola.math.linear.Vector2D;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,36 +15,36 @@ import java.util.Map;
 
 public class ChunkSystem extends EcsSystem implements EventListener<GameStateEvent> {
   private final Map<ChunkId, Chunk> chunkCache = new HashMap<>();
-  private final ChunkShaper chunkShaper = new ChunkShaper();
+  private final ChunkCreator chunkCreator = new ChunkCreator();
   private ChunkId lastPlayerChunkId = new ChunkId(0, 0);
   private boolean isInitialized = false;
 
   @Override
   public void update(World world, float v) {
-    if (isInitialized) {
-      world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(playerEntity -> {
-        TransformComponent playerTransform = playerEntity.getComponent(TransformComponent.class);
+    world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(playerEntity -> {
+      TransformComponent playerTransform = playerEntity.getComponent(TransformComponent.class);
+      Vector2D playerTranslate = playerTransform.getTranslate();
 
+      if (isInitialized) {
         ChunkId playerChunkId = getChunkIdForPlayer(playerTransform);
         boolean hasPlayerChunkChanged = !playerChunkId.equals(lastPlayerChunkId);
 
         if (hasPlayerChunkChanged) {
-          processPlayerPositionChange(world, playerChunkId);
+          processPlayerPositionChange(world, playerChunkId, playerTranslate);
 
           lastPlayerChunkId = playerChunkId;
         }
-      });
-    } else {
-      chunkCache.clear();
+      } else {
+        chunkCache.clear();
 
-      // TODO more creative chunk creation than just 85 percent grass
-      Chunk initialChunk = chunkShaper.shapeChunk(lastPlayerChunkId, 85);
+        Chunk initialChunk = chunkCreator.createChunk(lastPlayerChunkId, playerTranslate);
 
-      chunkCache.put(lastPlayerChunkId, initialChunk);
-      initialChunk.loadChunk(world);
-      processPlayerPositionChange(world, lastPlayerChunkId);
-      isInitialized = true;
-    }
+        chunkCache.put(lastPlayerChunkId, initialChunk);
+        initialChunk.loadChunk(world);
+        processPlayerPositionChange(world, lastPlayerChunkId, playerTranslate);
+        isInitialized = true;
+      }
+    });
   }
 
   @Override
@@ -81,7 +82,7 @@ public class ChunkSystem extends EcsSystem implements EventListener<GameStateEve
     );
   }
 
-  private void processPlayerPositionChange(World world, ChunkId playerChunkId) {
+  private void processPlayerPositionChange(World world, ChunkId playerChunkId, Vector2D playerTranslate) {
     List<ChunkId> loadChunks = getSurroundingChunks(playerChunkId);
     List<ChunkId> unloadChunks = getSurroundingChunks(lastPlayerChunkId)
       .stream()
@@ -97,16 +98,15 @@ public class ChunkSystem extends EcsSystem implements EventListener<GameStateEve
     }
 
     for (ChunkId chunkId : loadChunks) {
-      loadChunk(world, chunkId);
+      loadChunk(world, chunkId, playerTranslate);
     }
   }
 
-  private void loadChunk(World world, ChunkId chunkId) {
+  private void loadChunk(World world, ChunkId chunkId, Vector2D playerTranslate) {
     Chunk chunk = chunkCache.get(chunkId);
 
     if (chunk == null) {
-      // TODO more creative chunk creation than just 50 percent grass
-      chunk = chunkShaper.shapeChunk(chunkId, 50);
+      chunk = chunkCreator.createChunk(chunkId, playerTranslate);
 
       chunkCache.put(chunkId, chunk);
     }
