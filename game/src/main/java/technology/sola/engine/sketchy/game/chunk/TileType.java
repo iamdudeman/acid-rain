@@ -2,9 +2,15 @@ package technology.sola.engine.sketchy.game.chunk;
 
 import technology.sola.engine.sketchy.game.Constants;
 
-public enum TileType {
+public enum   TileType {
   GRASS(Constants.Assets.Sprites.GRASS, true),
+  GRASS2(Constants.Assets.Sprites.GRASS2, true),
+  GRASS3(Constants.Assets.Sprites.GRASS3, true),
+
   DIRT(Constants.Assets.Sprites.DIRT, true),
+  DIRT2(Constants.Assets.Sprites.DIRT2, true),
+  DIRT3(Constants.Assets.Sprites.DIRT3, true),
+
   CLIFF_TOP_LEFT(Constants.Assets.Sprites.CLIFF, "top-left"),
   CLIFF_TOP(Constants.Assets.Sprites.CLIFF, "top"),
   CLIFF_TOP_RIGHT(Constants.Assets.Sprites.CLIFF, "top-right"),

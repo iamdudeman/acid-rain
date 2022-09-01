@@ -16,6 +16,7 @@ import technology.sola.engine.input.MouseInput;
 import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.engine.physics.event.CollisionManifoldEvent;
 import technology.sola.engine.sketchy.game.Constants;
+import technology.sola.engine.sketchy.game.SpriteCache;
 import technology.sola.engine.sketchy.game.chunk.Chunk;
 import technology.sola.engine.sketchy.game.event.GameState;
 import technology.sola.engine.sketchy.game.event.GameStateEvent;
@@ -82,11 +83,11 @@ public class GameStateSystem extends EcsSystem {
     World world = new World(10000);
 
     world.createEntity(
-      new TransformComponent(rendererHalfWidth, rendererHalfHeight, 15),
-      new CircleRendererComponent(Color.RED, true),
+      new TransformComponent(rendererHalfWidth, rendererHalfHeight),
+      new SpriteComponent(SpriteCache.get(Constants.Assets.Sprites.DUCK, "top")),
       new LayerComponent(Constants.Layers.FOREGROUND),
       new PlayerComponent(),
-      ColliderComponent.circle()
+      ColliderComponent.circle(8)
     ).setName(Constants.EntityNames.PLAYER);
 
     world.createEntity(
