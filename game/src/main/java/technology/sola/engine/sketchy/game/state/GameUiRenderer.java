@@ -13,8 +13,8 @@ import technology.sola.engine.sketchy.game.player.PlayerComponent;
 
 public class GameUiRenderer {
   private static final Color SUNLIGHT_BAR_COLOR = new Color(200, 255, 215, 0);
-  private final String gameOverText = "Game Over";
-  private final String playAgainText = "Click anywhere to play again";
+  private static final String GAME_OVER_TEXT = "Game Over";
+  private static final String PLAY_AGAIN_TEXT = "Click anywhere to play again";
   private final int sunlightBarHeight = 12;
   private final int sunlightBarWidth = 220;
   private final int sunlightBarHalfWidth = sunlightBarWidth / 2;
@@ -38,10 +38,10 @@ public class GameUiRenderer {
       String donutsConsumedText = "Donuts eated: " + donutsConsumed;
       String distanceTraveledText = "Distance traveled for noms: " + Math.round(this.distanceTraveled);
       Font font = renderer.getFont();
-      Font.TextDimensions gameOverDimensions = font.getDimensionsForText(gameOverText);
+      Font.TextDimensions gameOverDimensions = font.getDimensionsForText(GAME_OVER_TEXT);
       Font.TextDimensions donutsConsumedDimensions = font.getDimensionsForText(donutsConsumedText);
       Font.TextDimensions distanceTraveledDimensions = font.getDimensionsForText(distanceTraveledText);
-      Font.TextDimensions playAgainDimensions = font.getDimensionsForText(playAgainText);
+      Font.TextDimensions playAgainDimensions = font.getDimensionsForText(PLAY_AGAIN_TEXT);
       float maxWidth = Math.max(playAgainDimensions.width(), distanceTraveledDimensions.width());
       renderer.setBlendMode(BlendMode.NORMAL);
       renderer.fillRect(
@@ -49,10 +49,11 @@ public class GameUiRenderer {
         maxWidth + 6, gameOverDimensions.height() + donutsConsumedDimensions.height() + playAgainDimensions.height() + distanceTraveledDimensions.height() + 15,
         new Color(150, 255, 255, 255)
       );
-      renderer.drawString(gameOverText, 6, 3, Color.BLACK);
+      renderer.setBlendMode(BlendMode.NO_BLENDING);
+      renderer.drawString(GAME_OVER_TEXT, 6, 3, Color.BLACK);
       renderer.drawString(donutsConsumedText, 6, gameOverDimensions.height() + 6, Color.BLACK);
       renderer.drawString(distanceTraveledText, 6, gameOverDimensions.height() + donutsConsumedDimensions.height() + 9, Color.BLACK);
-      renderer.drawString(playAgainText, 6, gameOverDimensions.height() + donutsConsumedDimensions.height() + distanceTraveledDimensions.height() + 12, Color.BLACK);
+      renderer.drawString(PLAY_AGAIN_TEXT, 6, gameOverDimensions.height() + donutsConsumedDimensions.height() + distanceTraveledDimensions.height() + 12, Color.BLACK);
     } else {
       world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(playerEntity -> {
         PlayerComponent playerComponent = playerEntity.getComponent(PlayerComponent.class);
@@ -65,6 +66,7 @@ public class GameUiRenderer {
         // TODO Note: this is why sprite transparency is working (should use BlendModeComponent later for sure when fixed in engine)
         renderer.setBlendMode(BlendMode.NORMAL);
         renderer.fillRect(x, y, percentage * sunlightBarWidth, sunlightBarHeight, SUNLIGHT_BAR_COLOR);
+        renderer.setBlendMode(BlendMode.NO_BLENDING);
         renderer.drawRect(x, y, sunlightBarWidth, sunlightBarHeight, Color.BLACK);
       });
     }

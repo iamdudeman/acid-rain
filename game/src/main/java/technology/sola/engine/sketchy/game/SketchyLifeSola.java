@@ -6,7 +6,6 @@ import technology.sola.engine.assets.audio.AudioClip;
 import technology.sola.engine.assets.graphics.SpriteSheet;
 import technology.sola.engine.core.Sola;
 import technology.sola.engine.core.SolaConfiguration;
-import technology.sola.engine.core.module.graphics.SolaGraphics;
 import technology.sola.engine.core.module.graphics.gui.SolaGui;
 import technology.sola.engine.graphics.renderer.Renderer;
 import technology.sola.engine.graphics.screen.AspectMode;
@@ -26,14 +25,13 @@ import technology.sola.engine.sketchy.game.state.GameStateSystem;
 public class SketchyLifeSola extends Sola {
   private final RainRenderer rainRenderer = new RainRenderer();
   private GameSettings gameSettings;
-  private SolaGraphics solaGraphics;
   private SolaGui solaGui;
   private GameUiRenderer gameUiRenderer;
   private SketchyLifeRenderer sketchyLifeRenderer;
 
   @Override
   protected SolaConfiguration getConfiguration() {
-    return new SolaConfiguration("Sketchy Life", 480, 320, 20, false);
+    return new SolaConfiguration("Sketchy Life", 480, 320, 30, false);
   }
 
   @Override
@@ -44,7 +42,6 @@ public class SketchyLifeSola extends Sola {
     // Initialize stuff for rendering
     sketchyLifeRenderer = new SketchyLifeRenderer(assetLoaderProvider.get(SpriteSheet.class));
     gameUiRenderer = new GameUiRenderer(eventHub);
-    solaGraphics = SolaGraphics.createInstance(solaEcs, platform.getRenderer(), assetLoaderProvider);
     platform.getViewport().setAspectMode(AspectMode.MAINTAIN);
 
     // Ecs setup
@@ -95,7 +92,6 @@ public class SketchyLifeSola extends Sola {
     if (gameSettings.isPlaying()) {
       World world = solaEcs.getWorld();
       sketchyLifeRenderer.render(renderer, world);
-//      solaGraphics.render();
       rainRenderer.render(renderer, world);
       gameUiRenderer.render(renderer, world);
     }

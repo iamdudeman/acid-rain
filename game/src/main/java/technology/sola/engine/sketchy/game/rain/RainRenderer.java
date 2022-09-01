@@ -16,7 +16,6 @@ public class RainRenderer {
   private boolean animationToggle = false;
 
   public void render(Renderer renderer, World world) {
-    BlendMode previousBlendMode = renderer.getBlendMode();
     renderer.setBlendMode(BlendMode.NORMAL);
 
     world.findEntityByName(Constants.EntityNames.CAMERA).ifPresent(cameraEntity -> {
@@ -26,8 +25,6 @@ public class RainRenderer {
         drawRain(renderer, entity.getComponent(RainComponent.class), cameraTransform.getX(), cameraTransform.getY());
       }
     });
-
-    renderer.setBlendMode(previousBlendMode);
   }
 
   /**
