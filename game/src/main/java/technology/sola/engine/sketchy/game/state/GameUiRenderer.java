@@ -19,14 +19,14 @@ public class GameUiRenderer {
   private final int sunlightBarWidth = 220;
   private final int sunlightBarHalfWidth = sunlightBarWidth / 2;
   private boolean shouldDrawGameOver = false;
-  private float score = 0f;
+  private float distanceTraveled = 0f;
 
   public GameUiRenderer(EventHub eventHub) {
     eventHub.add(gameStateEvent -> {
       shouldDrawGameOver = gameStateEvent.getMessage() == GameState.GAME_OVER;
 
       if (shouldDrawGameOver) {
-        score = gameStateEvent.getScore();
+        distanceTraveled = gameStateEvent.getDistanceTraveled();
       }
     }, GameStateEvent.class);
   }
@@ -34,15 +34,16 @@ public class GameUiRenderer {
   public void render(Renderer renderer, World world) {
     if (shouldDrawGameOver) {
       renderer.drawToLayer(Constants.Layers.FOREGROUND, r -> {
-        String scoreText = "Score: " + Math.round(score);
+        String scoreText = String.format("Distance traveled for noms: %,.2f", distanceTraveled);
         Font font = renderer.getFont();
         Font.TextDimensions gameOverDimensions = font.getDimensionsForText(gameOverText);
         Font.TextDimensions playAgainDimensions = font.getDimensionsForText(playAgainText);
         Font.TextDimensions scoreDimensions = font.getDimensionsForText(scoreText);
+        float maxWidth = Math.max(playAgainDimensions.width(), scoreDimensions.width());
         renderer.setBlendMode(BlendMode.NORMAL);
         renderer.fillRect(
           3, 3,
-          playAgainDimensions.width() + 6, gameOverDimensions.height() + playAgainDimensions.height() + scoreDimensions.height() + 6,
+          maxWidth + 6, gameOverDimensions.height() + playAgainDimensions.height() + scoreDimensions.height() + 6,
           new Color(150, 255, 255, 255)
         );
         renderer.drawString(gameOverText, 6, 3, Color.BLACK);

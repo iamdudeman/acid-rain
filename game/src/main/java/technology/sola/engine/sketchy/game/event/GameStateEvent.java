@@ -4,15 +4,15 @@ import technology.sola.engine.event.Event;
 
 public class GameStateEvent implements Event<GameState> {
   private final GameState gameState;
-  private final float score;
+  private final float distancedTraveled;
 
   public GameStateEvent(GameState gameState) {
     this(gameState, 0);
   }
 
-  public GameStateEvent(GameState gameState, float score) {
+  public GameStateEvent(GameState gameState, float distancedTraveled) {
     this.gameState = gameState;
-    this.score = score;
+    this.distancedTraveled = distancedTraveled;
   }
 
   @Override
@@ -20,7 +20,7 @@ public class GameStateEvent implements Event<GameState> {
     return gameState;
   }
 
-  public float getScore() {
-    return score;
+  public float getDistanceTraveled() {
+    return distancedTraveled;
   }
 }

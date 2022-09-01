@@ -10,8 +10,7 @@ import java.util.Random;
 import static technology.sola.engine.sketchy.game.chunk.Chunk.TILE_SIZE;
 
 public class ChunkCreator {
-  // TODO don't commit this random seed
-  private static final Random RANDOM = new Random(1337);
+  private static final Random RANDOM = new Random();
   private static final int cultureGenerations = 5;
   private static final int joinCliffsTilesAway = 2;
   private static final int minCliffTilesFromPlayer = 8;
