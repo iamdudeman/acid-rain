@@ -45,7 +45,7 @@ public class SketchyLifeSola extends Sola {
 
     // Ecs setup
     ChunkSystem chunkSystem = new ChunkSystem();
-    PlayerSystem playerSystem = new PlayerSystem(eventHub, keyboardInput);
+    PlayerSystem playerSystem = new PlayerSystem(eventHub, keyboardInput, assetLoaderProvider.get(AudioClip.class));
     PlayerCollisionDetectionSystem collisionDetectionSystem = new PlayerCollisionDetectionSystem(eventHub);
     eventHub.add(chunkSystem, GameStateEvent.class);
     solaEcs.addSystems(
@@ -66,7 +66,8 @@ public class SketchyLifeSola extends Sola {
     // Load assets
     new BulkAssetLoader(assetLoaderProvider)
       .addAsset(SpriteSheet.class, Constants.Assets.Sprites.SPRITE_SHEET_ID, "assets/sprites.json")
-      .addAsset(AudioClip.class, Constants.Assets.Audio.MAP, "assets/Test.wav")
+      .addAsset(AudioClip.class, Constants.Assets.Audio.GAME, "assets/Boopbooploopable.wav")
+      .addAsset(AudioClip.class, Constants.Assets.Audio.QUACK, "assets/Quack.wav")
       .loadAll()
       .onComplete(assets -> {
         // TODO play menu music first

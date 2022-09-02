@@ -29,7 +29,8 @@ public class Constants {
     }
 
     public static final class Audio {
-      public static final String MAP = "map";
+      public static final String GAME = "game";
+      public static final String QUACK = "quack";
 
       private Audio() {
       }
