@@ -78,7 +78,7 @@ public class GameStateSystem extends EcsSystem {
   }
 
   private World buildWorld() {
-    World world = new World(7000);
+    World world = new World(10000);
 
     world.createEntity(
       new TransformComponent(rendererHalfWidth, rendererHalfHeight),
