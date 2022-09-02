@@ -2,6 +2,8 @@ package technology.sola.engine.sketchy.game.player;
 
 import technology.sola.ecs.EcsSystem;
 import technology.sola.ecs.World;
+import technology.sola.engine.assets.AssetLoader;
+import technology.sola.engine.assets.audio.AudioClip;
 import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.event.EventHub;
 import technology.sola.engine.graphics.components.sprite.SpriteComponent;
@@ -18,8 +20,9 @@ import technology.sola.math.linear.Vector2D;
 
 public class PlayerSystem extends EcsSystem {
   private final KeyboardInput keyboardInput;
+  private long lastQuack = System.currentTimeMillis();
 
-  public PlayerSystem(EventHub eventHub, KeyboardInput keyboardInput) {
+  public PlayerSystem(EventHub eventHub, KeyboardInput keyboardInput, AssetLoader<AudioClip> audioClipAssetLoader) {
     this.keyboardInput = keyboardInput;
 
     eventHub.add(collisionManifoldEvent -> collisionManifoldEvent.getMessage().conditionallyResolveCollision(
@@ -38,6 +41,15 @@ public class PlayerSystem extends EcsSystem {
           playerTransform.setTranslate(
             playerTransform.getTranslate().add(collisionManifold.normal().scalar(scalar * collisionManifold.penetration()))
           );
+
+          audioClipAssetLoader.get(Constants.Assets.Audio.QUACK).executeIfLoaded(quack -> {
+            long now = System.currentTimeMillis();
+            if (lastQuack + 1000 < now) {
+              quack.stop();
+              quack.play();
+              lastQuack = now;
+            }
+          });
         } else if (tileType.assetId.equals(Constants.Assets.Sprites.DIRT)) {
           PlayerComponent playerComponent = player.getComponent(PlayerComponent.class);
 
