@@ -20,36 +20,6 @@ public class SketchyLifeRenderer {
   }
 
   public void render(Renderer renderer, World world) {
-//    world.findEntityByName(Constants.EntityNames.CAMERA).ifPresent(cameraEntity -> {
-//      Vector2D cameraTranslate = cameraEntity.getComponent(TransformComponent.class).getTranslate();
-//
-//      var spriteEntities = world.createView().of(TransformComponent.class, SpriteComponent.class);
-//
-//      renderer.setBlendMode(BlendMode.NO_BLENDING);
-//      for (var view : spriteEntities) {
-//        if (view.entity().hasComponent(TileComponent.class)) {
-//          view.c2().getSprite(spriteSheetAssetLoader).executeIfLoaded(solaImage -> {
-//            Vector2D translate = view.c1().getTranslate().subtract(cameraTranslate);
-//
-//            renderer.drawImage(translate.x, translate.y, solaImage);
-//          });
-//        }
-//      }
-//
-//      renderer.setBlendMode(BlendMode.MASK);
-//      for (var view : spriteEntities) {
-//        if (view.entity().hasComponent(PickupComponent.class) || view.entity().hasComponent(PlayerComponent.class)) {
-//          view.c2().getSprite(spriteSheetAssetLoader).executeIfLoaded(solaImage -> {
-//            Vector2D translate = view.c1().getTranslate().subtract(cameraTranslate);
-//
-//            renderer.drawImage(translate.x, translate.y, solaImage);
-//          });
-//        }
-//      }
-//    });
-
-
-
     world.findEntityByName(Constants.EntityNames.CAMERA).ifPresent(cameraEntity -> {
       Vector2D cameraTranslate = cameraEntity.getComponent(TransformComponent.class).getTranslate();
 
