@@ -13,6 +13,7 @@ import technology.sola.engine.sketchy.game.Constants;
 import technology.sola.engine.sketchy.game.SpriteCache;
 import technology.sola.engine.sketchy.game.chunk.TileComponent;
 import technology.sola.engine.sketchy.game.chunk.TileType;
+import technology.sola.engine.sketchy.game.rain.RainSystem;
 import technology.sola.math.linear.Vector2D;
 
 public class PlayerSystem extends EcsSystem {
@@ -38,7 +39,13 @@ public class PlayerSystem extends EcsSystem {
             playerTransform.getTranslate().add(collisionManifold.normal().scalar(scalar * collisionManifold.penetration()))
           );
         } else if (tileType.assetId.equals(Constants.Assets.Sprites.DIRT)) {
-          player.getComponent(PlayerComponent.class).setIsSlowed(true);
+          PlayerComponent playerComponent = player.getComponent(PlayerComponent.class);
+
+          if (tileComponent.getWetness() > RainSystem.THRESHOLD_THREE) {
+            playerComponent.setIsSuperSlowed(true);
+          } else {
+            playerComponent.setIsSlowed(true);
+          }
         }
       }
     ), CollisionManifoldEvent.class);
@@ -94,7 +101,7 @@ public class PlayerSystem extends EcsSystem {
         playerComponent.useSunlight();
       }
 
-      playerComponent.setIsSlowed(false);
+      playerComponent.resetSlowed();
     });
   }
 
