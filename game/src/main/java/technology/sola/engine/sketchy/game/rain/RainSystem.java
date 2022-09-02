@@ -16,11 +16,11 @@ import java.util.Random;
 
 public class RainSystem extends EcsSystem {
   public static final int THRESHOLD_ONE = 50;
-  public static final int THRESHOLD_TWO = THRESHOLD_ONE + 85;
+  public static final int THRESHOLD_TWO = THRESHOLD_ONE + 105;
   public static final int THRESHOLD_THREE = THRESHOLD_TWO + 60;
-  public static final int THRESHOLD_FOUR = THRESHOLD_THREE + 85;
-  public static final int THRESHOLD_FIVE = THRESHOLD_FOUR + 20;
-  public static final int THRESHOLD_SIX = THRESHOLD_FIVE + 15;
+  public static final int THRESHOLD_FOUR = THRESHOLD_THREE + 80;
+  public static final int THRESHOLD_FIVE = THRESHOLD_FOUR + 15;
+  public static final int THRESHOLD_SIX = THRESHOLD_FIVE + 10;
   public static final int THRESHOLD_SEVEN = THRESHOLD_SIX + 10;
   public static final int THRESHOLD_EIGHT = THRESHOLD_SEVEN + 5;
   private static final float COMMON_WETNESS_THRESHOLD = 0.25f;
@@ -28,7 +28,7 @@ public class RainSystem extends EcsSystem {
   private static final float SOMEWHAT_CLOSE_WETNESS_DISTANCE = 150;
   private static final float CLOSE_WETNESS_THRESHOLD = 0.85f;
   private static final float CLOSE_WETNESS_DISTANCE = 50;
-  private static final int MAX_DROPS_PER_UPDATE = 30;
+  private static final int MAX_DROPS_PER_UPDATE = 10;
 
   private final Random random = new Random();
   private final int rendererWidth;
