@@ -9,13 +9,12 @@ import technology.sola.engine.core.SolaConfiguration;
 import technology.sola.engine.core.module.graphics.gui.SolaGui;
 import technology.sola.engine.graphics.renderer.Renderer;
 import technology.sola.engine.graphics.screen.AspectMode;
-import technology.sola.engine.physics.system.CollisionDetectionSystem;
-import technology.sola.engine.sketchy.game.chunk.Chunk;
 import technology.sola.engine.sketchy.game.chunk.ChunkSystem;
 import technology.sola.engine.sketchy.game.event.GameState;
 import technology.sola.engine.sketchy.game.event.GameStateEvent;
 import technology.sola.engine.sketchy.game.gui.MainMenuGui;
 import technology.sola.engine.sketchy.game.player.CameraSystem;
+import technology.sola.engine.sketchy.game.player.PlayerCollisionDetectionSystem;
 import technology.sola.engine.sketchy.game.player.PlayerSystem;
 import technology.sola.engine.sketchy.game.rain.RainRenderer;
 import technology.sola.engine.sketchy.game.rain.RainSystem;
@@ -31,7 +30,7 @@ public class SketchyLifeSola extends Sola {
 
   @Override
   protected SolaConfiguration getConfiguration() {
-    return new SolaConfiguration("Sketchy Life", 480, 320, 25, false);
+    return new SolaConfiguration("Sketchy Life", 480, 320, 30, false);
   }
 
   @Override
@@ -47,7 +46,7 @@ public class SketchyLifeSola extends Sola {
     // Ecs setup
     ChunkSystem chunkSystem = new ChunkSystem();
     PlayerSystem playerSystem = new PlayerSystem(eventHub, keyboardInput);
-    CollisionDetectionSystem collisionDetectionSystem = new CollisionDetectionSystem(eventHub, Chunk.TILE_SIZE);
+    PlayerCollisionDetectionSystem collisionDetectionSystem = new PlayerCollisionDetectionSystem(eventHub);
     eventHub.add(chunkSystem, GameStateEvent.class);
     solaEcs.addSystems(
       chunkSystem,
