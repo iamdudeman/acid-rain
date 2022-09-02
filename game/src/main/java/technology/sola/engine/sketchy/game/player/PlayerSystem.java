@@ -9,6 +9,8 @@ import technology.sola.engine.event.EventHub;
 import technology.sola.engine.graphics.components.sprite.SpriteComponent;
 import technology.sola.engine.input.Key;
 import technology.sola.engine.input.KeyboardInput;
+import technology.sola.engine.input.MouseButton;
+import technology.sola.engine.input.MouseInput;
 import technology.sola.engine.physics.CollisionManifold;
 import technology.sola.engine.physics.event.CollisionManifoldEvent;
 import technology.sola.engine.sketchy.game.Constants;
@@ -20,10 +22,12 @@ import technology.sola.math.linear.Vector2D;
 
 public class PlayerSystem extends EcsSystem {
   private final KeyboardInput keyboardInput;
+  private final MouseInput mouseInput;
   private long lastQuack = System.currentTimeMillis();
 
-  public PlayerSystem(EventHub eventHub, KeyboardInput keyboardInput, AssetLoader<AudioClip> audioClipAssetLoader) {
+  public PlayerSystem(EventHub eventHub, KeyboardInput keyboardInput, MouseInput mouseInput, AssetLoader<AudioClip> audioClipAssetLoader) {
     this.keyboardInput = keyboardInput;
+    this.mouseInput = mouseInput;
 
     eventHub.add(collisionManifoldEvent -> collisionManifoldEvent.getMessage().conditionallyResolveCollision(
       entity -> Constants.EntityNames.PLAYER.equals(entity.getName()),
@@ -94,6 +98,14 @@ public class PlayerSystem extends EcsSystem {
 
       if (keyboardInput.isKeyHeld(Key.D)) {
         xMod++;
+      }
+
+      if (mouseInput.isMouseDragged(MouseButton.PRIMARY)) {
+        Vector2D mousePosition = mouseInput.getMousePosition();
+
+        // todo if mouse/touch above half screen ymod++
+        // todo if mouse/touch to right of half screen xmod++
+        // todo etc
       }
 
       if (xMod != 0 || yMod != 0) {
