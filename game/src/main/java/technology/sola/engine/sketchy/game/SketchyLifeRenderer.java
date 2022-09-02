@@ -59,9 +59,9 @@ public class SketchyLifeRenderer {
       for (var entity : spriteEntities) {
         if (entity.hasComponent(TileComponent.class)) {
           entity.getComponent(SpriteComponent.class).getSprite(spriteSheetAssetLoader).executeIfLoaded(solaImage -> {
-            Vector2D translate = entity.getComponent(TransformComponent.class).getTranslate().subtract(cameraTranslate);
+            Vector2D translate = entity.getComponent(TransformComponent.class).getTranslate();
 
-            renderer.drawImage(translate.x, translate.y, solaImage);
+            renderer.drawImage(translate.x - cameraTranslate.x, translate.y - cameraTranslate.y, solaImage);
           });
         }
       }
@@ -70,9 +70,9 @@ public class SketchyLifeRenderer {
       for (var entity : spriteEntities) {
         if (entity.hasComponent(PickupComponent.class) || entity.hasComponent(PlayerComponent.class)) {
           entity.getComponent(SpriteComponent.class).getSprite(spriteSheetAssetLoader).executeIfLoaded(solaImage -> {
-            Vector2D translate = entity.getComponent(TransformComponent.class).getTranslate().subtract(cameraTranslate);
+            Vector2D translate = entity.getComponent(TransformComponent.class).getTranslate();
 
-            renderer.drawImage(translate.x, translate.y, solaImage);
+            renderer.drawImage(translate.x - cameraTranslate.x, translate.y - cameraTranslate.y, solaImage);
           });
         }
       }
