@@ -21,9 +21,9 @@ public class ChunkCreator {
   private static final float BASE_CULTURE_DIRT_PERCENT = 0.02f;
   private static final float BASE_CULTURE_DIRT_CLEAR_PERCENT = 0.05f;
   private static final float DIRT_TILE_FILL_PERCENTAGE = 0.5f;
-  private static final int MAX_PICKUPS_PER_CHUNK = 2;
-  private static final float TEXTURE_2_PERCENT = 0.1f;
-  private static final float TEXTURE_3_PERCENT = 0.05f;
+  private static final int MAX_PICKUPS_PER_CHUNK = 5;
+  private static final float TEXTURE_2_PERCENT = 0.10f;
+  private static final float TEXTURE_3_PERCENT = 0.10f;
 
   public Chunk createChunk(ChunkId chunkId, Vector2D playerTranslate) {
     TileComponent[][] tileComponents = new TileComponent[Chunk.COLUMNS][Chunk.ROWS];
