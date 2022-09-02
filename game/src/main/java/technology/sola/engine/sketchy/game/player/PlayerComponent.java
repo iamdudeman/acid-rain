@@ -4,7 +4,7 @@ import technology.sola.ecs.Component;
 
 public class PlayerComponent implements Component {
   public static final int MAX_SUNLIGHT = 1000;
-  private static final int PICKUP_VALUE = MAX_SUNLIGHT / 10;
+  private static final int PICKUP_VALUE = MAX_SUNLIGHT / 12;
   private static final float SPEED = 50;
   private static final float SLOW_SPEED = SPEED / 2;
   private static final float SUPER_SLOW_SPEED = SPEED / 4;
