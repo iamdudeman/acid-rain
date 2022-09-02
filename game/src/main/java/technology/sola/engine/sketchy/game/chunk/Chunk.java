@@ -3,7 +3,6 @@ package technology.sola.engine.sketchy.game.chunk;
 import technology.sola.ecs.Entity;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
-import technology.sola.engine.graphics.components.LayerComponent;
 import technology.sola.engine.graphics.components.sprite.SpriteComponent;
 import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.engine.sketchy.game.Constants;
@@ -40,8 +39,7 @@ public class Chunk {
         Entity newEntity = world.createEntity(
           tileComponent,
           new TransformComponent(x, y),
-          new SpriteComponent(SpriteCache.get(tileType.assetId, tileType.variation)),
-          new LayerComponent(Constants.Layers.BACKGROUND)
+          new SpriteComponent(SpriteCache.get(tileType.assetId, tileType.variation))
         );
 
         if (tileType.assetId.equals(Constants.Assets.Sprites.CLIFF)) {
@@ -53,8 +51,7 @@ public class Chunk {
             new TransformComponent(x + 6, y + 6),
             new PickupComponent(tileComponent),
             new SpriteComponent(SpriteCache.get(Constants.Assets.Sprites.DONUT, "main")),
-            ColliderComponent.circle(3),
-            new LayerComponent(Constants.Layers.BACKGROUND, 50)
+            ColliderComponent.circle(3)
           );
         }
       }

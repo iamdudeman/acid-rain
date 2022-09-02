@@ -7,7 +7,6 @@ import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.event.EventHub;
 import technology.sola.engine.graphics.components.CameraComponent;
-import technology.sola.engine.graphics.components.LayerComponent;
 import technology.sola.engine.graphics.components.sprite.SpriteComponent;
 import technology.sola.engine.input.MouseButton;
 import technology.sola.engine.input.MouseInput;
@@ -79,12 +78,11 @@ public class GameStateSystem extends EcsSystem {
   }
 
   private World buildWorld() {
-    World world = new World(10000);
+    World world = new World(7000);
 
     world.createEntity(
       new TransformComponent(rendererHalfWidth, rendererHalfHeight),
       new SpriteComponent(SpriteCache.get(Constants.Assets.Sprites.DUCK, "top")),
-      new LayerComponent(Constants.Layers.FOREGROUND),
       new PlayerComponent(),
       ColliderComponent.circle(5)
     ).setName(Constants.EntityNames.PLAYER);
