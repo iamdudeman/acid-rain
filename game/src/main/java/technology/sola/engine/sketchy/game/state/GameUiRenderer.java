@@ -61,9 +61,8 @@ public class GameUiRenderer {
         float x = renderer.getWidth() / 2f - sunlightBarHalfWidth;
         float y = renderer.getHeight() - sunlightBarHeight - 8;
 
-        String donutsConsumedText = "Donuts eated: " + playerComponent.getDonutsConsumed();
+        String donutsConsumedText = "Donuts: " + playerComponent.getDonutsConsumed();
         renderer.drawString(donutsConsumedText, 3, 3, Color.BLACK);
-        // TODO Note: this is why sprite transparency is working (should use BlendModeComponent later for sure when fixed in engine)
         renderer.setBlendMode(BlendMode.NORMAL);
         renderer.fillRect(x, y, percentage * sunlightBarWidth, sunlightBarHeight, SUNLIGHT_BAR_COLOR);
         renderer.setBlendMode(BlendMode.NO_BLENDING);

@@ -15,7 +15,6 @@ import technology.sola.math.linear.Vector2D;
 import java.util.Random;
 
 public class RainSystem extends EcsSystem {
-  // todo tune these numbers
   public static final int THRESHOLD_ONE = 50;
   public static final int THRESHOLD_TWO = THRESHOLD_ONE + 85;
   public static final int THRESHOLD_THREE = THRESHOLD_TWO + 60;
