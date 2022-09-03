@@ -49,7 +49,7 @@ public class AcidRainSola extends Sola {
     eventHub.add(chunkSystem, GameStateEvent.class);
     solaEcs.addSystems(
       chunkSystem,
-      new GameStateSystem(solaEcs, mouseInput, eventHub),
+      new GameStateSystem(solaEcs, mouseInput, keyboardInput, eventHub),
       new RainSystem(),
       new CameraSystem(),
       playerSystem,

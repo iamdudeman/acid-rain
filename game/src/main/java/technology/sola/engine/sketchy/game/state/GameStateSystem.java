@@ -8,6 +8,8 @@ import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.event.EventHub;
 import technology.sola.engine.graphics.components.CameraComponent;
 import technology.sola.engine.graphics.components.sprite.SpriteComponent;
+import technology.sola.engine.input.Key;
+import technology.sola.engine.input.KeyboardInput;
 import technology.sola.engine.input.MouseButton;
 import technology.sola.engine.input.MouseInput;
 import technology.sola.engine.physics.component.ColliderComponent;
@@ -23,10 +25,12 @@ import technology.sola.math.linear.Vector2D;
 
 public class GameStateSystem extends EcsSystem {
   private final MouseInput mouseInput;
+  private final KeyboardInput keyboardInput;
   private final EventHub eventHub;
 
-  public GameStateSystem(SolaEcs solaEcs, MouseInput mouseInput, EventHub eventHub) {
+  public GameStateSystem(SolaEcs solaEcs, MouseInput mouseInput, KeyboardInput keyboardInput, EventHub eventHub) {
     this.mouseInput = mouseInput;
+    this.keyboardInput = keyboardInput;
     this.eventHub = eventHub;
 
     eventHub.add(gameStateEvent -> {
@@ -68,7 +72,7 @@ public class GameStateSystem extends EcsSystem {
 
   @Override
   public void update(World world, float v) {
-    if (mouseInput.isMouseClicked(MouseButton.PRIMARY)) {
+    if (mouseInput.isMouseClicked(MouseButton.PRIMARY) || keyboardInput.isKeyPressed(Key.SPACE)) {
       eventHub.emit(new GameStateEvent(GameState.RESTART));
     }
   }
