@@ -22,12 +22,10 @@ import technology.sola.engine.sketchy.game.player.PlayerComponent;
 import technology.sola.math.linear.Vector2D;
 
 public class GameStateSystem extends EcsSystem {
-  private final SolaEcs solaEcs;
   private final MouseInput mouseInput;
   private final EventHub eventHub;
 
   public GameStateSystem(SolaEcs solaEcs, MouseInput mouseInput, EventHub eventHub) {
-    this.solaEcs = solaEcs;
     this.mouseInput = mouseInput;
     this.eventHub = eventHub;
 

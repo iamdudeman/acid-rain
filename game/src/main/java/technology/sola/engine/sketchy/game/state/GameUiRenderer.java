@@ -17,10 +17,10 @@ import technology.sola.engine.sketchy.game.player.PlayerComponent;
 import technology.sola.math.linear.Vector2D;
 
 public class GameUiRenderer {
+  public static final int SUNLIGHT_BAR_HEIGHT = 12;
   private static final Color SUNLIGHT_BAR_COLOR = new Color(200, 255, 215, 0);
   private static final String GAME_OVER_TEXT = "Game Over";
   private static final String PLAY_AGAIN_TEXT = "Click anywhere to play again";
-  private final int sunlightBarHeight = 12;
   private final int sunlightBarWidth = 220;
   private final int sunlightBarHalfWidth = sunlightBarWidth / 2;
   private final float animationDuration = 100;
@@ -64,8 +64,7 @@ public class GameUiRenderer {
           // todo translate here seems to be off a bit!
           AffineTransform affineTransform = new AffineTransform()
             .translate(duckLastPosition.x, duckLastPosition.y)
-            .scale(size, size)
-            ;
+            .scale(size, size);
 
           renderer.drawImage(spriteSheet.getSprite(spriteId), affineTransform);
           gameOverDuckAnimation++;
@@ -87,14 +86,14 @@ public class GameUiRenderer {
         PlayerComponent playerComponent = playerEntity.getComponent(PlayerComponent.class);
         float percentage = playerComponent.getSunlight() / (float) PlayerComponent.MAX_SUNLIGHT;
         float x = AcidRainSola.HALF_CANVAS_WIDTH - sunlightBarHalfWidth;
-        float y = AcidRainSola.CANVAS_HEIGHT - sunlightBarHeight - 8;
+        float y = AcidRainSola.CANVAS_HEIGHT - SUNLIGHT_BAR_HEIGHT - 8;
 
         String donutsConsumedText = "Donuts: " + playerComponent.getDonutsConsumed();
         renderer.drawString(donutsConsumedText, 3, 3, Color.BLACK);
         renderer.setBlendMode(BlendMode.NORMAL);
-        renderer.fillRect(x, y, percentage * sunlightBarWidth, sunlightBarHeight, SUNLIGHT_BAR_COLOR);
+        renderer.fillRect(x, y, percentage * sunlightBarWidth, SUNLIGHT_BAR_HEIGHT, SUNLIGHT_BAR_COLOR);
         renderer.setBlendMode(BlendMode.NO_BLENDING);
-        renderer.drawRect(x, y, sunlightBarWidth, sunlightBarHeight, Color.BLACK);
+        renderer.drawRect(x, y, sunlightBarWidth, SUNLIGHT_BAR_HEIGHT, Color.BLACK);
       });
     }
   }

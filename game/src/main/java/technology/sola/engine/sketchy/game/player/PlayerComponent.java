@@ -8,7 +8,7 @@ public class PlayerComponent implements Component {
   private static final float SPEED = 50;
   private static final float SLOW_SPEED = SPEED / 2;
   private static final float SUPER_SLOW_SPEED = SPEED / 4;
-  private int sunlight = 0;
+  private int sunlight = 500;
   private boolean isUsingSunlight = false;
   private boolean isSlowed = false;
   private boolean isSuperSlowed = false;
@@ -20,6 +20,10 @@ public class PlayerComponent implements Component {
 
   public void useSunlight() {
     this.sunlight--;
+
+    if (this.sunlight == 0) {
+      this.isUsingSunlight = false;
+    }
   }
 
   public boolean isUsingSunlight() {

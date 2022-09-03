@@ -19,15 +19,16 @@ import technology.sola.engine.sketchy.game.SpriteCache;
 import technology.sola.engine.sketchy.game.chunk.TileComponent;
 import technology.sola.engine.sketchy.game.chunk.TileType;
 import technology.sola.engine.sketchy.game.rain.RainSystem;
+import technology.sola.engine.sketchy.game.state.GameUiRenderer;
 import technology.sola.math.linear.Vector2D;
 
 public class PlayerSystem extends EcsSystem {
   private static final float TOUCH_TILE_WIDTH = AcidRainSola.CANVAS_WIDTH / 9f;
   private static final float TOUCH_TILE_HEIGHT = AcidRainSola.CANVAS_HEIGHT / 9f;
+  private static final int TOUCH_CONTROLS_POWER_THRESHOLD = AcidRainSola.CANVAS_HEIGHT - GameUiRenderer.SUNLIGHT_BAR_HEIGHT - 8;
   private final KeyboardInput keyboardInput;
   private final MouseInput mouseInput;
   private long lastQuack = System.currentTimeMillis();
-
 
   public PlayerSystem(EventHub eventHub, KeyboardInput keyboardInput, MouseInput mouseInput, AssetLoader<AudioClip> audioClipAssetLoader) {
     this.keyboardInput = keyboardInput;
@@ -121,7 +122,9 @@ public class PlayerSystem extends EcsSystem {
         theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, variation));
       }
 
-      playerComponent.setUsingSunlight(keyboardInput.isKeyHeld(Key.SPACE));
+      if (keyboardInput.isKeyPressed(Key.SPACE) || (mouseInput.isMouseClicked(MouseButton.PRIMARY) && mouseInput.getMousePosition().y > (TOUCH_CONTROLS_POWER_THRESHOLD))) {
+        playerComponent.setUsingSunlight(!playerComponent.isUsingSunlight());
+      }
 
       if (playerComponent.isUsingSunlight()) {
         playerComponent.useSunlight();
@@ -157,6 +160,10 @@ public class PlayerSystem extends EcsSystem {
     int xMod = 0;
     int yMod = 0;
     Vector2D mousePosition = mouseInput.getMousePosition();
+
+    if (mousePosition.y > TOUCH_CONTROLS_POWER_THRESHOLD) {
+      return new PlayerMovement(0, 0);
+    }
 
     int x = (int) (mousePosition.x / TOUCH_TILE_WIDTH);
     int y = (int) (mousePosition.y / TOUCH_TILE_HEIGHT);
