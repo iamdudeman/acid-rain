@@ -22,10 +22,12 @@ import technology.sola.engine.sketchy.game.player.PlayerComponent;
 import technology.sola.math.linear.Vector2D;
 
 public class GameStateSystem extends EcsSystem {
+  private final SolaEcs solaEcs;
   private final MouseInput mouseInput;
   private final EventHub eventHub;
 
   public GameStateSystem(SolaEcs solaEcs, MouseInput mouseInput, EventHub eventHub) {
+    this.solaEcs = solaEcs;
     this.mouseInput = mouseInput;
     this.eventHub = eventHub;
 
@@ -52,12 +54,14 @@ public class GameStateSystem extends EcsSystem {
       (player, erasedTile) -> {
         Vector2D playerTranslate = player.getComponent(TransformComponent.class).getTranslate();
         int donutsConsumed = player.getComponent(PlayerComponent.class).getDonutsConsumed();
+        // todo this is really hacky, clean up later
+        Vector2D playerTranslateForFallAnimation = playerTranslate.subtract(solaEcs.getWorld().findEntityByName(Constants.EntityNames.CAMERA).get().getComponent(TransformComponent.class).getTranslate());
 
         eventHub.emit(new GameStateEvent(
           GameState.GAME_OVER,
           playerTranslate.subtract(new Vector2D(AcidRainSola.HALF_CANVAS_WIDTH, AcidRainSola.HALF_CANVAS_HEIGHT)).magnitude(),
           donutsConsumed,
-          playerTranslate,
+          playerTranslateForFallAnimation,
           player.getComponent(SpriteComponent.class).getSpriteId()
         ));
       }
