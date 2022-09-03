@@ -6,13 +6,11 @@ import technology.sola.engine.assets.audio.AudioClip;
 import technology.sola.engine.assets.graphics.SpriteSheet;
 import technology.sola.engine.core.Sola;
 import technology.sola.engine.core.SolaConfiguration;
-import technology.sola.engine.core.module.graphics.gui.SolaGui;
 import technology.sola.engine.graphics.renderer.Renderer;
 import technology.sola.engine.graphics.screen.AspectMode;
 import technology.sola.engine.sketchy.game.chunk.ChunkSystem;
 import technology.sola.engine.sketchy.game.event.GameState;
 import technology.sola.engine.sketchy.game.event.GameStateEvent;
-import technology.sola.engine.sketchy.game.gui.MainMenuGui;
 import technology.sola.engine.sketchy.game.player.CameraSystem;
 import technology.sola.engine.sketchy.game.player.PlayerCollisionDetectionSystem;
 import technology.sola.engine.sketchy.game.player.PlayerSystem;
@@ -27,8 +25,6 @@ public class AcidRainSola extends Sola {
   public static final int CANVAS_HEIGHT = 320;
   public static final int HALF_CANVAS_HEIGHT = CANVAS_HEIGHT / 2;
   private final RainRenderer rainRenderer = new RainRenderer();
-  private GameSettings gameSettings;
-  private SolaGui solaGui;
   private GameUiRenderer gameUiRenderer;
   private SpriteRenderer spriteRenderer;
 
@@ -40,7 +36,6 @@ public class AcidRainSola extends Sola {
   @Override
   protected void onInit() {
     solaInitialization.useAsyncInitialization();
-    gameSettings = new GameSettings(solaEcs);
 
     // Initialize stuff for rendering
     spriteRenderer = new SpriteRenderer(assetLoaderProvider.get(SpriteSheet.class));
@@ -63,10 +58,6 @@ public class AcidRainSola extends Sola {
     eventHub.emit(new GameStateEvent(GameState.RESTART));
     eventHub.add(gameStateEvent -> collisionDetectionSystem.setActive(gameStateEvent.getMessage() == GameState.RESTART), GameStateEvent.class);
 
-    // Initialize gui stuff
-    solaGui = SolaGui.createInstance(assetLoaderProvider, platform);
-    solaGui.setGuiRoot(MainMenuGui.buildRootElement(solaGui, gameSettings));
-
     // Load assets
     new BulkAssetLoader(assetLoaderProvider)
       .addAsset(SpriteSheet.class, Constants.Assets.Sprites.SPRITE_SHEET_ID, "assets/sprites.json")
@@ -74,17 +65,12 @@ public class AcidRainSola extends Sola {
       .addAsset(AudioClip.class, Constants.Assets.Audio.QUACK, "assets/Quack.wav")
       .loadAll()
       .onComplete(assets -> {
-        // TODO play menu music first
         if (assets[1] instanceof AudioClip audioClip) {
           audioClip.setVolume(.5f);
 
           audioClip.loop(-1);
         }
 
-        // TODO temporarily not showing the menu first
-        // gameSettings.showMenu();
-
-        // TODO consider some sort of game loading splash screen state of some sort?
         solaInitialization.completeAsyncInitialization();
       });
   }
@@ -93,15 +79,9 @@ public class AcidRainSola extends Sola {
   protected void onRender(Renderer renderer) {
     renderer.clear();
 
-    if (gameSettings.isPlaying()) {
-      World world = solaEcs.getWorld();
-      spriteRenderer.render(renderer, world);
-      rainRenderer.render(renderer, world);
-      gameUiRenderer.render(renderer, world);
-    }
-
-    if (gameSettings.isShowMenu()) {
-      solaGui.render();
-    }
+    World world = solaEcs.getWorld();
+    spriteRenderer.render(renderer, world);
+    rainRenderer.render(renderer, world);
+    gameUiRenderer.render(renderer, world);
   }
 }
