@@ -29,6 +29,7 @@ public class PlayerSystem extends EcsSystem {
   private final KeyboardInput keyboardInput;
   private final MouseInput mouseInput;
   private long lastQuack = System.currentTimeMillis();
+  private PlayerMovement previousMouseMovement = null;
 
   public PlayerSystem(EventHub eventHub, KeyboardInput keyboardInput, MouseInput mouseInput, AssetLoader<AudioClip> audioClipAssetLoader) {
     this.keyboardInput = keyboardInput;
@@ -89,26 +90,37 @@ public class PlayerSystem extends EcsSystem {
       int xMod = 0;
       int yMod = 0;
 
-      if (keyboardInput.isKeyHeld(Key.W)) {
+      if (keyboardInput.isKeyHeld(Key.W) || keyboardInput.isKeyHeld(Key.UP)) {
         yMod--;
+        previousMouseMovement = null;
       }
 
-      if (keyboardInput.isKeyHeld(Key.S)) {
+      if (keyboardInput.isKeyHeld(Key.S) || keyboardInput.isKeyHeld(Key.DOWN)) {
         yMod++;
+        previousMouseMovement = null;
       }
 
-      if (keyboardInput.isKeyHeld(Key.A)) {
+      if (keyboardInput.isKeyHeld(Key.A) || keyboardInput.isKeyHeld(Key.LEFT)) {
         xMod--;
+        previousMouseMovement = null;
       }
 
-      if (keyboardInput.isKeyHeld(Key.D)) {
+      if (keyboardInput.isKeyHeld(Key.D) || keyboardInput.isKeyHeld(Key.RIGHT)) {
         xMod++;
+        previousMouseMovement = null;
       }
 
       if (mouseInput.isMouseDragged(MouseButton.PRIMARY)) {
-        PlayerMovement manipulations = manipulateModsByMouse();
-        xMod = manipulations.xMod();
-        yMod = manipulations.yMod();
+        PlayerMovement temp = manipulateModsByMouse();
+
+        if (temp != null) {
+          previousMouseMovement = temp;
+        }
+      }
+
+      if (previousMouseMovement != null) {
+        xMod = previousMouseMovement.xMod();
+        yMod = previousMouseMovement.yMod();
       }
 
       if (xMod != 0 || yMod != 0) {
@@ -162,7 +174,7 @@ public class PlayerSystem extends EcsSystem {
     Vector2D mousePosition = mouseInput.getMousePosition();
 
     if (mousePosition.y > TOUCH_CONTROLS_POWER_THRESHOLD) {
-      return new PlayerMovement(0, 0);
+      return null;
     }
 
     int x = (int) (mousePosition.x / TOUCH_TILE_WIDTH);

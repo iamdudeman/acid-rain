@@ -40,7 +40,7 @@ public class PlayerComponent implements Component {
   }
 
   public void setUsingSunlight(boolean usingSunlight) {
-    isUsingSunlight = usingSunlight;
+    isUsingSunlight = usingSunlight && sunlight > 0;
   }
 
   public float getSpeed() {
