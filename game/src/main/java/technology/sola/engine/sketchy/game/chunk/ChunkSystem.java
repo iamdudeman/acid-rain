@@ -36,11 +36,6 @@ public class ChunkSystem extends EcsSystem implements EventListener<GameStateEve
         }
       } else {
         chunkCache.clear();
-
-        Chunk initialChunk = chunkCreator.createChunk(lastPlayerChunkId, playerTranslate);
-
-        chunkCache.put(lastPlayerChunkId, initialChunk);
-        initialChunk.loadChunk(world);
         processPlayerPositionChange(world, lastPlayerChunkId, playerTranslate);
         isInitialized = true;
       }

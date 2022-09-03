@@ -14,7 +14,11 @@ public class TileComponent implements Component {
   public TileComponent(ChunkId chunkId, TileType tileType) {
     this.chunkId = chunkId;
     this.tileType = tileType;
-    this.wetness = RANDOM.nextInt(15);
+    if (chunkId.rowIndex() == 0 && chunkId.columnIndex() == 0) {
+      this.wetness = 0;
+    } else {
+      this.wetness = RANDOM.nextInt(48);
+    }
   }
 
   public ChunkId getChunkId() {
