@@ -35,17 +35,30 @@ public class PlayerCollisionDetectionSystem extends EcsSystem {
     List<Entity> entities = world.findEntitiesWithComponents(ColliderComponent.class, TransformComponent.class);
 
     world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(playerEntity -> {
+      TransformComponent playerTransform = playerEntity.getComponent(TransformComponent.class);
+      ColliderComponent colliderComponent = playerEntity.getComponent(ColliderComponent.class);
+
       for (Entity entity : entities) {
         if (entity == playerEntity) {
           continue;
         }
 
         TransformComponent transformB = entity.getComponent(TransformComponent.class);
+
+        if (playerTransform.getX() + 50 < transformB.getX() || playerTransform.getX() - 50 > transformB.getX()) {
+          continue;
+        }
+
+        if (playerTransform.getY() + 50 < transformB.getY() || playerTransform.getY() - 50 > transformB.getY()) {
+          continue;
+        }
+
         ColliderComponent colliderB = entity.getComponent(ColliderComponent.class);
+
         CollisionManifold collisionManifoldEvent = CollisionUtils.calculateCollisionManifold(
           playerEntity, entity,
-          playerEntity.getComponent(TransformComponent.class), transformB,
-          playerEntity.getComponent(ColliderComponent.class), colliderB
+          playerTransform, transformB,
+          colliderComponent, colliderB
         );
 
         if (collisionManifoldEvent != null) {

@@ -30,7 +30,6 @@ public class RainSystem extends EcsSystem {
   private static final float CLOSE_WETNESS_THRESHOLD = 0.85f;
   private static final float CLOSE_WETNESS_DISTANCE = 50;
   private static final int MAX_DROPS_PER_UPDATE = 10;
-
   private final Random random = new Random();
   private int dropsPerUpdate = MAX_DROPS_PER_UPDATE;
 
@@ -108,6 +107,11 @@ public class RainSystem extends EcsSystem {
         threshold = CLOSE_WETNESS_THRESHOLD;
       } else if (distance < SOMEWHAT_CLOSE_WETNESS_DISTANCE) {
         threshold = SOMEWHAT_CLOSE_WETNESS_THRESHOLD;
+      }
+
+      // todo constants maybe?
+      if (distance > 400) {
+        threshold = 0.05f;
       }
 
       if (random.nextFloat() < threshold) {

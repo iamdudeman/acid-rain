@@ -27,7 +27,9 @@ public class SpriteRenderer {
 
       renderer.setBlendMode(BlendMode.NO_BLENDING);
       for (var entity : spriteEntities) {
-        if (entity.hasComponent(TileComponent.class)) {
+        var components = entity.getCurrentComponents();
+
+        if (components.contains(TileComponent.class)) {
           entity.getComponent(SpriteComponent.class).getSprite(spriteSheetAssetLoader).executeIfLoaded(solaImage -> {
             Vector2D translate = entity.getComponent(TransformComponent.class).getTranslate();
 
@@ -38,7 +40,9 @@ public class SpriteRenderer {
 
       renderer.setBlendMode(BlendMode.MASK);
       for (var entity : spriteEntities) {
-        if (entity.hasComponent(PickupComponent.class) || entity.hasComponent(PlayerComponent.class)) {
+        var components = entity.getCurrentComponents();
+
+        if (components.contains(PickupComponent.class) || components.contains(PlayerComponent.class)) {
           entity.getComponent(SpriteComponent.class).getSprite(spriteSheetAssetLoader).executeIfLoaded(solaImage -> {
             Vector2D translate = entity.getComponent(TransformComponent.class).getTranslate();
 
