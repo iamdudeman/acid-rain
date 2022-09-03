@@ -1,8 +1,11 @@
 package technology.sola.engine.sketchy.game.state;
 
 import technology.sola.ecs.World;
+import technology.sola.engine.assets.AssetLoader;
+import technology.sola.engine.assets.graphics.SpriteSheet;
 import technology.sola.engine.assets.graphics.font.Font;
 import technology.sola.engine.event.EventHub;
+import technology.sola.engine.graphics.AffineTransform;
 import technology.sola.engine.graphics.Color;
 import technology.sola.engine.graphics.renderer.BlendMode;
 import technology.sola.engine.graphics.renderer.Renderer;
@@ -11,6 +14,7 @@ import technology.sola.engine.sketchy.game.SketchyLifeSola;
 import technology.sola.engine.sketchy.game.event.GameState;
 import technology.sola.engine.sketchy.game.event.GameStateEvent;
 import technology.sola.engine.sketchy.game.player.PlayerComponent;
+import technology.sola.math.linear.Vector2D;
 
 public class GameUiRenderer {
   private static final Color SUNLIGHT_BAR_COLOR = new Color(200, 255, 215, 0);
@@ -19,17 +23,27 @@ public class GameUiRenderer {
   private final int sunlightBarHeight = 12;
   private final int sunlightBarWidth = 220;
   private final int sunlightBarHalfWidth = sunlightBarWidth / 2;
+  private final float animationDuration = 100;
+  private final AssetLoader<SpriteSheet> spriteSheetAssetLoader;
   private boolean shouldDrawGameOver = false;
   private float distanceTraveled = 0f;
   private int donutsConsumed = 0;
+  private int gameOverDuckAnimation = 0;
+  private Vector2D duckLastPosition;
+  private String spriteId;
 
-  public GameUiRenderer(EventHub eventHub) {
+  public GameUiRenderer(EventHub eventHub, AssetLoader<SpriteSheet> spriteSheetAssetLoader) {
+    this.spriteSheetAssetLoader = spriteSheetAssetLoader;
     eventHub.add(gameStateEvent -> {
       shouldDrawGameOver = gameStateEvent.getMessage() == GameState.GAME_OVER;
 
       if (shouldDrawGameOver) {
         distanceTraveled = gameStateEvent.getDistanceTraveled();
         donutsConsumed = gameStateEvent.getDonutsConsumed();
+        duckLastPosition = gameStateEvent.getPlayerPosition();
+        spriteId = gameStateEvent.getSpriteId();
+      } else {
+        gameOverDuckAnimation = 0;
       }
     }, GameStateEvent.class);
   }
@@ -44,6 +58,19 @@ public class GameUiRenderer {
       Font.TextDimensions distanceTraveledDimensions = font.getDimensionsForText(distanceTraveledText);
       Font.TextDimensions playAgainDimensions = font.getDimensionsForText(PLAY_AGAIN_TEXT);
       float maxWidth = Math.max(playAgainDimensions.width(), distanceTraveledDimensions.width());
+      if (gameOverDuckAnimation < animationDuration) {
+        spriteSheetAssetLoader.get(Constants.Assets.Sprites.SPRITE_SHEET_ID).executeIfLoaded(spriteSheet -> {
+          float size = (animationDuration - gameOverDuckAnimation) / animationDuration;
+          // todo translate here seems to be off a bit!
+          AffineTransform affineTransform = new AffineTransform()
+            .translate(duckLastPosition.x, duckLastPosition.y)
+            .scale(size, size)
+            ;
+
+          renderer.drawImage(spriteSheet.getSprite(spriteId), affineTransform);
+          gameOverDuckAnimation++;
+        });
+      }
       renderer.setBlendMode(BlendMode.NORMAL);
       renderer.fillRect(
         3, 3,

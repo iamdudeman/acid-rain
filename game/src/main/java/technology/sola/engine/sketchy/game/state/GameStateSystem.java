@@ -56,7 +56,9 @@ public class GameStateSystem extends EcsSystem {
         eventHub.emit(new GameStateEvent(
           GameState.GAME_OVER,
           playerTranslate.subtract(new Vector2D(SketchyLifeSola.HALF_CANVAS_WIDTH, SketchyLifeSola.HALF_CANVAS_HEIGHT)).magnitude(),
-          donutsConsumed
+          donutsConsumed,
+          playerTranslate,
+          player.getComponent(SpriteComponent.class).getSpriteId()
         ));
       }
     ), CollisionManifoldEvent.class);

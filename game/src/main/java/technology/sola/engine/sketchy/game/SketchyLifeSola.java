@@ -44,7 +44,7 @@ public class SketchyLifeSola extends Sola {
 
     // Initialize stuff for rendering
     sketchyLifeRenderer = new SketchyLifeRenderer(assetLoaderProvider.get(SpriteSheet.class));
-    gameUiRenderer = new GameUiRenderer(eventHub);
+    gameUiRenderer = new GameUiRenderer(eventHub, assetLoaderProvider.get(SpriteSheet.class));
     platform.getViewport().setAspectMode(AspectMode.MAINTAIN);
 
     // Ecs setup
