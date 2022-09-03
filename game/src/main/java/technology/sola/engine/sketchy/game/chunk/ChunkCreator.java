@@ -14,7 +14,7 @@ public class ChunkCreator {
   private static final int CULTURE_GENERATIONS = 5;
   private static final int JOIN_CLIFFS_TILES_AWAY = 2;
   private static final int MIN_CLIFF_TILES_FROM_PLAYER = 6;
-  private static final float BASE_INIT_CLIFF_PERCENT = 0.05f;
+  private static final float BASE_INIT_CLIFF_PERCENT = 0.15f;
   private static final float BASE_INIT_DIRT_PERCENT = 0.08f;
   private static final float BASE_CULTURE_CLIFF_PERCENT = 0.05f;
   private static final float BASE_CULTURE_CLIFF_CLEAR_PERCENT = 0.05f;
@@ -24,6 +24,7 @@ public class ChunkCreator {
   private static final int MAX_PICKUPS_PER_CHUNK = 5;
   private static final float TEXTURE_2_PERCENT = 0.10f;
   private static final float TEXTURE_3_PERCENT = 0.10f;
+  private static final int CLIFF_SAFETY_GAP = 1;
 
   public Chunk createChunk(ChunkId chunkId, Vector2D playerTranslate) {
     TileComponent[][] tileComponents = new TileComponent[Chunk.COLUMNS][Chunk.ROWS];
@@ -51,7 +52,9 @@ public class ChunkCreator {
 
         if (Math.abs(x - playerTranslate.x) > TILE_SIZE * MIN_CLIFF_TILES_FROM_PLAYER || Math.abs(y - playerTranslate.y) > TILE_SIZE * MIN_CLIFF_TILES_FROM_PLAYER) {
           if (RANDOM.nextFloat() < BASE_INIT_CLIFF_PERCENT) {
-            initialTileType = TileType.CLIFF_CENTER;
+            if (column > CLIFF_SAFETY_GAP && row > CLIFF_SAFETY_GAP && column + CLIFF_SAFETY_GAP < Chunk.COLUMNS && row + CLIFF_SAFETY_GAP < Chunk.ROWS) {
+              initialTileType = TileType.CLIFF_CENTER;
+            }
           }
         }
 
