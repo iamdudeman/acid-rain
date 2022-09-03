@@ -4,6 +4,7 @@ public class Constants {
   public static final class EntityNames {
     public static final String CAMERA = "camera";
     public static final String PLAYER = "player";
+    public static final String SUNLIGHT = "sunlight";
 
     private EntityNames() {
     }

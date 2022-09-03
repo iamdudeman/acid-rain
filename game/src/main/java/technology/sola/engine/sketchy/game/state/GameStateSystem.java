@@ -18,6 +18,7 @@ import technology.sola.engine.sketchy.game.event.GameState;
 import technology.sola.engine.sketchy.game.event.GameStateEvent;
 import technology.sola.engine.sketchy.game.player.PickupComponent;
 import technology.sola.engine.sketchy.game.player.PlayerComponent;
+import technology.sola.engine.sketchy.game.sunlight.SunlightBarComponent;
 import technology.sola.math.linear.Vector2D;
 
 public class GameStateSystem extends EcsSystem {
@@ -86,6 +87,13 @@ public class GameStateSystem extends EcsSystem {
       new PlayerComponent(),
       ColliderComponent.circle(5)
     ).setName(Constants.EntityNames.PLAYER);
+
+    world.createEntity(
+      new TransformComponent(rendererHalfWidth, rendererHalfHeight),
+      new SpriteComponent(SpriteCache.get(Constants.Assets.Sprites.DUCK, "top")),
+      new SunlightBarComponent(),
+      ColliderComponent.circle(5)
+    ).setName(Constants.EntityNames.SUNLIGHT);
 
     world.createEntity(
       new TransformComponent(),

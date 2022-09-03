@@ -20,6 +20,7 @@ import technology.sola.engine.sketchy.game.rain.RainRenderer;
 import technology.sola.engine.sketchy.game.rain.RainSystem;
 import technology.sola.engine.sketchy.game.state.GameUiRenderer;
 import technology.sola.engine.sketchy.game.state.GameStateSystem;
+import technology.sola.engine.sketchy.game.sunlight.SunlightSystem;
 
 public class SketchyLifeSola extends Sola {
   private final RainRenderer rainRenderer = new RainRenderer();
@@ -45,7 +46,8 @@ public class SketchyLifeSola extends Sola {
 
     // Ecs setup
     ChunkSystem chunkSystem = new ChunkSystem();
-    PlayerSystem playerSystem = new PlayerSystem(eventHub, keyboardInput, mouseInput, assetLoaderProvider.get(AudioClip.class));
+    PlayerSystem playerSystem = new PlayerSystem(solaEcs, eventHub, keyboardInput, mouseInput, assetLoaderProvider.get(AudioClip.class));
+    SunlightSystem sunlightSystem = new SunlightSystem(keyboardInput, mouseInput);
     PlayerCollisionDetectionSystem collisionDetectionSystem = new PlayerCollisionDetectionSystem(eventHub);
     eventHub.add(chunkSystem, GameStateEvent.class);
     solaEcs.addSystems(
@@ -54,6 +56,7 @@ public class SketchyLifeSola extends Sola {
       new RainSystem(platform.getRenderer().getWidth(), platform.getRenderer().getHeight()),
       new CameraSystem(platform.getRenderer().getWidth(), platform.getRenderer().getHeight()),
       playerSystem,
+      sunlightSystem,
       collisionDetectionSystem
     );
     eventHub.emit(new GameStateEvent(GameState.RESTART));

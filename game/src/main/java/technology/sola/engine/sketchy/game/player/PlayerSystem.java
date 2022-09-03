@@ -1,6 +1,8 @@
 package technology.sola.engine.sketchy.game.player;
 
 import technology.sola.ecs.EcsSystem;
+import technology.sola.ecs.Entity;
+import technology.sola.ecs.SolaEcs;
 import technology.sola.ecs.World;
 import technology.sola.engine.assets.AssetLoader;
 import technology.sola.engine.assets.audio.AudioClip;
@@ -18,14 +20,17 @@ import technology.sola.engine.sketchy.game.SpriteCache;
 import technology.sola.engine.sketchy.game.chunk.TileComponent;
 import technology.sola.engine.sketchy.game.chunk.TileType;
 import technology.sola.engine.sketchy.game.rain.RainSystem;
+import technology.sola.engine.sketchy.game.sunlight.SunlightBarComponent;
 import technology.sola.math.linear.Vector2D;
+
+import java.util.Optional;
 
 public class PlayerSystem extends EcsSystem {
   private final KeyboardInput keyboardInput;
   private final MouseInput mouseInput;
   private long lastQuack = System.currentTimeMillis();
 
-  public PlayerSystem(EventHub eventHub, KeyboardInput keyboardInput, MouseInput mouseInput, AssetLoader<AudioClip> audioClipAssetLoader) {
+  public PlayerSystem(SolaEcs solaEcs, EventHub eventHub, KeyboardInput keyboardInput, MouseInput mouseInput, AssetLoader<AudioClip> audioClipAssetLoader) {
     this.keyboardInput = keyboardInput;
     this.mouseInput = mouseInput;
 
@@ -70,6 +75,12 @@ public class PlayerSystem extends EcsSystem {
       entity -> Constants.EntityNames.PLAYER.equals(entity.getName()),
       entity -> entity.hasComponent(PickupComponent.class),
       (player, pickup) -> {
+        //TODO: Any better way to do this?
+        Optional<Entity> sunlightEntityOptional = solaEcs.getWorld().findEntityByName(Constants.EntityNames.SUNLIGHT);
+        sunlightEntityOptional.ifPresent(entity -> {
+          Optional<SunlightBarComponent> sunlightBarComponent = entity.getOptionalComponent(SunlightBarComponent.class);
+          sunlightBarComponent.ifPresent(SunlightBarComponent::incrementSunlight);
+          });
         player.getComponent(PlayerComponent.class).pickupDonut();
         pickup.getComponent(PickupComponent.class).hostTile().consumePickup();
         pickup.destroy();
@@ -115,12 +126,6 @@ public class PlayerSystem extends EcsSystem {
         Vector2D velocity = new Vector2D(xMod * speed, yMod * speed).scalar(dt);
         transformComponent.setTranslate(transformComponent.getTranslate().add(velocity));
         theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, variation));
-      }
-
-      playerComponent.setUsingSunlight(keyboardInput.isKeyHeld(Key.SPACE));
-
-      if (playerComponent.isUsingSunlight()) {
-        playerComponent.useSunlight();
       }
 
       playerComponent.resetSlowed();

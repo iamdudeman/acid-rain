@@ -10,6 +10,7 @@ import technology.sola.engine.sketchy.game.SpriteCache;
 import technology.sola.engine.sketchy.game.chunk.Chunk;
 import technology.sola.engine.sketchy.game.chunk.TileComponent;
 import technology.sola.engine.sketchy.game.player.PlayerComponent;
+import technology.sola.engine.sketchy.game.sunlight.SunlightBarComponent;
 import technology.sola.math.linear.Vector2D;
 
 import java.util.Random;
@@ -42,19 +43,19 @@ public class RainSystem extends EcsSystem {
 
   @Override
   public void update(World world, float dt) {
-    var playerEntityOptional = world.findEntityByName(Constants.EntityNames.PLAYER);
+    var sunlightEntityOptional = world.findEntityByName(Constants.EntityNames.SUNLIGHT);
 
-    playerEntityOptional.ifPresentOrElse(
-      playerEntity -> {
-        Vector2D playerTranslate = playerEntity.getComponent(TransformComponent.class).getTranslate();
-        PlayerComponent playerComponent = playerEntity.getComponent(PlayerComponent.class);
+    sunlightEntityOptional.ifPresentOrElse(
+      sunlightBarEntity -> {
+        Vector2D sunlightTranslate = sunlightBarEntity.getComponent(TransformComponent.class).getTranslate();
+        SunlightBarComponent sunlightBarComponent = sunlightBarEntity.getComponent(SunlightBarComponent.class);
 
-        updateDropsPerUpdateForSunlight(playerComponent.isUsingSunlight());
+        updateDropsPerUpdateForSunlight(sunlightBarComponent.isDraining());
         updateRainHeight(world, true);
 
-        if (!playerComponent.isUsingSunlight()) {
+        if (!sunlightBarComponent.isDraining()) {
           createNewRain(world);
-          updateTileWetness(world, playerTranslate);
+          updateTileWetness(world, sunlightTranslate);
         }
       },
       () -> {

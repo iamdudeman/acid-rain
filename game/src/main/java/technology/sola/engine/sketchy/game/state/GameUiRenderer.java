@@ -10,6 +10,7 @@ import technology.sola.engine.sketchy.game.Constants;
 import technology.sola.engine.sketchy.game.event.GameState;
 import technology.sola.engine.sketchy.game.event.GameStateEvent;
 import technology.sola.engine.sketchy.game.player.PlayerComponent;
+import technology.sola.engine.sketchy.game.sunlight.SunlightBarComponent;
 
 public class GameUiRenderer {
   private static final Color SUNLIGHT_BAR_COLOR = new Color(200, 255, 215, 0);
@@ -57,15 +58,19 @@ public class GameUiRenderer {
     } else {
       world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(playerEntity -> {
         PlayerComponent playerComponent = playerEntity.getComponent(PlayerComponent.class);
-        float percentage = playerComponent.getSunlight() / (float) PlayerComponent.MAX_SUNLIGHT;
-        float x = renderer.getWidth() / 2f - sunlightBarHalfWidth;
-        float y = renderer.getHeight() - sunlightBarHeight - 8;
-
         String donutsConsumedText = "Donuts: " + playerComponent.getDonutsConsumed();
         renderer.drawString(donutsConsumedText, 3, 3, Color.BLACK);
         renderer.setBlendMode(BlendMode.NORMAL);
-        renderer.fillRect(x, y, percentage * sunlightBarWidth, sunlightBarHeight, SUNLIGHT_BAR_COLOR);
         renderer.setBlendMode(BlendMode.NO_BLENDING);
+      });
+
+      world.findEntityByName(Constants.EntityNames.SUNLIGHT).ifPresent(sunlightBarEntity -> {
+        float x = renderer.getWidth() / 2f - sunlightBarHalfWidth;
+        float y = renderer.getHeight() - sunlightBarHeight - 8;
+
+        SunlightBarComponent sunlightBarComponentComponent = sunlightBarEntity.getComponent(SunlightBarComponent.class);
+        float percentage = sunlightBarComponentComponent.getSunlight() / (float) SunlightBarComponent.MAX_SUNLIGHT;
+        renderer.fillRect(x, y, percentage * sunlightBarWidth, sunlightBarHeight, SUNLIGHT_BAR_COLOR);
         renderer.drawRect(x, y, sunlightBarWidth, sunlightBarHeight, Color.BLACK);
       });
     }
