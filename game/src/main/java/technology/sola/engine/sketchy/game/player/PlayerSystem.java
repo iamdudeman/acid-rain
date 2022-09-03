@@ -101,11 +101,9 @@ public class PlayerSystem extends EcsSystem {
       }
 
       if (mouseInput.isMouseDragged(MouseButton.PRIMARY)) {
-        Vector2D mousePosition = mouseInput.getMousePosition();
-
-        // todo if mouse/touch above half screen ymod++
-        // todo if mouse/touch to right of half screen xmod++
-        // todo etc
+        PlayerMovement manipulations = manipulateModsByMouse(xMod, yMod);
+        xMod = manipulations.xMod();
+        yMod = manipulations.yMod();
       }
 
       if (xMod != 0 || yMod != 0) {
@@ -127,6 +125,79 @@ public class PlayerSystem extends EcsSystem {
 
       playerComponent.resetSlowed();
     });
+  }
+
+  private PlayerMovement manipulateModsByMouse(int xMod, int yMod)
+  {
+/*      cursor click box map
+     _____________________________________________________
+    |  ↖  |  ↖  |  ↖  |  ↑  |  ↑  |  ↑  |  ↗  |  ↗  |  ↗  |
+    +-----+-----+-----+-----+-----+-----+-----+-----+-----+
+    |  ↖  |  ↖  |  ↖  |  ↑  |  ↑  |  ↑  |  ↗  |  ↗  |  ↗  |
+    +-----+-----+-----+-----+-----+-----+-----+-----+-----+
+    |  ↖  |  ↖  |  ↖  |  ↑  |  ↑  |  ↑  |  ↗  |  ↗  |  ↗  |
+    +-----+-----+-----+-----+-----+-----+-----+-----+-----+
+    |  ←  |  ←  |  ←  |  ↖  |  ↑  |  ↗  |  →  |  →  |  →  |
+    +-----+-----+-----+-----+-----+-----+-----+-----+-----+
+    |  ←  |  ←  |  ←  |  ←  |duck |  →  |  →  |  →  |  →  |
+    +-----+-----+-----+-----+-----+-----+-----+-----+-----+
+    |  ←  |  ←  |  ←  |  ↙  |  ↓  |  ↘  |  →  |  →  |  →  |
+    +-----+-----+-----+-----+-----+-----+-----+-----+-----+
+    |  ↙  |  ↙  |  ↙  |  ↓  |  ↓  |  ↓  |  ↘  |  ↘  |  ↘  |
+    +-----+-----+-----+-----+-----+-----+-----+-----+-----+
+    |  ↙  |  ↙  |  ↙  |  ↓  |  ↓  |  ↓  |  ↘  |  ↘  |  ↘  |
+    +-----+-----+-----+-----+-----+-----+-----+-----+-----+
+    |  ↙  |  ↙  |  ↙  |  ↓  |  ↓  |  ↓  |  ↘  |  ↘  |  ↘  |
+    |_____________________________________________________|
+*/
+//  9x9 - if we want click actions near the duck
+    Vector2D gridPosition = getGridPosition(53.33F, 35.55F);
+    int x = (int) gridPosition.x;
+    int y = (int) gridPosition.y;
+    boolean isInDuckX = x >= 3 && x <= 5;
+    boolean isInDuckY = y >= 3 && y <= 5;
+    if (y < 3 || (y == 3 && isInDuckX)) {
+      //move up
+      yMod--;
+    }
+    if (y >= 6  || (y == 5 && isInDuckX)) {
+      //move down
+      yMod++;
+    }
+    if (x < 3 || (x == 3 && isInDuckY)) {
+      //move left
+      xMod--;
+    }
+    if (x > 5 || (x == 5 && isInDuckY)) {
+      //move right
+      xMod++;
+    }
+//    3x3 grid if we want simpler logic and don't think the user will click near the duck
+//    Vector2D gridPosition = getGridPosition(160, 106.66F);
+//    if (gridPosition.y == 0) {
+//      //move up
+//      yMod--;
+//    }
+//    if (gridPosition.y == 2) {
+//      //move down
+//      yMod++;
+//    }
+//    if (gridPosition.x == 0) {
+//      //move left
+//      xMod--;
+//    }
+//    if (gridPosition.x == 2) {
+//      //move right
+//      xMod++;
+//    }
+
+    return new PlayerMovement(xMod, yMod);
+  }
+
+  public Vector2D getGridPosition(float tileWidth, float tileHeight)
+  {
+    Vector2D mousePosition = mouseInput.getMousePosition();
+    return new Vector2D(mousePosition.x / tileWidth, mousePosition.y / tileHeight);
   }
 
   private String getSpriteVariation(int xMod, int yMod) {
@@ -151,3 +222,4 @@ public class PlayerSystem extends EcsSystem {
     }
   }
 }
+
