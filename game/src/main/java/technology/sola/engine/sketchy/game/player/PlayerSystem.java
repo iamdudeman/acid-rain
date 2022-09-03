@@ -151,7 +151,9 @@ public class PlayerSystem extends EcsSystem {
     |_____________________________________________________|
 */
 //  9x9 - if we want click actions near the duck
-    Vector2D gridPosition = getGridPosition(53.33F, 35.55F);
+    float tileWidth = 480f / 9; // TODO Tim make consts
+    float tileHeight = 320f / 9;
+    Vector2D gridPosition = getGridPosition(tileWidth, tileHeight);
     int x = (int) gridPosition.x;
     int y = (int) gridPosition.y;
     boolean isInDuckX = x >= 3 && x <= 5;
