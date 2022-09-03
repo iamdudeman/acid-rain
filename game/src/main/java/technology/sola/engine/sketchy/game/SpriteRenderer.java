@@ -12,10 +12,10 @@ import technology.sola.engine.sketchy.game.player.PickupComponent;
 import technology.sola.engine.sketchy.game.player.PlayerComponent;
 import technology.sola.math.linear.Vector2D;
 
-public class SketchyLifeRenderer {
+public class SpriteRenderer {
   private final AssetLoader<SpriteSheet> spriteSheetAssetLoader;
 
-  public SketchyLifeRenderer(AssetLoader<SpriteSheet> spriteSheetAssetLoader) {
+  public SpriteRenderer(AssetLoader<SpriteSheet> spriteSheetAssetLoader) {
     this.spriteSheetAssetLoader = spriteSheetAssetLoader;
   }
 

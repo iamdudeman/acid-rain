@@ -6,7 +6,7 @@ import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.graphics.components.sprite.SpriteComponent;
 import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.engine.sketchy.game.Constants;
-import technology.sola.engine.sketchy.game.SketchyLifeSola;
+import technology.sola.engine.sketchy.game.AcidRainSola;
 import technology.sola.engine.sketchy.game.SpriteCache;
 import technology.sola.engine.sketchy.game.chunk.Chunk;
 import technology.sola.engine.sketchy.game.chunk.TileComponent;
@@ -86,8 +86,8 @@ public class RainSystem extends EcsSystem {
     final int edge = Chunk.TILE_SIZE * 3;
 
     for (int i = 0; i < dropsPerUpdate; i++) {
-      float x = random.nextFloat(-edge, SketchyLifeSola.CANVAS_WIDTH + edge);
-      float y = random.nextFloat(-edge, SketchyLifeSola.CANVAS_HEIGHT + edge);
+      float x = random.nextFloat(-edge, AcidRainSola.CANVAS_WIDTH + edge);
+      float y = random.nextFloat(-edge, AcidRainSola.CANVAS_HEIGHT + edge);
 
       world.createEntity(
         new RainComponent(x + cameraX, y + cameraY)

@@ -4,7 +4,7 @@ import technology.sola.ecs.EcsSystem;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.sketchy.game.Constants;
-import technology.sola.engine.sketchy.game.SketchyLifeSola;
+import technology.sola.engine.sketchy.game.AcidRainSola;
 import technology.sola.math.linear.Vector2D;
 
 public class CameraSystem extends EcsSystem {
@@ -16,7 +16,7 @@ public class CameraSystem extends EcsSystem {
         TransformComponent playerTransform = playerEntity.getComponent(TransformComponent.class);
 
         cameraTransform.setTranslate(
-          playerTransform.getTranslate().subtract(new Vector2D(SketchyLifeSola.HALF_CANVAS_WIDTH, SketchyLifeSola.HALF_CANVAS_HEIGHT))
+          playerTransform.getTranslate().subtract(new Vector2D(AcidRainSola.HALF_CANVAS_WIDTH, AcidRainSola.HALF_CANVAS_HEIGHT))
         );
       });
     });

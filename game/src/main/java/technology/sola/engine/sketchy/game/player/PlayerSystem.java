@@ -14,7 +14,7 @@ import technology.sola.engine.input.MouseInput;
 import technology.sola.engine.physics.CollisionManifold;
 import technology.sola.engine.physics.event.CollisionManifoldEvent;
 import technology.sola.engine.sketchy.game.Constants;
-import technology.sola.engine.sketchy.game.SketchyLifeSola;
+import technology.sola.engine.sketchy.game.AcidRainSola;
 import technology.sola.engine.sketchy.game.SpriteCache;
 import technology.sola.engine.sketchy.game.chunk.TileComponent;
 import technology.sola.engine.sketchy.game.chunk.TileType;
@@ -22,8 +22,8 @@ import technology.sola.engine.sketchy.game.rain.RainSystem;
 import technology.sola.math.linear.Vector2D;
 
 public class PlayerSystem extends EcsSystem {
-  private static final float TOUCH_TILE_WIDTH = SketchyLifeSola.CANVAS_WIDTH / 9f;
-  private static final float TOUCH_TILE_HEIGHT = SketchyLifeSola.CANVAS_HEIGHT / 9f;
+  private static final float TOUCH_TILE_WIDTH = AcidRainSola.CANVAS_WIDTH / 9f;
+  private static final float TOUCH_TILE_HEIGHT = AcidRainSola.CANVAS_HEIGHT / 9f;
   private final KeyboardInput keyboardInput;
   private final MouseInput mouseInput;
   private long lastQuack = System.currentTimeMillis();

@@ -10,7 +10,7 @@ import technology.sola.engine.graphics.Color;
 import technology.sola.engine.graphics.renderer.BlendMode;
 import technology.sola.engine.graphics.renderer.Renderer;
 import technology.sola.engine.sketchy.game.Constants;
-import technology.sola.engine.sketchy.game.SketchyLifeSola;
+import technology.sola.engine.sketchy.game.AcidRainSola;
 import technology.sola.engine.sketchy.game.event.GameState;
 import technology.sola.engine.sketchy.game.event.GameStateEvent;
 import technology.sola.engine.sketchy.game.player.PlayerComponent;
@@ -86,8 +86,8 @@ public class GameUiRenderer {
       world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(playerEntity -> {
         PlayerComponent playerComponent = playerEntity.getComponent(PlayerComponent.class);
         float percentage = playerComponent.getSunlight() / (float) PlayerComponent.MAX_SUNLIGHT;
-        float x = SketchyLifeSola.HALF_CANVAS_WIDTH - sunlightBarHalfWidth;
-        float y = SketchyLifeSola.CANVAS_HEIGHT - sunlightBarHeight - 8;
+        float x = AcidRainSola.HALF_CANVAS_WIDTH - sunlightBarHalfWidth;
+        float y = AcidRainSola.CANVAS_HEIGHT - sunlightBarHeight - 8;
 
         String donutsConsumedText = "Donuts: " + playerComponent.getDonutsConsumed();
         renderer.drawString(donutsConsumedText, 3, 3, Color.BLACK);

@@ -13,7 +13,7 @@ import technology.sola.engine.input.MouseInput;
 import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.engine.physics.event.CollisionManifoldEvent;
 import technology.sola.engine.sketchy.game.Constants;
-import technology.sola.engine.sketchy.game.SketchyLifeSola;
+import technology.sola.engine.sketchy.game.AcidRainSola;
 import technology.sola.engine.sketchy.game.SpriteCache;
 import technology.sola.engine.sketchy.game.event.GameState;
 import technology.sola.engine.sketchy.game.event.GameStateEvent;
@@ -55,7 +55,7 @@ public class GameStateSystem extends EcsSystem {
 
         eventHub.emit(new GameStateEvent(
           GameState.GAME_OVER,
-          playerTranslate.subtract(new Vector2D(SketchyLifeSola.HALF_CANVAS_WIDTH, SketchyLifeSola.HALF_CANVAS_HEIGHT)).magnitude(),
+          playerTranslate.subtract(new Vector2D(AcidRainSola.HALF_CANVAS_WIDTH, AcidRainSola.HALF_CANVAS_HEIGHT)).magnitude(),
           donutsConsumed,
           playerTranslate,
           player.getComponent(SpriteComponent.class).getSpriteId()
@@ -80,7 +80,7 @@ public class GameStateSystem extends EcsSystem {
     World world = new World(10000);
 
     world.createEntity(
-      new TransformComponent(SketchyLifeSola.HALF_CANVAS_WIDTH, SketchyLifeSola.HALF_CANVAS_HEIGHT),
+      new TransformComponent(AcidRainSola.HALF_CANVAS_WIDTH, AcidRainSola.HALF_CANVAS_HEIGHT),
       new SpriteComponent(SpriteCache.get(Constants.Assets.Sprites.DUCK, "top")),
       new PlayerComponent(),
       ColliderComponent.circle(5)

@@ -21,7 +21,7 @@ import technology.sola.engine.sketchy.game.rain.RainSystem;
 import technology.sola.engine.sketchy.game.state.GameUiRenderer;
 import technology.sola.engine.sketchy.game.state.GameStateSystem;
 
-public class SketchyLifeSola extends Sola {
+public class AcidRainSola extends Sola {
   public static final int CANVAS_WIDTH = 480;
   public static final int HALF_CANVAS_WIDTH = CANVAS_WIDTH / 2;
   public static final int CANVAS_HEIGHT = 320;
@@ -30,11 +30,11 @@ public class SketchyLifeSola extends Sola {
   private GameSettings gameSettings;
   private SolaGui solaGui;
   private GameUiRenderer gameUiRenderer;
-  private SketchyLifeRenderer sketchyLifeRenderer;
+  private SpriteRenderer spriteRenderer;
 
   @Override
   protected SolaConfiguration getConfiguration() {
-    return new SolaConfiguration("Sketchy Life", CANVAS_WIDTH, CANVAS_HEIGHT, 30, false);
+    return new SolaConfiguration("Acid Rain", CANVAS_WIDTH, CANVAS_HEIGHT, 30, false);
   }
 
   @Override
@@ -43,7 +43,7 @@ public class SketchyLifeSola extends Sola {
     gameSettings = new GameSettings(solaEcs);
 
     // Initialize stuff for rendering
-    sketchyLifeRenderer = new SketchyLifeRenderer(assetLoaderProvider.get(SpriteSheet.class));
+    spriteRenderer = new SpriteRenderer(assetLoaderProvider.get(SpriteSheet.class));
     gameUiRenderer = new GameUiRenderer(eventHub, assetLoaderProvider.get(SpriteSheet.class));
     platform.getViewport().setAspectMode(AspectMode.MAINTAIN);
 
@@ -95,7 +95,7 @@ public class SketchyLifeSola extends Sola {
 
     if (gameSettings.isPlaying()) {
       World world = solaEcs.getWorld();
-      sketchyLifeRenderer.render(renderer, world);
+      spriteRenderer.render(renderer, world);
       rainRenderer.render(renderer, world);
       gameUiRenderer.render(renderer, world);
     }

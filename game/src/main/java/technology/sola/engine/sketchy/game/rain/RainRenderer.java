@@ -7,7 +7,7 @@ import technology.sola.engine.graphics.Color;
 import technology.sola.engine.graphics.renderer.BlendMode;
 import technology.sola.engine.graphics.renderer.Renderer;
 import technology.sola.engine.sketchy.game.Constants;
-import technology.sola.engine.sketchy.game.SketchyLifeSola;
+import technology.sola.engine.sketchy.game.AcidRainSola;
 
 public class RainRenderer {
   public static final int RAIN_ANIMATION_HEIGHT_THRESHOLD_1 = -2;
@@ -42,8 +42,8 @@ public class RainRenderer {
     float y = rainComponent.y - cameraY;
 
     if (height > 0) {
-      float halfCameraWidth = SketchyLifeSola.CANVAS_WIDTH * 0.5f;
-      float halfCameraHeight = SketchyLifeSola.CANVAS_HEIGHT * 0.5f;
+      float halfCameraWidth = AcidRainSola.CANVAS_WIDTH * 0.5f;
+      float halfCameraHeight = AcidRainSola.CANVAS_HEIGHT * 0.5f;
 
       float vectorX = (x - (halfCameraWidth)) / halfCameraWidth;
       float vectorY = (y - (halfCameraHeight)) / halfCameraHeight;
