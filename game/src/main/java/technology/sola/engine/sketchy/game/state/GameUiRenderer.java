@@ -20,7 +20,7 @@ public class GameUiRenderer {
   public static final int SUNLIGHT_BAR_HEIGHT = 12;
   private static final Color SUNLIGHT_BAR_COLOR = new Color(200, 255, 215, 0);
   private static final String GAME_OVER_TEXT = "Game Over";
-  private static final String PLAY_AGAIN_TEXT = "Click anywhere to play again";
+  private static final String PLAY_AGAIN_TEXT = "Click or press space play again";
   private final int sunlightBarWidth = 220;
   private final int sunlightBarHalfWidth = sunlightBarWidth / 2;
   private final float animationDuration = 100;
