@@ -20,6 +20,10 @@ public class PlayerComponent implements Component {
 
   public void useSunlight() {
     this.sunlight--;
+
+    if (this.sunlight == 0) {
+      this.isUsingSunlight = false;
+    }
   }
 
   public boolean isUsingSunlight() {

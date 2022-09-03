@@ -21,7 +21,7 @@ public class MainMenuGui {
     TextGuiElement temporaryTitle = solaGui.createElement(
       TextGuiElement::new,
       TextGuiElement.Properties::new,
-      p -> p.setText("Sketchy Life").setColorText(Color.WHITE).margin.setBottom(16)
+      p -> p.setText("Acid Rain").setColorText(Color.WHITE).margin.setBottom(16)
     );
 
     ButtonGuiElement playButton = solaGui.createElement(

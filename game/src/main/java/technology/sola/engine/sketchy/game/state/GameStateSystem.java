@@ -13,6 +13,7 @@ import technology.sola.engine.input.MouseInput;
 import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.engine.physics.event.CollisionManifoldEvent;
 import technology.sola.engine.sketchy.game.Constants;
+import technology.sola.engine.sketchy.game.AcidRainSola;
 import technology.sola.engine.sketchy.game.SpriteCache;
 import technology.sola.engine.sketchy.game.event.GameState;
 import technology.sola.engine.sketchy.game.event.GameStateEvent;
@@ -23,14 +24,10 @@ import technology.sola.math.linear.Vector2D;
 public class GameStateSystem extends EcsSystem {
   private final MouseInput mouseInput;
   private final EventHub eventHub;
-  private final float rendererHalfWidth;
-  private final float rendererHalfHeight;
 
-  public GameStateSystem(SolaEcs solaEcs, MouseInput mouseInput, EventHub eventHub, int rendererWidth, int rendererHeight) {
+  public GameStateSystem(SolaEcs solaEcs, MouseInput mouseInput, EventHub eventHub) {
     this.mouseInput = mouseInput;
     this.eventHub = eventHub;
-    this.rendererHalfWidth = rendererWidth / 2f;
-    this.rendererHalfHeight = rendererHeight / 2f;
 
     eventHub.add(gameStateEvent -> {
       if (gameStateEvent.getMessage() == GameState.GAME_OVER) {
@@ -55,11 +52,15 @@ public class GameStateSystem extends EcsSystem {
       (player, erasedTile) -> {
         Vector2D playerTranslate = player.getComponent(TransformComponent.class).getTranslate();
         int donutsConsumed = player.getComponent(PlayerComponent.class).getDonutsConsumed();
+        // todo this is really hacky, clean up later
+        Vector2D playerTranslateForFallAnimation = playerTranslate.subtract(solaEcs.getWorld().findEntityByName(Constants.EntityNames.CAMERA).get().getComponent(TransformComponent.class).getTranslate());
 
         eventHub.emit(new GameStateEvent(
           GameState.GAME_OVER,
-          playerTranslate.subtract(new Vector2D(rendererHalfWidth, rendererHalfHeight)).magnitude(),
-          donutsConsumed
+          playerTranslate.subtract(new Vector2D(AcidRainSola.HALF_CANVAS_WIDTH, AcidRainSola.HALF_CANVAS_HEIGHT)).magnitude(),
+          donutsConsumed,
+          playerTranslateForFallAnimation,
+          player.getComponent(SpriteComponent.class).getSpriteId()
         ));
       }
     ), CollisionManifoldEvent.class);
@@ -81,7 +82,7 @@ public class GameStateSystem extends EcsSystem {
     World world = new World(10000);
 
     world.createEntity(
-      new TransformComponent(rendererHalfWidth, rendererHalfHeight),
+      new TransformComponent(AcidRainSola.HALF_CANVAS_WIDTH, AcidRainSola.HALF_CANVAS_HEIGHT),
       new SpriteComponent(SpriteCache.get(Constants.Assets.Sprites.DUCK, "top")),
       new PlayerComponent(),
       ColliderComponent.circle(5)

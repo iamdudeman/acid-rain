@@ -14,13 +14,18 @@ import technology.sola.engine.input.MouseInput;
 import technology.sola.engine.physics.CollisionManifold;
 import technology.sola.engine.physics.event.CollisionManifoldEvent;
 import technology.sola.engine.sketchy.game.Constants;
+import technology.sola.engine.sketchy.game.AcidRainSola;
 import technology.sola.engine.sketchy.game.SpriteCache;
 import technology.sola.engine.sketchy.game.chunk.TileComponent;
 import technology.sola.engine.sketchy.game.chunk.TileType;
 import technology.sola.engine.sketchy.game.rain.RainSystem;
+import technology.sola.engine.sketchy.game.state.GameUiRenderer;
 import technology.sola.math.linear.Vector2D;
 
 public class PlayerSystem extends EcsSystem {
+  private static final float TOUCH_TILE_WIDTH = AcidRainSola.CANVAS_WIDTH / 9f;
+  private static final float TOUCH_TILE_HEIGHT = AcidRainSola.CANVAS_HEIGHT / 9f;
+  private static final int TOUCH_CONTROLS_POWER_THRESHOLD = AcidRainSola.CANVAS_HEIGHT - GameUiRenderer.SUNLIGHT_BAR_HEIGHT - 8;
   private final KeyboardInput keyboardInput;
   private final MouseInput mouseInput;
   private long lastQuack = System.currentTimeMillis();
@@ -117,7 +122,9 @@ public class PlayerSystem extends EcsSystem {
         theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, variation));
       }
 
-      playerComponent.setUsingSunlight(keyboardInput.isKeyHeld(Key.SPACE));
+      if (keyboardInput.isKeyPressed(Key.SPACE) || (mouseInput.isMouseClicked(MouseButton.PRIMARY) && mouseInput.getMousePosition().y > (TOUCH_CONTROLS_POWER_THRESHOLD))) {
+        playerComponent.setUsingSunlight(!playerComponent.isUsingSunlight());
+      }
 
       if (playerComponent.isUsingSunlight()) {
         playerComponent.useSunlight();
@@ -127,81 +134,59 @@ public class PlayerSystem extends EcsSystem {
     });
   }
 
-  private PlayerMovement manipulateModsByMouse()
-  {
-/*      cursor click box map
-     _____________________________________________________
-    |  ↖  |  ↖  |  ↖  |  ↑  |  ↑  |  ↑  |  ↗  |  ↗  |  ↗  |
-    +-----+-----+-----+-----+-----+-----+-----+-----+-----+
-    |  ↖  |  ↖  |  ↖  |  ↑  |  ↑  |  ↑  |  ↗  |  ↗  |  ↗  |
-    +-----+-----+-----+-----+-----+-----+-----+-----+-----+
-    |  ↖  |  ↖  |  ↖  |  ↑  |  ↑  |  ↑  |  ↗  |  ↗  |  ↗  |
-    +-----+-----+-----+-----+-----+-----+-----+-----+-----+
-    |  <  |  <  |  <  |  ↖  |  ↑  |  ↗  |  →  |  →  |  →  |
-    +-----+-----+-----+-----+-----+-----+-----+-----+-----+
-    |  <  |  <  |  <  |  <  |duck |  →  |  →  |  →  |  →  |
-    +-----+-----+-----+-----+-----+-----+-----+-----+-----+
-    |  <  |  <  |  <  |  ↙  |  ↓  |  ↘  |  →  |  →  |  →  |
-    +-----+-----+-----+-----+-----+-----+-----+-----+-----+
-    |  ↙  |  ↙  |  ↙  |  ↓  |  ↓  |  ↓  |  ↘  |  ↘  |  ↘  |
-    +-----+-----+-----+-----+-----+-----+-----+-----+-----+
-    |  ↙  |  ↙  |  ↙  |  ↓  |  ↓  |  ↓  |  ↘  |  ↘  |  ↘  |
-    +-----+-----+-----+-----+-----+-----+-----+-----+-----+
-    |  ↙  |  ↙  |  ↙  |  ↓  |  ↓  |  ↓  |  ↘  |  ↘  |  ↘  |
-    |_____________________________________________________|
-*/
-//  9x9 - if we want click actions near the duck
+  private PlayerMovement manipulateModsByMouse() {
+    /*      cursor click box map
+         _____________________________________________________
+        |  ↖  |  ↖  |  ↖  |  ↑  |  ↑  |  ↑  |  ↗  |  ↗  |  ↗  |
+        +-----+-----+-----+-----+-----+-----+-----+-----+-----+
+        |  ↖  |  ↖  |  ↖  |  ↑  |  ↑  |  ↑  |  ↗  |  ↗  |  ↗  |
+        +-----+-----+-----+-----+-----+-----+-----+-----+-----+
+        |  ↖  |  ↖  |  ↖  |  ↑  |  ↑  |  ↑  |  ↗  |  ↗  |  ↗  |
+        +-----+-----+-----+-----+-----+-----+-----+-----+-----+
+        |  <  |  <  |  <  |  ↖  |  ↑  |  ↗  |  →  |  →  |  →  |
+        +-----+-----+-----+-----+-----+-----+-----+-----+-----+
+        |  <  |  <  |  <  |  <  |duck |  →  |  →  |  →  |  →  |
+        +-----+-----+-----+-----+-----+-----+-----+-----+-----+
+        |  <  |  <  |  <  |  ↙  |  ↓  |  ↘  |  →  |  →  |  →  |
+        +-----+-----+-----+-----+-----+-----+-----+-----+-----+
+        |  ↙  |  ↙  |  ↙  |  ↓  |  ↓  |  ↓  |  ↘  |  ↘  |  ↘  |
+        +-----+-----+-----+-----+-----+-----+-----+-----+-----+
+        |  ↙  |  ↙  |  ↙  |  ↓  |  ↓  |  ↓  |  ↘  |  ↘  |  ↘  |
+        +-----+-----+-----+-----+-----+-----+-----+-----+-----+
+        |  ↙  |  ↙  |  ↙  |  ↓  |  ↓  |  ↓  |  ↘  |  ↘  |  ↘  |
+        |_____________________________________________________|
+    */
+
     int xMod = 0;
     int yMod = 0;
-    float tileWidth = 480f / 9; // TODO Tim make consts
-    float tileHeight = 320f / 9;
-    Vector2D gridPosition = getGridPosition(tileWidth, tileHeight);
-    int x = (int) gridPosition.x;
-    int y = (int) gridPosition.y;
+    Vector2D mousePosition = mouseInput.getMousePosition();
+
+    if (mousePosition.y > TOUCH_CONTROLS_POWER_THRESHOLD) {
+      return new PlayerMovement(0, 0);
+    }
+
+    int x = (int) (mousePosition.x / TOUCH_TILE_WIDTH);
+    int y = (int) (mousePosition.y / TOUCH_TILE_HEIGHT);
     boolean isInDuckX = x >= 3 && x <= 5;
     boolean isInDuckY = y >= 3 && y <= 5;
+
     if (y < 3 || (y == 3 && isInDuckX)) {
-      //move up
       yMod--;
     }
-    if (y >= 6  || (y == 5 && isInDuckX)) {
-      //move down
+
+    if (y >= 6 || (y == 5 && isInDuckX)) {
       yMod++;
     }
+
     if (x < 3 || (x == 3 && isInDuckY)) {
-      //move left
       xMod--;
     }
+
     if (x > 5 || (x == 5 && isInDuckY)) {
-      //move right
       xMod++;
     }
-//    3x3 grid if we want simpler logic and don't think the user will click near the duck
-//    Vector2D gridPosition = getGridPosition(160, 106.66F);
-//    if (gridPosition.y == 0) {
-//      //move up
-//      yMod--;
-//    }
-//    if (gridPosition.y == 2) {
-//      //move down
-//      yMod++;
-//    }
-//    if (gridPosition.x == 0) {
-//      //move left
-//      xMod--;
-//    }
-//    if (gridPosition.x == 2) {
-//      //move right
-//      xMod++;
-//    }
 
     return new PlayerMovement(xMod, yMod);
-  }
-
-  public Vector2D getGridPosition(float tileWidth, float tileHeight)
-  {
-    Vector2D mousePosition = mouseInput.getMousePosition();
-    return new Vector2D(mousePosition.x / tileWidth, mousePosition.y / tileHeight);
   }
 
   private String getSpriteVariation(int xMod, int yMod) {
@@ -224,6 +209,9 @@ public class PlayerSystem extends EcsSystem {
         return "bottom-left";
       }
     }
+  }
+
+  private record PlayerMovement(int xMod, int yMod) {
   }
 }
 
