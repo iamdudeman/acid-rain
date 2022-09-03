@@ -51,15 +51,6 @@ public class PlayerSystem extends EcsSystem {
           playerTransform.setTranslate(
             playerTransform.getTranslate().add(collisionManifold.normal().scalar(scalar * collisionManifold.penetration()))
           );
-
-          audioClipAssetLoader.get(Constants.Assets.Audio.QUACK).executeIfLoaded(quack -> {
-            long now = System.currentTimeMillis();
-            if (lastQuack + 1000 < now) {
-              quack.stop();
-              quack.play();
-              lastQuack = now;
-            }
-          });
         } else if (tileType.assetId.equals(Constants.Assets.Sprites.DIRT)) {
           PlayerComponent playerComponent = player.getComponent(PlayerComponent.class);
 
@@ -76,6 +67,15 @@ public class PlayerSystem extends EcsSystem {
       entity -> Constants.EntityNames.PLAYER.equals(entity.getName()),
       entity -> entity.hasComponent(PickupComponent.class),
       (player, pickup) -> {
+        audioClipAssetLoader.get(Constants.Assets.Audio.QUACK).executeIfLoaded(quack -> {
+          long now = System.currentTimeMillis();
+          if (lastQuack + 1000 < now) {
+            quack.stop();
+            quack.play();
+            lastQuack = now;
+          }
+        });
+
         player.getComponent(PlayerComponent.class).pickupDonut();
         pickup.getComponent(PickupComponent.class).hostTile().consumePickup();
         pickup.destroy();
