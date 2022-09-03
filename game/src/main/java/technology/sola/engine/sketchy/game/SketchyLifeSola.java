@@ -22,6 +22,10 @@ import technology.sola.engine.sketchy.game.state.GameUiRenderer;
 import technology.sola.engine.sketchy.game.state.GameStateSystem;
 
 public class SketchyLifeSola extends Sola {
+  public static final int CANVAS_WIDTH = 480;
+  public static final int HALF_CANVAS_WIDTH = CANVAS_WIDTH / 2;
+  public static final int CANVAS_HEIGHT = 320;
+  public static final int HALF_CANVAS_HEIGHT = CANVAS_HEIGHT / 2;
   private final RainRenderer rainRenderer = new RainRenderer();
   private GameSettings gameSettings;
   private SolaGui solaGui;
@@ -30,7 +34,7 @@ public class SketchyLifeSola extends Sola {
 
   @Override
   protected SolaConfiguration getConfiguration() {
-    return new SolaConfiguration("Sketchy Life", 480, 320, 30, false);
+    return new SolaConfiguration("Sketchy Life", CANVAS_WIDTH, CANVAS_HEIGHT, 30, false);
   }
 
   @Override
@@ -50,9 +54,9 @@ public class SketchyLifeSola extends Sola {
     eventHub.add(chunkSystem, GameStateEvent.class);
     solaEcs.addSystems(
       chunkSystem,
-      new GameStateSystem(solaEcs, mouseInput, eventHub, platform.getRenderer().getWidth(), platform.getRenderer().getHeight()),
-      new RainSystem(platform.getRenderer().getWidth(), platform.getRenderer().getHeight()),
-      new CameraSystem(platform.getRenderer().getWidth(), platform.getRenderer().getHeight()),
+      new GameStateSystem(solaEcs, mouseInput, eventHub),
+      new RainSystem(),
+      new CameraSystem(),
       playerSystem,
       collisionDetectionSystem
     );

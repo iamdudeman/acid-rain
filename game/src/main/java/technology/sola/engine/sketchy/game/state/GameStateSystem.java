@@ -13,6 +13,7 @@ import technology.sola.engine.input.MouseInput;
 import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.engine.physics.event.CollisionManifoldEvent;
 import technology.sola.engine.sketchy.game.Constants;
+import technology.sola.engine.sketchy.game.SketchyLifeSola;
 import technology.sola.engine.sketchy.game.SpriteCache;
 import technology.sola.engine.sketchy.game.event.GameState;
 import technology.sola.engine.sketchy.game.event.GameStateEvent;
@@ -23,14 +24,10 @@ import technology.sola.math.linear.Vector2D;
 public class GameStateSystem extends EcsSystem {
   private final MouseInput mouseInput;
   private final EventHub eventHub;
-  private final float rendererHalfWidth;
-  private final float rendererHalfHeight;
 
-  public GameStateSystem(SolaEcs solaEcs, MouseInput mouseInput, EventHub eventHub, int rendererWidth, int rendererHeight) {
+  public GameStateSystem(SolaEcs solaEcs, MouseInput mouseInput, EventHub eventHub) {
     this.mouseInput = mouseInput;
     this.eventHub = eventHub;
-    this.rendererHalfWidth = rendererWidth / 2f;
-    this.rendererHalfHeight = rendererHeight / 2f;
 
     eventHub.add(gameStateEvent -> {
       if (gameStateEvent.getMessage() == GameState.GAME_OVER) {
@@ -58,7 +55,7 @@ public class GameStateSystem extends EcsSystem {
 
         eventHub.emit(new GameStateEvent(
           GameState.GAME_OVER,
-          playerTranslate.subtract(new Vector2D(rendererHalfWidth, rendererHalfHeight)).magnitude(),
+          playerTranslate.subtract(new Vector2D(SketchyLifeSola.HALF_CANVAS_WIDTH, SketchyLifeSola.HALF_CANVAS_HEIGHT)).magnitude(),
           donutsConsumed
         ));
       }
@@ -81,7 +78,7 @@ public class GameStateSystem extends EcsSystem {
     World world = new World(10000);
 
     world.createEntity(
-      new TransformComponent(rendererHalfWidth, rendererHalfHeight),
+      new TransformComponent(SketchyLifeSola.HALF_CANVAS_WIDTH, SketchyLifeSola.HALF_CANVAS_HEIGHT),
       new SpriteComponent(SpriteCache.get(Constants.Assets.Sprites.DUCK, "top")),
       new PlayerComponent(),
       ColliderComponent.circle(5)
