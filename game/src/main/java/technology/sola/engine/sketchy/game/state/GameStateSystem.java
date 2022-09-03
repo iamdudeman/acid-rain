@@ -89,10 +89,8 @@ public class GameStateSystem extends EcsSystem {
     ).setName(Constants.EntityNames.PLAYER);
 
     world.createEntity(
-      new TransformComponent(rendererHalfWidth, rendererHalfHeight),
-      new SpriteComponent(SpriteCache.get(Constants.Assets.Sprites.DUCK, "top")),
-      new SunlightBarComponent(),
-      ColliderComponent.circle(5)
+      new TransformComponent(),
+      new SunlightBarComponent()
     ).setName(Constants.EntityNames.SUNLIGHT);
 
     world.createEntity(
