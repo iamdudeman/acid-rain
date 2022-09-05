@@ -7,7 +7,7 @@ repositories {
 }
 
 dependencies {
-  api(files("../libs/sola-engine-browser-fat-${project.properties["solaVersion"]}.jar"))
+  implementation(files("../libs/sola-engine-browser-fat-${project.properties["solaVersion"]}.jar"))
   implementation(project(":game"))
 
   // teavm

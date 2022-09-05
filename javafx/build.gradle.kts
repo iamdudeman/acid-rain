@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-  api(files("../libs/sola-engine-javafx-fat-${project.properties["solaVersion"]}.jar"))
+  implementation(files("../libs/sola-engine-javafx-fat-${project.properties["solaVersion"]}.jar"))
   implementation(project(":game"))
 }
 
