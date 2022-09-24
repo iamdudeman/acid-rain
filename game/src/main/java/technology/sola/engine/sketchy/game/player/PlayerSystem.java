@@ -35,7 +35,7 @@ public class PlayerSystem extends EcsSystem {
     this.keyboardInput = keyboardInput;
     this.mouseInput = mouseInput;
 
-    eventHub.add(collisionManifoldEvent -> collisionManifoldEvent.getMessage().conditionallyResolveCollision(
+    eventHub.add(CollisionManifoldEvent.class, collisionManifoldEvent -> collisionManifoldEvent.collisionManifold().conditionallyResolveCollision(
       entity -> Constants.EntityNames.PLAYER.equals(entity.getName()),
       entity -> entity.hasComponent(TileComponent.class),
       (player, erasedTile) -> {
@@ -44,7 +44,7 @@ public class PlayerSystem extends EcsSystem {
         TileType tileType = tileComponent.getTileType();
 
         if (tileType.assetId.equals(Constants.Assets.Sprites.CLIFF)) {
-          CollisionManifold collisionManifold = collisionManifoldEvent.getMessage();
+          CollisionManifold collisionManifold = collisionManifoldEvent.collisionManifold();
           int scalar = collisionManifold.entityA() == player ? -1 : 1;
           TransformComponent playerTransform = player.getComponent(TransformComponent.class);
 
@@ -61,9 +61,9 @@ public class PlayerSystem extends EcsSystem {
           }
         }
       }
-    ), CollisionManifoldEvent.class);
+    ));
 
-    eventHub.add(collisionManifoldEvent -> collisionManifoldEvent.getMessage().conditionallyResolveCollision(
+    eventHub.add(CollisionManifoldEvent.class, collisionManifoldEvent -> collisionManifoldEvent.collisionManifold().conditionallyResolveCollision(
       entity -> Constants.EntityNames.PLAYER.equals(entity.getName()),
       entity -> entity.hasComponent(PickupComponent.class),
       (player, pickup) -> {
@@ -80,7 +80,7 @@ public class PlayerSystem extends EcsSystem {
         pickup.getComponent(PickupComponent.class).hostTile().consumePickup();
         pickup.destroy();
       }
-    ), CollisionManifoldEvent.class);
+    ));
   }
 
   @Override
@@ -134,7 +134,7 @@ public class PlayerSystem extends EcsSystem {
         theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, variation));
       }
 
-      if (keyboardInput.isKeyPressed(Key.SPACE) || (mouseInput.isMouseClicked(MouseButton.PRIMARY) && mouseInput.getMousePosition().y > (TOUCH_CONTROLS_POWER_THRESHOLD))) {
+      if (keyboardInput.isKeyPressed(Key.SPACE) || (mouseInput.isMouseClicked(MouseButton.PRIMARY) && mouseInput.getMousePosition().y() > (TOUCH_CONTROLS_POWER_THRESHOLD))) {
         playerComponent.setUsingSunlight(!playerComponent.isUsingSunlight());
       }
 
@@ -173,12 +173,12 @@ public class PlayerSystem extends EcsSystem {
     int yMod = 0;
     Vector2D mousePosition = mouseInput.getMousePosition();
 
-    if (mousePosition.y > TOUCH_CONTROLS_POWER_THRESHOLD) {
+    if (mousePosition.y() > TOUCH_CONTROLS_POWER_THRESHOLD) {
       return null;
     }
 
-    int x = (int) (mousePosition.x / TOUCH_TILE_WIDTH);
-    int y = (int) (mousePosition.y / TOUCH_TILE_HEIGHT);
+    int x = (int) (mousePosition.x() / TOUCH_TILE_WIDTH);
+    int y = (int) (mousePosition.y() / TOUCH_TILE_HEIGHT);
     boolean isInDuckX = x >= 3 && x <= 5;
     boolean isInDuckY = y >= 3 && y <= 5;
 

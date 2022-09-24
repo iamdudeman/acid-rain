@@ -34,7 +34,7 @@ public class GameUiRenderer {
 
   public GameUiRenderer(EventHub eventHub, AssetLoader<SpriteSheet> spriteSheetAssetLoader) {
     this.spriteSheetAssetLoader = spriteSheetAssetLoader;
-    eventHub.add(gameStateEvent -> {
+    eventHub.add(GameStateEvent.class, gameStateEvent -> {
       shouldDrawGameOver = gameStateEvent.getMessage() == GameState.GAME_OVER;
 
       if (shouldDrawGameOver) {
@@ -45,7 +45,7 @@ public class GameUiRenderer {
       } else {
         gameOverDuckAnimation = 0;
       }
-    }, GameStateEvent.class);
+    });
   }
 
   public void render(Renderer renderer, World world) {
@@ -61,9 +61,8 @@ public class GameUiRenderer {
       if (gameOverDuckAnimation < animationDuration) {
         spriteSheetAssetLoader.get(Constants.Assets.Sprites.SPRITE_SHEET_ID).executeIfLoaded(spriteSheet -> {
           float size = (animationDuration - gameOverDuckAnimation) / animationDuration;
-          // todo translate here seems to be off a bit!
           AffineTransform affineTransform = new AffineTransform()
-            .translate(duckLastPosition.x, duckLastPosition.y)
+            .translate(duckLastPosition.x(), duckLastPosition.y())
             .scale(size, size);
 
           renderer.drawImage(spriteSheet.getSprite(spriteId), affineTransform);

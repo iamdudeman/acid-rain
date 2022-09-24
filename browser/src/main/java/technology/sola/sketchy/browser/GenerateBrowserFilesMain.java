@@ -18,6 +18,6 @@ public class GenerateBrowserFilesMain {
       true
     );
 
-    solaBrowserFileBuilder.createIndexHtml();
+    solaBrowserFileBuilder.createIndexHtmlWithOverlay();
   }
 }

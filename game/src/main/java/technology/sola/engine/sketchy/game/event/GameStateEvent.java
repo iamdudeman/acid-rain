@@ -3,7 +3,7 @@ package technology.sola.engine.sketchy.game.event;
 import technology.sola.engine.event.Event;
 import technology.sola.math.linear.Vector2D;
 
-public class GameStateEvent implements Event<GameState> {
+public class GameStateEvent implements Event {
   private final GameState gameState;
   private final float distancedTraveled;
   private final int donutsConsumed;
@@ -22,7 +22,6 @@ public class GameStateEvent implements Event<GameState> {
     this.spriteId = spriteId;
   }
 
-  @Override
   public GameState getMessage() {
     return gameState;
   }

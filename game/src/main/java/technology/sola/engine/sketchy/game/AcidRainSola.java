@@ -28,9 +28,8 @@ public class AcidRainSola extends Sola {
   private GameUiRenderer gameUiRenderer;
   private SpriteRenderer spriteRenderer;
 
-  @Override
-  protected SolaConfiguration getConfiguration() {
-    return new SolaConfiguration("Acid Rain", CANVAS_WIDTH, CANVAS_HEIGHT, 30, false);
+  public AcidRainSola() {
+    super(SolaConfiguration.build("Acid Rain", CANVAS_WIDTH, CANVAS_HEIGHT).withTargetUpdatesPerSecond(30));
   }
 
   @Override
@@ -46,7 +45,7 @@ public class AcidRainSola extends Sola {
     ChunkSystem chunkSystem = new ChunkSystem();
     PlayerSystem playerSystem = new PlayerSystem(eventHub, keyboardInput, mouseInput, assetLoaderProvider.get(AudioClip.class));
     PlayerCollisionDetectionSystem collisionDetectionSystem = new PlayerCollisionDetectionSystem(eventHub);
-    eventHub.add(chunkSystem, GameStateEvent.class);
+    eventHub.add(GameStateEvent.class, chunkSystem);
     solaEcs.addSystems(
       chunkSystem,
       new GameStateSystem(solaEcs, mouseInput, keyboardInput, eventHub),
@@ -56,7 +55,7 @@ public class AcidRainSola extends Sola {
       collisionDetectionSystem
     );
     eventHub.emit(new GameStateEvent(GameState.RESTART));
-    eventHub.add(gameStateEvent -> collisionDetectionSystem.setActive(gameStateEvent.getMessage() == GameState.RESTART), GameStateEvent.class);
+    eventHub.add(GameStateEvent.class, gameStateEvent -> collisionDetectionSystem.setActive(gameStateEvent.getMessage() == GameState.RESTART));
 
     // Load assets
     new BulkAssetLoader(assetLoaderProvider)

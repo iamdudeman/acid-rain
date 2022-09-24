@@ -33,7 +33,7 @@ public class SpriteRenderer {
           entity.getComponent(SpriteComponent.class).getSprite(spriteSheetAssetLoader).executeIfLoaded(solaImage -> {
             Vector2D translate = entity.getComponent(TransformComponent.class).getTranslate();
 
-            renderer.drawImage(translate.x - cameraTranslate.x, translate.y - cameraTranslate.y, solaImage);
+            renderer.drawImage(translate.x() - cameraTranslate.x(), translate.y() - cameraTranslate.y(), solaImage);
           });
         }
       }
@@ -46,7 +46,7 @@ public class SpriteRenderer {
           entity.getComponent(SpriteComponent.class).getSprite(spriteSheetAssetLoader).executeIfLoaded(solaImage -> {
             Vector2D translate = entity.getComponent(TransformComponent.class).getTranslate();
 
-            renderer.drawImage(translate.x - cameraTranslate.x, translate.y - cameraTranslate.y, solaImage);
+            renderer.drawImage(translate.x() - cameraTranslate.x(), translate.y() - cameraTranslate.y(), solaImage);
           });
         }
       }

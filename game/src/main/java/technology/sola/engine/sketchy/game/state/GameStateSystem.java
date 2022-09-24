@@ -33,7 +33,7 @@ public class GameStateSystem extends EcsSystem {
     this.keyboardInput = keyboardInput;
     this.eventHub = eventHub;
 
-    eventHub.add(gameStateEvent -> {
+    eventHub.add(GameStateEvent.class, gameStateEvent -> {
       if (gameStateEvent.getMessage() == GameState.GAME_OVER) {
         setActive(true);
         solaEcs.getWorld().findEntityByName(Constants.EntityNames.PLAYER).ifPresent(Entity::destroy);
@@ -42,9 +42,9 @@ public class GameStateSystem extends EcsSystem {
         setActive(false);
         solaEcs.setWorld(buildWorld());
       }
-    }, GameStateEvent.class);
+    });
 
-    eventHub.add(collisionManifoldEvent -> collisionManifoldEvent.getMessage().conditionallyResolveCollision(
+    eventHub.add(CollisionManifoldEvent.class, collisionManifoldEvent -> collisionManifoldEvent.collisionManifold().conditionallyResolveCollision(
       entity -> Constants.EntityNames.PLAYER.equals(entity.getName()),
       entity -> {
         SpriteComponent spriteComponent = entity.getComponent(SpriteComponent.class);
@@ -67,7 +67,7 @@ public class GameStateSystem extends EcsSystem {
           player.getComponent(SpriteComponent.class).getSpriteId()
         ));
       }
-    ), CollisionManifoldEvent.class);
+    ));
   }
 
   @Override

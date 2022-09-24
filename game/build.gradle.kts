@@ -11,5 +11,5 @@ repositories {
 }
 
 dependencies {
-  implementation(files("../libs/sola-engine-fat-0.0.1.jar"))
+  implementation(files("../libs/sola-engine-fat-${project.properties["solaVersion"]}.jar"))
 }

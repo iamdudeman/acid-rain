@@ -50,7 +50,7 @@ public class ChunkCreator {
         float x = chunkId.getX(column);
         float y = chunkId.getY(row);
 
-        if (Math.abs(x - playerTranslate.x) > TILE_SIZE * MIN_CLIFF_TILES_FROM_PLAYER || Math.abs(y - playerTranslate.y) > TILE_SIZE * MIN_CLIFF_TILES_FROM_PLAYER) {
+        if (Math.abs(x - playerTranslate.x()) > TILE_SIZE * MIN_CLIFF_TILES_FROM_PLAYER || Math.abs(y - playerTranslate.y()) > TILE_SIZE * MIN_CLIFF_TILES_FROM_PLAYER) {
           if (RANDOM.nextFloat() < BASE_INIT_CLIFF_PERCENT) {
             if (column > CLIFF_SAFETY_GAP && row > CLIFF_SAFETY_GAP && column + CLIFF_SAFETY_GAP < Chunk.COLUMNS && row + CLIFF_SAFETY_GAP < Chunk.ROWS) {
               initialTileType = TileType.CLIFF_CENTER;
