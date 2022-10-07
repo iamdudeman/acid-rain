@@ -9,10 +9,14 @@ application {
 
 repositories {
   mavenCentral()
+
+  maven {
+    url = uri("https://jitpack.io")
+  }
 }
 
 dependencies {
-  implementation(files("../libs/sola-engine-swing-fat-${project.properties["solaVersion"]}.jar"))
+  implementation("com.github.iamdudeman.sola-game-engine:platform-swing:${project.properties["solaVersion"]}")
   implementation(project(":game"))
 }
 
@@ -20,8 +24,8 @@ tasks.withType<Jar>() {
   manifest {
     attributes["Main-Class"] = "${project.properties["basePackage"]}.swing.SwingMain"
   }
-  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
   dependsOn(configurations.runtimeClasspath)
 
   from({

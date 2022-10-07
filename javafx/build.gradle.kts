@@ -1,18 +1,28 @@
 plugins {
   id("application")
   id("sola.java-conventions")
+  id("org.openjfx.javafxplugin") version "0.0.9"
 }
 
 application {
   mainClass.set("${project.properties["basePackage"]}.javafx.JavaFxMain")
 }
 
+javafx {
+  modules("javafx.controls")
+  version = "17"
+}
+
 repositories {
   mavenCentral()
+
+  maven {
+    url = uri("https://jitpack.io")
+  }
 }
 
 dependencies {
-  implementation(files("../libs/sola-engine-javafx-fat-${project.properties["solaVersion"]}.jar"))
+  implementation("com.github.iamdudeman.sola-game-engine:platform-javafx:${project.properties["solaVersion"]}")
   implementation(project(":game"))
 }
 

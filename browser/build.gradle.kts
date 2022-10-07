@@ -4,15 +4,15 @@ plugins {
 
 repositories {
   mavenCentral()
+
+  maven {
+    url = uri("https://jitpack.io")
+  }
 }
 
 dependencies {
-  implementation(files("../libs/sola-engine-browser-fat-${project.properties["solaVersion"]}.jar"))
+  implementation("com.github.iamdudeman.sola-game-engine:platform-browser:${project.properties["solaVersion"]}")
   implementation(project(":game"))
-
-  // teavm
-  runtimeOnly("org.teavm:teavm-classlib:0.7.0")
-  runtimeOnly("org.teavm:teavm-extras-slf4j:0.7.0")
 }
 
 task("generateBrowserExampleHtmlAndJs", type = JavaExec::class) {

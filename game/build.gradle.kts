@@ -8,8 +8,12 @@ tasks.jar {
 
 repositories {
   mavenCentral()
+
+  maven {
+    url = uri("https://jitpack.io")
+  }
 }
 
 dependencies {
-  implementation(files("../libs/sola-engine-fat-${project.properties["solaVersion"]}.jar"))
+  implementation("com.github.iamdudeman.sola-game-engine:sola-engine:${project.properties["solaVersion"]}")
 }
