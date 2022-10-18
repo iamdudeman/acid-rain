@@ -24,27 +24,20 @@ repositories {
 dependencies {
   implementation("com.github.iamdudeman.sola-game-engine:platform-javafx:${project.properties["solaVersion"]}")
   implementation(project(":game"))
+
+  val osClassifier = getOsClassifier()
+
+  runtimeOnly("org.openjfx", "javafx-base", "17.0.2", classifier = osClassifier)
+  runtimeOnly("org.openjfx", "javafx-controls", "17.0.2", classifier = osClassifier)
+  runtimeOnly("org.openjfx", "javafx-graphics", "17.0.2", classifier = osClassifier)
 }
 
-tasks.withType<Jar>() {
-  manifest {
-    attributes["Main-Class"] = "${project.properties["basePackage"]}.javafx.JavaFxMain"
+fun getOsClassifier(): String {
+  if (org.apache.tools.ant.taskdefs.condition.Os.isFamily(org.apache.tools.ant.taskdefs.condition.Os.FAMILY_MAC)) {
+    return "mac"
+  } else if (org.apache.tools.ant.taskdefs.condition.Os.isFamily(org.apache.tools.ant.taskdefs.condition.Os.FAMILY_UNIX)) {
+    return "linux"
   }
-  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
-  dependsOn(configurations.runtimeClasspath)
-
-  from({
-    configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
-  })
-
-  archiveBaseName.set("${project.properties["gameName"]}-${project.name}")
-}
-
-tasks.withType<Zip>() {
-  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
-tasks.withType<Tar>() {
-  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+  return "win"
 }

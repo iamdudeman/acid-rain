@@ -1,7 +1,5 @@
 plugins {
-  id("java-library")
-  checkstyle
-  jacoco
+  id("java")
 }
 
 java {
@@ -10,18 +8,15 @@ java {
   }
 }
 
-checkstyle {
-  configFile = file("$rootDir/checkstyle.xml")
-}
-
 repositories {
   mavenCentral()
+
+  maven {
+    url = uri("https://jitpack.io")
+  }
 }
 
 dependencies {
-  // Logging
-  implementation("org.slf4j:slf4j-log4j12:1.7.30")
-
   // Test
   testImplementation("org.mockito:mockito-inline:4.2.0")
   testImplementation("org.mockito:mockito-junit-jupiter:4.2.0")
@@ -29,30 +24,9 @@ dependencies {
   testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
-jacoco {
-  toolVersion = "0.8.8"
-}
-
 tasks.test {
   useJUnitPlatform()
   testLogging {
     events("passed", "skipped", "failed")
-  }
-}
-
-tasks.jacocoTestReport {
-  reports {
-    html.required.set(true)
-    html.outputLocation.set(file("$buildDir/reports/coverage"))
-  }
-}
-
-tasks.jacocoTestCoverageVerification {
-  violationRules {
-    rule {
-      limit {
-        minimum = "0.8".toBigDecimal()
-      }
-    }
   }
 }
