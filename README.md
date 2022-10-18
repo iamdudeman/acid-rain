@@ -1,6 +1,7 @@
 # Acid Rain
 This is a game made for the One Lone Coder Codejam 2022. The theme for the codejam was "The Weather."
-It uses [sola-game-engine](https://github.com/iamdudeman/sola-game-engine).
+It uses [sola-game-engine](https://github.com/iamdudeman/sola-game-engine) and the repo template [sola-game-template](https://github.com/iamdudeman/sola-game-template)
+was used to start the project.
 
 ## Project structure
 * [Common game code](game/src)
