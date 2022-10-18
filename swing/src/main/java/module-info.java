@@ -1,4 +1,4 @@
-module technology.sola.sketchy.swing {
+module technology.sola.acidrain.swing {
   requires technology.sola.engine.platform.swing;
-  requires technology.sola.sketchy.game;
+  requires technology.sola.acidrain.game;
 }

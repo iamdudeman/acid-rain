@@ -1,5 +1,5 @@
-module technology.sola.sketchy.game {
+module technology.sola.acidrain.game {
   requires technology.sola.engine;
 
-  exports technology.sola.sketchy.game;
+  exports technology.sola.acidrain.game;
 }
