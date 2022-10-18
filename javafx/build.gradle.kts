@@ -1,40 +1,43 @@
 plugins {
   id("application")
   id("sola.java-conventions")
+  id("org.openjfx.javafxplugin") version "0.0.9"
 }
 
 application {
   mainClass.set("${project.properties["basePackage"]}.javafx.JavaFxMain")
 }
 
+javafx {
+  modules("javafx.controls")
+  version = "17"
+}
+
 repositories {
   mavenCentral()
+
+  maven {
+    url = uri("https://jitpack.io")
+  }
 }
 
 dependencies {
-  implementation(files("../libs/sola-engine-javafx-fat-${project.properties["solaVersion"]}.jar"))
+  implementation("com.github.iamdudeman.sola-game-engine:platform-javafx:${project.properties["solaVersion"]}")
   implementation(project(":game"))
+
+  val osClassifier = getOsClassifier()
+
+  runtimeOnly("org.openjfx", "javafx-base", "17.0.2", classifier = osClassifier)
+  runtimeOnly("org.openjfx", "javafx-controls", "17.0.2", classifier = osClassifier)
+  runtimeOnly("org.openjfx", "javafx-graphics", "17.0.2", classifier = osClassifier)
 }
 
-tasks.withType<Jar>() {
-  manifest {
-    attributes["Main-Class"] = "${project.properties["basePackage"]}.javafx.JavaFxMain"
+fun getOsClassifier(): String {
+  if (org.apache.tools.ant.taskdefs.condition.Os.isFamily(org.apache.tools.ant.taskdefs.condition.Os.FAMILY_MAC)) {
+    return "mac"
+  } else if (org.apache.tools.ant.taskdefs.condition.Os.isFamily(org.apache.tools.ant.taskdefs.condition.Os.FAMILY_UNIX)) {
+    return "linux"
   }
-  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
-  dependsOn(configurations.runtimeClasspath)
-
-  from({
-    configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
-  })
-
-  archiveBaseName.set("${project.properties["gameName"]}-${project.name}")
-}
-
-tasks.withType<Zip>() {
-  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
-tasks.withType<Tar>() {
-  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+  return "win"
 }

@@ -2,20 +2,12 @@ plugins {
   id("sola.java-conventions")
 }
 
-repositories {
-  mavenCentral()
-}
-
 dependencies {
-  implementation(files("../libs/sola-engine-browser-fat-${project.properties["solaVersion"]}.jar"))
+  implementation("com.github.iamdudeman.sola-game-engine:platform-browser:${project.properties["solaVersion"]}")
   implementation(project(":game"))
-
-  // teavm
-  runtimeOnly("org.teavm:teavm-classlib:0.7.0")
-  runtimeOnly("org.teavm:teavm-extras-slf4j:0.7.0")
 }
 
-task("generateBrowserExampleHtmlAndJs", type = JavaExec::class) {
+task("generateWebHtmlAndJs", type = JavaExec::class) {
   group = "build"
 
   dependsOn(tasks.getByPath("assemble"))
@@ -23,4 +15,8 @@ task("generateBrowserExampleHtmlAndJs", type = JavaExec::class) {
   classpath = sourceSets.main.get().runtimeClasspath
   setArgsString("build ${project.name}-${project.version}.jar")
   mainClass.set("${project.properties["basePackage"]}.browser.GenerateBrowserFilesMain")
+}
+
+tasks.assemble {
+  finalizedBy(tasks.getByName("generateWebHtmlAndJs"))
 }
