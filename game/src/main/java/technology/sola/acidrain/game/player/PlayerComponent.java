@@ -12,7 +12,6 @@ public class PlayerComponent implements Component {
   private boolean isUsingSunlight = false;
   private boolean isSlowed = false;
   private boolean isSuperSlowed = false;
-  private int donutsConsumed = 0;
 
   public int getSunlight() {
     return sunlight;
@@ -31,7 +30,6 @@ public class PlayerComponent implements Component {
   }
 
   public void pickupDonut() {
-    donutsConsumed++;
     sunlight += PICKUP_VALUE;
 
     if (sunlight > MAX_SUNLIGHT) {
@@ -62,9 +60,5 @@ public class PlayerComponent implements Component {
 
   public void setIsSuperSlowed(boolean isSuperSlowed) {
     this.isSuperSlowed = isSuperSlowed;
-  }
-
-  public int getDonutsConsumed() {
-    return donutsConsumed;
   }
 }

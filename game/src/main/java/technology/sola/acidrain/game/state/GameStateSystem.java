@@ -40,6 +40,7 @@ public class GameStateSystem extends EcsSystem {
         solaEcs.getWorld().findEntitiesWithComponents(PickupComponent.class).forEach(Entity::destroy);
       } else if (gameStateEvent.getMessage() == GameState.RESTART) {
         setActive(false);
+        GameStatistics.reset();
         solaEcs.setWorld(buildWorld());
       }
     });
@@ -55,14 +56,11 @@ public class GameStateSystem extends EcsSystem {
       },
       (player, erasedTile) -> {
         Vector2D playerTranslate = player.getComponent(TransformComponent.class).getTranslate();
-        int donutsConsumed = player.getComponent(PlayerComponent.class).getDonutsConsumed();
         // todo this is really hacky, clean up later
         Vector2D playerTranslateForFallAnimation = playerTranslate.subtract(solaEcs.getWorld().findEntityByName(Constants.EntityNames.CAMERA).get().getComponent(TransformComponent.class).getTranslate());
 
         eventHub.emit(new GameStateEvent(
           GameState.GAME_OVER,
-          playerTranslate.subtract(new Vector2D(AcidRainSola.HALF_CANVAS_WIDTH, AcidRainSola.HALF_CANVAS_HEIGHT)).magnitude(),
-          donutsConsumed,
           playerTranslateForFallAnimation,
           player.getComponent(SpriteComponent.class).getSpriteId()
         ));

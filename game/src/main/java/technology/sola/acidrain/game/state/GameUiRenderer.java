@@ -26,8 +26,6 @@ public class GameUiRenderer {
   private final float animationDuration = 100;
   private final AssetLoader<SpriteSheet> spriteSheetAssetLoader;
   private boolean shouldDrawGameOver = false;
-  private float distanceTraveled = 0f;
-  private int donutsConsumed = 0;
   private int gameOverDuckAnimation = 0;
   private Vector2D duckLastPosition;
   private String spriteId;
@@ -38,8 +36,6 @@ public class GameUiRenderer {
       shouldDrawGameOver = gameStateEvent.getMessage() == GameState.GAME_OVER;
 
       if (shouldDrawGameOver) {
-        distanceTraveled = gameStateEvent.getDistanceTraveled();
-        donutsConsumed = gameStateEvent.getDonutsConsumed();
         duckLastPosition = gameStateEvent.getPlayerPosition();
         spriteId = gameStateEvent.getSpriteId();
       } else {
@@ -50,8 +46,8 @@ public class GameUiRenderer {
 
   public void render(Renderer renderer, World world) {
     if (shouldDrawGameOver) {
-      String donutsConsumedText = "Donuts eated: " + donutsConsumed;
-      String distanceTraveledText = "Distance traveled for noms: " + Math.round(this.distanceTraveled);
+      String donutsConsumedText = "Donuts eated: " + GameStatistics.getDonutsConsumed();
+      String distanceTraveledText = "Distance traveled for noms: " + Math.round(GameStatistics.getDistanceTraveled());
       Font font = renderer.getFont();
       Font.TextDimensions gameOverDimensions = font.getDimensionsForText(GAME_OVER_TEXT);
       Font.TextDimensions donutsConsumedDimensions = font.getDimensionsForText(donutsConsumedText);
@@ -87,7 +83,7 @@ public class GameUiRenderer {
         float x = AcidRainSola.HALF_CANVAS_WIDTH - sunlightBarHalfWidth;
         float y = AcidRainSola.CANVAS_HEIGHT - SUNLIGHT_BAR_HEIGHT - 8;
 
-        String donutsConsumedText = "Donuts: " + playerComponent.getDonutsConsumed();
+        String donutsConsumedText = "Donuts: " + GameStatistics.getDonutsConsumed();
         renderer.drawString(donutsConsumedText, 3, 3, Color.BLACK);
         renderer.setBlendMode(BlendMode.NORMAL);
         renderer.fillRect(x, y, percentage * sunlightBarWidth, SUNLIGHT_BAR_HEIGHT, SUNLIGHT_BAR_COLOR);
