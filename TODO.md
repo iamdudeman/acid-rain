@@ -1,6 +1,6 @@
 ## Known bugs
 * [ ] Clicking to restart causes duck to immediately start moving
-* [ ] Colliders for erased tile need offsets to center them
+* [x] Colliders for erased tile need offsets to center them
 
 ## TODO List
 * [x] Change distance to be total traveled instead of distance from center
