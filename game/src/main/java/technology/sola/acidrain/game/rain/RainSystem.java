@@ -1,5 +1,6 @@
 package technology.sola.acidrain.game.rain;
 
+import technology.sola.acidrain.game.state.GameStatistics;
 import technology.sola.ecs.EcsSystem;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
@@ -29,9 +30,9 @@ public class RainSystem extends EcsSystem {
   private static final float SOMEWHAT_CLOSE_WETNESS_DISTANCE = 150;
   private static final float CLOSE_WETNESS_THRESHOLD = 0.85f;
   private static final float CLOSE_WETNESS_DISTANCE = 50;
-  private static final int MAX_DROPS_PER_UPDATE = 10;
+  private static final int BASE_DROPS_PER_UPDATE = 10;
   private final Random random = new Random();
-  private int dropsPerUpdate = MAX_DROPS_PER_UPDATE;
+  private int dropsPerUpdate = BASE_DROPS_PER_UPDATE;
 
   @Override
   public void update(World world, float dt) {
@@ -46,6 +47,7 @@ public class RainSystem extends EcsSystem {
         updateRainHeight(world, true);
 
         if (!playerComponent.isUsingSunlight()) {
+          GameStatistics.incrementIntensityLevel(dt);
           createNewRain(world);
           updateTileWetness(world, playerTranslate);
         }
@@ -114,8 +116,10 @@ public class RainSystem extends EcsSystem {
         threshold = 0.05f;
       }
 
-      if (random.nextFloat() < threshold) {
-        tileComponent.increaseWetness();
+      for (int i = 0; i < GameStatistics.getIntensityLevel(); i++) {
+        if (random.nextFloat() < threshold) {
+          tileComponent.increaseWetness();
+        }
       }
 
       int wetness = tileComponent.getWetness();
@@ -170,7 +174,7 @@ public class RainSystem extends EcsSystem {
         dropsPerUpdate--;
       }
     } else {
-      if (dropsPerUpdate < MAX_DROPS_PER_UPDATE) {
+      if (dropsPerUpdate < (3 * (GameStatistics.getIntensityLevel() - 1) + BASE_DROPS_PER_UPDATE)) {
         dropsPerUpdate++;
       }
     }

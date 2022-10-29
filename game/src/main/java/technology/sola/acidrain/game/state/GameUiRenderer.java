@@ -83,8 +83,11 @@ public class GameUiRenderer {
         float x = AcidRainSola.HALF_CANVAS_WIDTH - sunlightBarHalfWidth;
         float y = AcidRainSola.CANVAS_HEIGHT - SUNLIGHT_BAR_HEIGHT - 8;
 
+        String intensityLevelText = "Intensity: " + GameStatistics.getIntensityLevel();
         String donutsConsumedText = "Donuts: " + GameStatistics.getDonutsConsumed();
-        renderer.drawString(donutsConsumedText, 3, 3, Color.BLACK);
+        int textHeight = renderer.getFont().getDimensionsForText(intensityLevelText).height();
+        renderer.drawString(intensityLevelText, 3, 3, Color.BLACK);
+        renderer.drawString(donutsConsumedText, 3, 3 + textHeight + 3, Color.BLACK);
         renderer.setBlendMode(BlendMode.NORMAL);
         renderer.fillRect(x, y, percentage * sunlightBarWidth, SUNLIGHT_BAR_HEIGHT, SUNLIGHT_BAR_COLOR);
         renderer.setBlendMode(BlendMode.NO_BLENDING);
