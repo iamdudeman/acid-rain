@@ -2,10 +2,10 @@ package technology.sola.acidrain.game.state;
 
 public class GameStatistics {
   private static final int DONUT_THRESHOLD = 6;
+  private static final float INTENSITY_SECONDS = 30;
   private static int donutsConsumed;
   private static double distanceTraveled;
   private static int intensityLevel = 1;
-  private static final float INTENSITY_SECONDS = 30;
   private static float intensityAccumulator = 0f;
   private static int decreaseIntensityCounter = 0;
 

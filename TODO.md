@@ -1,7 +1,8 @@
 ## Known bugs
 * [ ] Clicking to restart causes duck to immediately start moving
 * [ ] Small delay needed before restart is allowed
-* [x] Colliders for erased tile need offsets to center them
+* [ ] Colliders for erased tile need offsets to center them
+* [ ] Sometimes collecting donuts adds more than one
 
 ## TODO List
 * [ ] Improve world generation
