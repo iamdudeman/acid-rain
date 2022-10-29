@@ -85,9 +85,16 @@ public class GameUiRenderer {
 
         String intensityLevelText = "Intensity: " + GameStatistics.getIntensityLevel();
         String donutsConsumedText = "Donuts: " + GameStatistics.getDonutsConsumed();
-        int textHeight = renderer.getFont().getDimensionsForText(intensityLevelText).height();
-        renderer.drawString(intensityLevelText, 3, 3, Color.BLACK);
-        renderer.drawString(donutsConsumedText, 3, 3 + textHeight + 3, Color.BLACK);
+        Font.TextDimensions textDimensions = renderer.getFont().getDimensionsForText(intensityLevelText);
+        renderer.setBlendMode(BlendMode.NORMAL);
+        renderer.fillRect(
+          3, 3,
+          textDimensions.width() + 6, textDimensions.height() * 2 + 9,
+          new Color(150, 255, 255, 255)
+        );
+        renderer.setBlendMode(BlendMode.NO_BLENDING);
+        renderer.drawString(intensityLevelText, 6, 3, Color.BLACK);
+        renderer.drawString(donutsConsumedText, 6, textDimensions.height() + 6, Color.BLACK);
         renderer.setBlendMode(BlendMode.NORMAL);
         renderer.fillRect(x, y, percentage * sunlightBarWidth, SUNLIGHT_BAR_HEIGHT, SUNLIGHT_BAR_COLOR);
         renderer.setBlendMode(BlendMode.NO_BLENDING);

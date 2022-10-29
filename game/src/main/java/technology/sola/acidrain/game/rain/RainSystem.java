@@ -127,7 +127,7 @@ public class RainSystem extends EcsSystem {
       if (wetness > THRESHOLD_EIGHT) {
         if (!spriteComponent.getSpriteId().equals(Constants.Assets.Sprites.ERASED)) {
           spriteComponent.setSpriteKeyFrame(SpriteCache.ERASED);
-          view.entity().addComponent(ColliderComponent.circle(Chunk.HALF_TILE_SIZE / 4f, Chunk.HALF_TILE_SIZE / 4f, Chunk.HALF_TILE_SIZE / 2f));
+          view.entity().addComponent(ColliderComponent.circle(Chunk.HALF_TILE_SIZE * 0.1f, Chunk.HALF_TILE_SIZE * 0.1f, Chunk.HALF_TILE_SIZE * 0.9f));
         }
       } else {
         if (tileComponent.getTileType().isErasable) {

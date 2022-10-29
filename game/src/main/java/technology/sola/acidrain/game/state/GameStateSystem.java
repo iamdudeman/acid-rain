@@ -72,7 +72,7 @@ public class GameStateSystem extends EcsSystem {
 
   @Override
   public void update(World world, float dt) {
-    if (allowRestartCounter > 1.5) {
+    if (allowRestartCounter > 1) {
       if (mouseInput.isMouseClicked(MouseButton.PRIMARY) || keyboardInput.isKeyPressed(Key.SPACE)) {
         eventHub.emit(new GameStateEvent(GameState.RESTART));
       }
