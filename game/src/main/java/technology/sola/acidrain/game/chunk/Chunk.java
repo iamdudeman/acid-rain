@@ -65,9 +65,14 @@ public class Chunk {
       return;
     }
 
-    // TODO (minor bug) should probably cleanup any pickups that were not collected as well
     for (var view : world.createView().of(TileComponent.class)) {
       if (view.c1().getChunkId().equals(chunkId)) {
+        view.entity().destroy();
+      }
+    }
+
+    for (var view : world.createView().of(PickupComponent.class)) {
+      if (view.c1().hostTile().getChunkId().equals(chunkId)) {
         view.entity().destroy();
       }
     }

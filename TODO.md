@@ -2,7 +2,8 @@
 * [ ] Clicking to restart causes duck to immediately start moving
 * [ ] Small delay needed before restart is allowed
 * [ ] Colliders for erased tile need offsets to center them
-* [ ] Sometimes collecting donuts adds more than one
+* [x] Sometimes collecting donuts adds more than one
+* [ ] Fix UI scale issue if zooming in
 
 ## TODO List
 * [ ] Improve world generation

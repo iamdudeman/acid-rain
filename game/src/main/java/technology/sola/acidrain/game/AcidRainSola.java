@@ -20,9 +20,9 @@ import technology.sola.acidrain.game.state.GameUiRenderer;
 import technology.sola.acidrain.game.state.GameStateSystem;
 
 public class AcidRainSola extends Sola {
-  public static final int CANVAS_WIDTH = 240;
+  public static final int CANVAS_WIDTH = 360;
   public static final int HALF_CANVAS_WIDTH = CANVAS_WIDTH / 2;
-  public static final int CANVAS_HEIGHT = 160;
+  public static final int CANVAS_HEIGHT = 240;
   public static final int HALF_CANVAS_HEIGHT = CANVAS_HEIGHT / 2;
   private final RainRenderer rainRenderer = new RainRenderer();
   private GameUiRenderer gameUiRenderer;
