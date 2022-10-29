@@ -83,7 +83,7 @@ public class GameStateSystem extends EcsSystem {
 
   @Override
   public int getOrder() {
-    return -500;
+    return 500;
   }
 
   private World buildWorld() {

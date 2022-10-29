@@ -1,8 +1,8 @@
 package technology.sola.acidrain.game.state;
 
 public class GameStatistics {
-  private static final int DONUT_THRESHOLD = 6;
-  private static final float INTENSITY_SECONDS = 30;
+  private static final int DONUT_THRESHOLD = 3;
+  private static final float INTENSITY_SECONDS = 10;
   private static int donutsConsumed;
   private static double distanceTraveled;
   private static int intensityLevel = 1;

@@ -12,8 +12,8 @@ import technology.sola.acidrain.game.player.PickupComponent;
 public class Chunk {
   public static final int TILE_SIZE = 20;
   public static final int HALF_TILE_SIZE = TILE_SIZE / 2;
-  public static final int COLUMNS = 24;
-  public static final int ROWS = 16;
+  public static final int COLUMNS = 18;
+  public static final int ROWS = 12;
 
   private final ChunkId chunkId;
   private final TileComponent[][] tileComponents;

@@ -72,7 +72,7 @@ public class PlayerSystem extends EcsSystem {
       (player, pickup) -> {
         audioClipAssetLoader.get(Constants.Assets.Audio.QUACK).executeIfLoaded(quack -> {
           long now = System.currentTimeMillis();
-          if (lastQuack + 1000 < now) {
+          if (lastQuack + 800 < now) {
             quack.stop();
             quack.play();
             lastQuack = now;
@@ -88,7 +88,11 @@ public class PlayerSystem extends EcsSystem {
 
     eventHub.add(GameStateEvent.class, gameStateEvent -> {
       if (gameStateEvent.getMessage() == GameState.RESTART) {
+        setActive(true);
         previousTranslate = null;
+        previousMouseMovement = null;
+      } else if (gameStateEvent.getMessage() == GameState.GAME_OVER) {
+        setActive(false);
       }
     });
   }
@@ -129,7 +133,7 @@ public class PlayerSystem extends EcsSystem {
         previousMouseMovement = null;
       }
 
-      if (mouseInput.isMouseDragged(MouseButton.PRIMARY)) {
+      if (mouseInput.isMouseClicked(MouseButton.PRIMARY)) {
         PlayerMovement temp = manipulateModsByMouse();
 
         if (temp != null) {
