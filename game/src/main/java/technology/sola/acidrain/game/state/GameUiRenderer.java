@@ -20,7 +20,7 @@ public class GameUiRenderer {
   public static final int SUNLIGHT_BAR_HEIGHT = 12;
   private static final Color SUNLIGHT_BAR_COLOR = new Color(200, 255, 215, 0);
   private static final String GAME_OVER_TEXT = "Game Over";
-  private static final String PLAY_AGAIN_TEXT = "Click or press space play again";
+  private static final String PLAY_AGAIN_TEXT = "Space or click to restart";
   private final int sunlightBarWidth = 220;
   private final int sunlightBarHalfWidth = sunlightBarWidth / 2;
   private final float animationDuration = 100;
@@ -47,7 +47,7 @@ public class GameUiRenderer {
   public void render(Renderer renderer, World world) {
     if (shouldDrawGameOver) {
       String donutsConsumedText = "Donuts eated: " + GameStatistics.getDonutsConsumed();
-      String distanceTraveledText = "Distance traveled for noms: " + Math.round(GameStatistics.getDistanceTraveled());
+      String distanceTraveledText = "Distance traveled: " + Math.round(GameStatistics.getDistanceTraveled());
       Font font = renderer.getFont();
       Font.TextDimensions gameOverDimensions = font.getDimensionsForText(GAME_OVER_TEXT);
       Font.TextDimensions donutsConsumedDimensions = font.getDimensionsForText(donutsConsumedText);

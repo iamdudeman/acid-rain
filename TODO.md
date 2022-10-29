@@ -1,6 +1,6 @@
 ## Known bugs
 * [ ] Clicking to restart causes duck to immediately start moving
-* [ ] Small delay needed before restart is allowed
+* [x] Small delay needed before restart is allowed
 * [ ] Colliders for erased tile need offsets to center them
 * [x] Sometimes collecting donuts adds more than one
 * [ ] Fix UI scale issue if zooming in
