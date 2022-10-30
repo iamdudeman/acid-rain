@@ -12,7 +12,7 @@ import technology.sola.acidrain.game.player.PickupComponent;
 public class Chunk {
   public static final int TILE_SIZE = 20;
   public static final int HALF_TILE_SIZE = TILE_SIZE / 2;
-  public static final int COLUMNS = 24;
+  public static final int COLUMNS = 16;
   public static final int ROWS = 16;
 
   private final ChunkId chunkId;
@@ -65,9 +65,14 @@ public class Chunk {
       return;
     }
 
-    // TODO (minor bug) should probably cleanup any pickups that were not collected as well
     for (var view : world.createView().of(TileComponent.class)) {
       if (view.c1().getChunkId().equals(chunkId)) {
+        view.entity().destroy();
+      }
+    }
+
+    for (var view : world.createView().of(PickupComponent.class)) {
+      if (view.c1().hostTile().getChunkId().equals(chunkId)) {
         view.entity().destroy();
       }
     }

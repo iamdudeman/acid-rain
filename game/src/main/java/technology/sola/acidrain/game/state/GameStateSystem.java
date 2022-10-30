@@ -27,6 +27,7 @@ public class GameStateSystem extends EcsSystem {
   private final MouseInput mouseInput;
   private final KeyboardInput keyboardInput;
   private final EventHub eventHub;
+  private float allowRestartCounter = 0;
 
   public GameStateSystem(SolaEcs solaEcs, MouseInput mouseInput, KeyboardInput keyboardInput, EventHub eventHub) {
     this.mouseInput = mouseInput;
@@ -39,7 +40,9 @@ public class GameStateSystem extends EcsSystem {
         solaEcs.getWorld().findEntityByName(Constants.EntityNames.PLAYER).ifPresent(Entity::destroy);
         solaEcs.getWorld().findEntitiesWithComponents(PickupComponent.class).forEach(Entity::destroy);
       } else if (gameStateEvent.getMessage() == GameState.RESTART) {
+        allowRestartCounter = 0;
         setActive(false);
+        GameStatistics.reset();
         solaEcs.setWorld(buildWorld());
       }
     });
@@ -55,14 +58,11 @@ public class GameStateSystem extends EcsSystem {
       },
       (player, erasedTile) -> {
         Vector2D playerTranslate = player.getComponent(TransformComponent.class).getTranslate();
-        int donutsConsumed = player.getComponent(PlayerComponent.class).getDonutsConsumed();
         // todo this is really hacky, clean up later
         Vector2D playerTranslateForFallAnimation = playerTranslate.subtract(solaEcs.getWorld().findEntityByName(Constants.EntityNames.CAMERA).get().getComponent(TransformComponent.class).getTranslate());
 
         eventHub.emit(new GameStateEvent(
           GameState.GAME_OVER,
-          playerTranslate.subtract(new Vector2D(AcidRainSola.HALF_CANVAS_WIDTH, AcidRainSola.HALF_CANVAS_HEIGHT)).magnitude(),
-          donutsConsumed,
           playerTranslateForFallAnimation,
           player.getComponent(SpriteComponent.class).getSpriteId()
         ));
@@ -71,15 +71,19 @@ public class GameStateSystem extends EcsSystem {
   }
 
   @Override
-  public void update(World world, float v) {
-    if (mouseInput.isMouseClicked(MouseButton.PRIMARY) || keyboardInput.isKeyPressed(Key.SPACE)) {
-      eventHub.emit(new GameStateEvent(GameState.RESTART));
+  public void update(World world, float dt) {
+    if (allowRestartCounter > 1) {
+      if (mouseInput.isMouseClicked(MouseButton.PRIMARY) || keyboardInput.isKeyPressed(Key.SPACE)) {
+        eventHub.emit(new GameStateEvent(GameState.RESTART));
+      }
+    } else {
+      allowRestartCounter += dt;
     }
   }
 
   @Override
   public int getOrder() {
-    return -500;
+    return 500;
   }
 
   private World buildWorld() {

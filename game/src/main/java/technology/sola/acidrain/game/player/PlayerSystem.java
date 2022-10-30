@@ -1,5 +1,8 @@
 package technology.sola.acidrain.game.player;
 
+import technology.sola.acidrain.game.event.GameState;
+import technology.sola.acidrain.game.event.GameStateEvent;
+import technology.sola.acidrain.game.state.GameStatistics;
 import technology.sola.ecs.EcsSystem;
 import technology.sola.ecs.World;
 import technology.sola.engine.assets.AssetLoader;
@@ -30,6 +33,7 @@ public class PlayerSystem extends EcsSystem {
   private final MouseInput mouseInput;
   private long lastQuack = System.currentTimeMillis();
   private PlayerMovement previousMouseMovement = null;
+  private Vector2D previousTranslate = null;
 
   public PlayerSystem(EventHub eventHub, KeyboardInput keyboardInput, MouseInput mouseInput, AssetLoader<AudioClip> audioClipAssetLoader) {
     this.keyboardInput = keyboardInput;
@@ -47,10 +51,9 @@ public class PlayerSystem extends EcsSystem {
           CollisionManifold collisionManifold = collisionManifoldEvent.collisionManifold();
           int scalar = collisionManifold.entityA() == player ? -1 : 1;
           TransformComponent playerTransform = player.getComponent(TransformComponent.class);
+          Vector2D collisionAdjustment = collisionManifold.normal().scalar(scalar * collisionManifold.penetration());
 
-          playerTransform.setTranslate(
-            playerTransform.getTranslate().add(collisionManifold.normal().scalar(scalar * collisionManifold.penetration()))
-          );
+          playerTransform.setTranslate(playerTransform.getTranslate().add(collisionAdjustment));
         } else if (tileType.assetId.equals(Constants.Assets.Sprites.DIRT)) {
           PlayerComponent playerComponent = player.getComponent(PlayerComponent.class);
 
@@ -69,23 +72,43 @@ public class PlayerSystem extends EcsSystem {
       (player, pickup) -> {
         audioClipAssetLoader.get(Constants.Assets.Audio.QUACK).executeIfLoaded(quack -> {
           long now = System.currentTimeMillis();
-          if (lastQuack + 1000 < now) {
+          if (lastQuack + 800 < now) {
             quack.stop();
             quack.play();
             lastQuack = now;
           }
         });
 
+        GameStatistics.incrementDonutsConsumed();
         player.getComponent(PlayerComponent.class).pickupDonut();
         pickup.getComponent(PickupComponent.class).hostTile().consumePickup();
         pickup.destroy();
       }
     ));
+
+    eventHub.add(GameStateEvent.class, gameStateEvent -> {
+      if (gameStateEvent.getMessage() == GameState.RESTART) {
+        setActive(true);
+        previousTranslate = null;
+        previousMouseMovement = null;
+      } else if (gameStateEvent.getMessage() == GameState.GAME_OVER) {
+        setActive(false);
+      }
+    });
   }
 
   @Override
   public void update(World world, float dt) {
     world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(entity -> {
+      if (previousTranslate == null) {
+        previousTranslate = entity.getComponent(TransformComponent.class).getTranslate();
+      }
+
+      Vector2D currentTranslate = entity.getComponent(TransformComponent.class).getTranslate();
+
+      GameStatistics.increaseDistanceTraveled(currentTranslate.distance(previousTranslate));
+      previousTranslate = currentTranslate;
+
       PlayerComponent playerComponent = entity.getComponent(PlayerComponent.class);
       int xMod = 0;
       int yMod = 0;
@@ -110,7 +133,7 @@ public class PlayerSystem extends EcsSystem {
         previousMouseMovement = null;
       }
 
-      if (mouseInput.isMouseDragged(MouseButton.PRIMARY)) {
+      if (mouseInput.isMouseClicked(MouseButton.PRIMARY)) {
         PlayerMovement temp = manipulateModsByMouse();
 
         if (temp != null) {
@@ -130,6 +153,7 @@ public class PlayerSystem extends EcsSystem {
         float speed = playerComponent.getSpeed();
 
         Vector2D velocity = new Vector2D(xMod * speed, yMod * speed).scalar(dt);
+
         transformComponent.setTranslate(transformComponent.getTranslate().add(velocity));
         theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, variation));
       }

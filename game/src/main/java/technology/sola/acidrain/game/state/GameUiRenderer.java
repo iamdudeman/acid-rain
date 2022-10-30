@@ -20,14 +20,12 @@ public class GameUiRenderer {
   public static final int SUNLIGHT_BAR_HEIGHT = 12;
   private static final Color SUNLIGHT_BAR_COLOR = new Color(200, 255, 215, 0);
   private static final String GAME_OVER_TEXT = "Game Over";
-  private static final String PLAY_AGAIN_TEXT = "Click or press space play again";
+  private static final String PLAY_AGAIN_TEXT = "Space or click to restart";
   private final int sunlightBarWidth = 220;
   private final int sunlightBarHalfWidth = sunlightBarWidth / 2;
   private final float animationDuration = 100;
   private final AssetLoader<SpriteSheet> spriteSheetAssetLoader;
   private boolean shouldDrawGameOver = false;
-  private float distanceTraveled = 0f;
-  private int donutsConsumed = 0;
   private int gameOverDuckAnimation = 0;
   private Vector2D duckLastPosition;
   private String spriteId;
@@ -38,8 +36,6 @@ public class GameUiRenderer {
       shouldDrawGameOver = gameStateEvent.getMessage() == GameState.GAME_OVER;
 
       if (shouldDrawGameOver) {
-        distanceTraveled = gameStateEvent.getDistanceTraveled();
-        donutsConsumed = gameStateEvent.getDonutsConsumed();
         duckLastPosition = gameStateEvent.getPlayerPosition();
         spriteId = gameStateEvent.getSpriteId();
       } else {
@@ -50,8 +46,8 @@ public class GameUiRenderer {
 
   public void render(Renderer renderer, World world) {
     if (shouldDrawGameOver) {
-      String donutsConsumedText = "Donuts eated: " + donutsConsumed;
-      String distanceTraveledText = "Distance traveled for noms: " + Math.round(this.distanceTraveled);
+      String donutsConsumedText = "Donuts eated: " + GameStatistics.getDonutsConsumed();
+      String distanceTraveledText = "Distance traveled: " + Math.round(GameStatistics.getDistanceTraveled());
       Font font = renderer.getFont();
       Font.TextDimensions gameOverDimensions = font.getDimensionsForText(GAME_OVER_TEXT);
       Font.TextDimensions donutsConsumedDimensions = font.getDimensionsForText(donutsConsumedText);
@@ -87,8 +83,18 @@ public class GameUiRenderer {
         float x = AcidRainSola.HALF_CANVAS_WIDTH - sunlightBarHalfWidth;
         float y = AcidRainSola.CANVAS_HEIGHT - SUNLIGHT_BAR_HEIGHT - 8;
 
-        String donutsConsumedText = "Donuts: " + playerComponent.getDonutsConsumed();
-        renderer.drawString(donutsConsumedText, 3, 3, Color.BLACK);
+        String intensityLevelText = "Intensity: " + GameStatistics.getIntensityLevel();
+        String donutsConsumedText = "Donuts: " + GameStatistics.getDonutsConsumed();
+        Font.TextDimensions textDimensions = renderer.getFont().getDimensionsForText(intensityLevelText);
+        renderer.setBlendMode(BlendMode.NORMAL);
+        renderer.fillRect(
+          3, 3,
+          textDimensions.width() + 6, textDimensions.height() * 2 + 9,
+          new Color(150, 255, 255, 255)
+        );
+        renderer.setBlendMode(BlendMode.NO_BLENDING);
+        renderer.drawString(intensityLevelText, 6, 3, Color.BLACK);
+        renderer.drawString(donutsConsumedText, 6, textDimensions.height() + 6, Color.BLACK);
         renderer.setBlendMode(BlendMode.NORMAL);
         renderer.fillRect(x, y, percentage * sunlightBarWidth, SUNLIGHT_BAR_HEIGHT, SUNLIGHT_BAR_COLOR);
         renderer.setBlendMode(BlendMode.NO_BLENDING);

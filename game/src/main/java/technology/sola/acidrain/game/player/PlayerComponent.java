@@ -3,7 +3,7 @@ package technology.sola.acidrain.game.player;
 import technology.sola.ecs.Component;
 
 public class PlayerComponent implements Component {
-  public static final int MAX_SUNLIGHT = 1000;
+  public static final int MAX_SUNLIGHT = 600;
   private static final int PICKUP_VALUE = MAX_SUNLIGHT / 12;
   private static final float SPEED = 50;
   private static final float SLOW_SPEED = SPEED / 2;
@@ -12,7 +12,6 @@ public class PlayerComponent implements Component {
   private boolean isUsingSunlight = false;
   private boolean isSlowed = false;
   private boolean isSuperSlowed = false;
-  private int donutsConsumed = 0;
 
   public int getSunlight() {
     return sunlight;
@@ -31,7 +30,6 @@ public class PlayerComponent implements Component {
   }
 
   public void pickupDonut() {
-    donutsConsumed++;
     sunlight += PICKUP_VALUE;
 
     if (sunlight > MAX_SUNLIGHT) {
@@ -62,9 +60,5 @@ public class PlayerComponent implements Component {
 
   public void setIsSuperSlowed(boolean isSuperSlowed) {
     this.isSuperSlowed = isSuperSlowed;
-  }
-
-  public int getDonutsConsumed() {
-    return donutsConsumed;
   }
 }
