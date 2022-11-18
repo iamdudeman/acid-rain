@@ -17,6 +17,20 @@ task("generateWebHtmlAndJs", type = JavaExec::class) {
   mainClass.set("${project.properties["basePackage"]}.browser.GenerateBrowserFilesMain")
 }
 
+task("distWebZip", Zip::class) {
+  group = "distribution"
+  destinationDirectory.set(file(buildDir))
+  archiveBaseName.set("${project.properties["gameName"]}-${project.name}")
+
+  dependsOn(tasks.getByName("generateWebHtmlAndJs"))
+
+  from("${project.rootDir}/assets") {
+    into("assets")
+  }
+  from("${buildDir}/index.html")
+  from("${buildDir}/sola.js")
+}
+
 tasks.assemble {
   finalizedBy(tasks.getByName("generateWebHtmlAndJs"))
 }
