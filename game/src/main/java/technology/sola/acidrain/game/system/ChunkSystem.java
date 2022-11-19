@@ -1,5 +1,8 @@
-package technology.sola.acidrain.game.chunk;
+package technology.sola.acidrain.game.system;
 
+import technology.sola.acidrain.game.system.chunk.Chunk;
+import technology.sola.acidrain.game.system.chunk.ChunkCreator;
+import technology.sola.acidrain.game.system.chunk.ChunkId;
 import technology.sola.ecs.EcsSystem;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;

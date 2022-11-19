@@ -1,6 +1,8 @@
-package technology.sola.acidrain.game.rain;
+package technology.sola.acidrain.game.system;
 
-import technology.sola.acidrain.game.state.GameStatistics;
+import technology.sola.acidrain.game.component.RainComponent;
+import technology.sola.acidrain.game.rendering.RainRenderer;
+import technology.sola.acidrain.game.GameStatistics;
 import technology.sola.ecs.EcsSystem;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
@@ -8,10 +10,10 @@ import technology.sola.engine.graphics.components.sprite.SpriteComponent;
 import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.acidrain.game.Constants;
 import technology.sola.acidrain.game.AcidRainSola;
-import technology.sola.acidrain.game.SpriteCache;
-import technology.sola.acidrain.game.chunk.Chunk;
-import technology.sola.acidrain.game.chunk.TileComponent;
-import technology.sola.acidrain.game.player.PlayerComponent;
+import technology.sola.acidrain.game.rendering.sprite.SpriteCache;
+import technology.sola.acidrain.game.system.chunk.Chunk;
+import technology.sola.acidrain.game.component.TileComponent;
+import technology.sola.acidrain.game.component.PlayerComponent;
 import technology.sola.math.linear.Vector2D;
 
 import java.util.Random;

@@ -1,5 +1,6 @@
-package technology.sola.acidrain.game.rain;
+package technology.sola.acidrain.game.rendering;
 
+import technology.sola.acidrain.game.component.RainComponent;
 import technology.sola.ecs.Entity;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;

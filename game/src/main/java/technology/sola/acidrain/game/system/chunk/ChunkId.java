@@ -1,4 +1,4 @@
-package technology.sola.acidrain.game.chunk;
+package technology.sola.acidrain.game.system.chunk;
 
 public record ChunkId(int columnIndex, int rowIndex) {
   public float getX(int column) {

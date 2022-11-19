@@ -1,5 +1,6 @@
-package technology.sola.acidrain.game.state;
+package technology.sola.acidrain.game.system;
 
+import technology.sola.acidrain.game.GameStatistics;
 import technology.sola.ecs.EcsSystem;
 import technology.sola.ecs.Entity;
 import technology.sola.ecs.SolaEcs;
@@ -16,11 +17,11 @@ import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.engine.physics.event.CollisionManifoldEvent;
 import technology.sola.acidrain.game.Constants;
 import technology.sola.acidrain.game.AcidRainSola;
-import technology.sola.acidrain.game.SpriteCache;
+import technology.sola.acidrain.game.rendering.sprite.SpriteCache;
 import technology.sola.acidrain.game.event.GameState;
 import technology.sola.acidrain.game.event.GameStateEvent;
-import technology.sola.acidrain.game.player.PickupComponent;
-import technology.sola.acidrain.game.player.PlayerComponent;
+import technology.sola.acidrain.game.component.PickupComponent;
+import technology.sola.acidrain.game.component.PlayerComponent;
 import technology.sola.math.linear.Vector2D;
 
 public class GameStateSystem extends EcsSystem {

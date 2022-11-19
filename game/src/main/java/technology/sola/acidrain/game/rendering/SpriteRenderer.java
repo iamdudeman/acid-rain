@@ -1,5 +1,6 @@
-package technology.sola.acidrain.game;
+package technology.sola.acidrain.game.rendering;
 
+import technology.sola.acidrain.game.Constants;
 import technology.sola.ecs.World;
 import technology.sola.engine.assets.AssetLoader;
 import technology.sola.engine.assets.graphics.SpriteSheet;
@@ -7,9 +8,9 @@ import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.graphics.components.sprite.SpriteComponent;
 import technology.sola.engine.graphics.renderer.BlendMode;
 import technology.sola.engine.graphics.renderer.Renderer;
-import technology.sola.acidrain.game.chunk.TileComponent;
-import technology.sola.acidrain.game.player.PickupComponent;
-import technology.sola.acidrain.game.player.PlayerComponent;
+import technology.sola.acidrain.game.component.TileComponent;
+import technology.sola.acidrain.game.component.PickupComponent;
+import technology.sola.acidrain.game.component.PlayerComponent;
 import technology.sola.math.linear.Vector2D;
 
 public class SpriteRenderer {

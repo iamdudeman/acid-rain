@@ -1,5 +1,6 @@
-package technology.sola.acidrain.game;
+package technology.sola.acidrain.game.rendering.sprite;
 
+import technology.sola.acidrain.game.Constants;
 import technology.sola.engine.graphics.components.sprite.SpriteKeyFrame;
 
 import java.util.HashMap;

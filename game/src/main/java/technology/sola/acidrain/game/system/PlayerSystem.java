@@ -1,8 +1,10 @@
-package technology.sola.acidrain.game.player;
+package technology.sola.acidrain.game.system;
 
 import technology.sola.acidrain.game.event.GameState;
 import technology.sola.acidrain.game.event.GameStateEvent;
-import technology.sola.acidrain.game.state.GameStatistics;
+import technology.sola.acidrain.game.component.PickupComponent;
+import technology.sola.acidrain.game.component.PlayerComponent;
+import technology.sola.acidrain.game.GameStatistics;
 import technology.sola.ecs.EcsSystem;
 import technology.sola.ecs.World;
 import technology.sola.engine.assets.AssetLoader;
@@ -18,11 +20,10 @@ import technology.sola.engine.physics.CollisionManifold;
 import technology.sola.engine.physics.event.CollisionManifoldEvent;
 import technology.sola.acidrain.game.Constants;
 import technology.sola.acidrain.game.AcidRainSola;
-import technology.sola.acidrain.game.SpriteCache;
-import technology.sola.acidrain.game.chunk.TileComponent;
-import technology.sola.acidrain.game.chunk.TileType;
-import technology.sola.acidrain.game.rain.RainSystem;
-import technology.sola.acidrain.game.state.GameUiRenderer;
+import technology.sola.acidrain.game.rendering.sprite.SpriteCache;
+import technology.sola.acidrain.game.component.TileComponent;
+import technology.sola.acidrain.game.system.chunk.TileType;
+import technology.sola.acidrain.game.rendering.GameUiRenderer;
 import technology.sola.math.linear.Vector2D;
 
 public class PlayerSystem extends EcsSystem {

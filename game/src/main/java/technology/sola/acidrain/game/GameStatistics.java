@@ -1,4 +1,4 @@
-package technology.sola.acidrain.game.state;
+package technology.sola.acidrain.game;
 
 public class GameStatistics {
   private static final int DONUT_THRESHOLD = 3;

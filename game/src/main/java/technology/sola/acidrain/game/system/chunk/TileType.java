@@ -1,4 +1,4 @@
-package technology.sola.acidrain.game.chunk;
+package technology.sola.acidrain.game.system.chunk;
 
 import technology.sola.acidrain.game.Constants;
 

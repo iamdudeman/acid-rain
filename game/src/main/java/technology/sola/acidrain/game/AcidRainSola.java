@@ -1,5 +1,6 @@
 package technology.sola.acidrain.game;
 
+import technology.sola.acidrain.game.rendering.SpriteRenderer;
 import technology.sola.ecs.World;
 import technology.sola.engine.assets.BulkAssetLoader;
 import technology.sola.engine.assets.audio.AudioClip;
@@ -8,16 +9,16 @@ import technology.sola.engine.core.Sola;
 import technology.sola.engine.core.SolaConfiguration;
 import technology.sola.engine.graphics.renderer.Renderer;
 import technology.sola.engine.graphics.screen.AspectMode;
-import technology.sola.acidrain.game.chunk.ChunkSystem;
+import technology.sola.acidrain.game.system.ChunkSystem;
 import technology.sola.acidrain.game.event.GameState;
 import technology.sola.acidrain.game.event.GameStateEvent;
-import technology.sola.acidrain.game.player.CameraSystem;
-import technology.sola.acidrain.game.player.PlayerCollisionDetectionSystem;
-import technology.sola.acidrain.game.player.PlayerSystem;
-import technology.sola.acidrain.game.rain.RainRenderer;
-import technology.sola.acidrain.game.rain.RainSystem;
-import technology.sola.acidrain.game.state.GameUiRenderer;
-import technology.sola.acidrain.game.state.GameStateSystem;
+import technology.sola.acidrain.game.system.CameraSystem;
+import technology.sola.acidrain.game.system.PlayerCollisionDetectionSystem;
+import technology.sola.acidrain.game.system.PlayerSystem;
+import technology.sola.acidrain.game.rendering.RainRenderer;
+import technology.sola.acidrain.game.system.RainSystem;
+import technology.sola.acidrain.game.rendering.GameUiRenderer;
+import technology.sola.acidrain.game.system.GameStateSystem;
 
 public class AcidRainSola extends Sola {
   public static final int CANVAS_WIDTH = 360;
@@ -67,7 +68,7 @@ public class AcidRainSola extends Sola {
         if (assets[1] instanceof AudioClip audioClip) {
           audioClip.setVolume(.5f);
 
-          audioClip.loop(-1);
+          audioClip.loop(AudioClip.CONTINUOUS_LOOPING);
         }
 
         solaInitialization.completeAsyncInitialization();

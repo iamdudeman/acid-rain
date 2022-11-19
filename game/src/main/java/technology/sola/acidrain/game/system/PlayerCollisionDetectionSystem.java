@@ -1,4 +1,4 @@
-package technology.sola.acidrain.game.player;
+package technology.sola.acidrain.game.system;
 
 import technology.sola.ecs.EcsSystem;
 import technology.sola.ecs.Entity;
