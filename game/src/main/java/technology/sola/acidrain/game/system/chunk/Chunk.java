@@ -4,10 +4,12 @@ import technology.sola.acidrain.game.component.TileComponent;
 import technology.sola.ecs.Entity;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
+import technology.sola.engine.graphics.components.BlendModeComponent;
 import technology.sola.engine.graphics.components.sprite.SpriteComponent;
+import technology.sola.engine.graphics.renderer.BlendMode;
 import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.acidrain.game.Constants;
-import technology.sola.acidrain.game.rendering.sprite.SpriteCache;
+import technology.sola.acidrain.game.SpriteCache;
 import technology.sola.acidrain.game.component.PickupComponent;
 
 public class Chunk {
@@ -52,6 +54,7 @@ public class Chunk {
             new TransformComponent(x + 6, y + 6),
             new PickupComponent(tileComponent),
             new SpriteComponent(SpriteCache.get(Constants.Assets.Sprites.DONUT, "main")),
+            new BlendModeComponent(BlendMode.MASK),
             ColliderComponent.circle(3)
           );
         }

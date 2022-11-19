@@ -1,12 +1,12 @@
 package technology.sola.acidrain.game;
 
-import technology.sola.acidrain.game.rendering.SpriteRenderer;
 import technology.sola.ecs.World;
 import technology.sola.engine.assets.BulkAssetLoader;
 import technology.sola.engine.assets.audio.AudioClip;
 import technology.sola.engine.assets.graphics.SpriteSheet;
 import technology.sola.engine.core.Sola;
 import technology.sola.engine.core.SolaConfiguration;
+import technology.sola.engine.core.module.graphics.SolaGraphics;
 import technology.sola.engine.graphics.renderer.Renderer;
 import technology.sola.engine.graphics.screen.AspectMode;
 import technology.sola.acidrain.game.system.ChunkSystem;
@@ -27,7 +27,7 @@ public class AcidRainSola extends Sola {
   public static final int HALF_CANVAS_HEIGHT = CANVAS_HEIGHT / 2;
   private final RainRenderer rainRenderer = new RainRenderer();
   private GameUiRenderer gameUiRenderer;
-  private SpriteRenderer spriteRenderer;
+  private SolaGraphics solaGraphics;
 
   public AcidRainSola() {
     super(SolaConfiguration.build("Acid Rain", CANVAS_WIDTH, CANVAS_HEIGHT).withTargetUpdatesPerSecond(30));
@@ -35,10 +35,10 @@ public class AcidRainSola extends Sola {
 
   @Override
   protected void onInit() {
+    solaGraphics = SolaGraphics.createInstance(solaEcs, platform.getRenderer(), assetLoaderProvider);
     solaInitialization.useAsyncInitialization();
 
     // Initialize stuff for rendering
-    spriteRenderer = new SpriteRenderer(assetLoaderProvider.get(SpriteSheet.class));
     gameUiRenderer = new GameUiRenderer(eventHub, assetLoaderProvider.get(SpriteSheet.class));
     platform.getViewport().setAspectMode(AspectMode.MAINTAIN);
 
@@ -73,6 +73,12 @@ public class AcidRainSola extends Sola {
 
         solaInitialization.completeAsyncInitialization();
       });
+
+    platform.getRenderer().createLayers(
+      "sprites",
+      "rain",
+      "ui"
+    );
   }
 
   @Override
@@ -80,8 +86,10 @@ public class AcidRainSola extends Sola {
     renderer.clear();
 
     World world = solaEcs.getWorld();
-    spriteRenderer.render(renderer, world);
-    rainRenderer.render(renderer, world);
-    gameUiRenderer.render(renderer, world);
+
+    solaGraphics.render();
+
+    renderer.drawToLayer("rain", r -> rainRenderer.render(r, world));
+    renderer.drawToLayer("ui", r -> gameUiRenderer.render(r, world));
   }
 }

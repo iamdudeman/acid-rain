@@ -20,7 +20,7 @@ import technology.sola.engine.physics.CollisionManifold;
 import technology.sola.engine.physics.event.CollisionManifoldEvent;
 import technology.sola.acidrain.game.Constants;
 import technology.sola.acidrain.game.AcidRainSola;
-import technology.sola.acidrain.game.rendering.sprite.SpriteCache;
+import technology.sola.acidrain.game.SpriteCache;
 import technology.sola.acidrain.game.component.TileComponent;
 import technology.sola.acidrain.game.system.chunk.TileType;
 import technology.sola.acidrain.game.rendering.GameUiRenderer;

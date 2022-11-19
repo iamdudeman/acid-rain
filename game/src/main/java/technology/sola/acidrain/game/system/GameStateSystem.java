@@ -7,8 +7,11 @@ import technology.sola.ecs.SolaEcs;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.event.EventHub;
+import technology.sola.engine.graphics.components.BlendModeComponent;
 import technology.sola.engine.graphics.components.CameraComponent;
+import technology.sola.engine.graphics.components.LayerComponent;
 import technology.sola.engine.graphics.components.sprite.SpriteComponent;
+import technology.sola.engine.graphics.renderer.BlendMode;
 import technology.sola.engine.input.Key;
 import technology.sola.engine.input.KeyboardInput;
 import technology.sola.engine.input.MouseButton;
@@ -17,7 +20,7 @@ import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.engine.physics.event.CollisionManifoldEvent;
 import technology.sola.acidrain.game.Constants;
 import technology.sola.acidrain.game.AcidRainSola;
-import technology.sola.acidrain.game.rendering.sprite.SpriteCache;
+import technology.sola.acidrain.game.SpriteCache;
 import technology.sola.acidrain.game.event.GameState;
 import technology.sola.acidrain.game.event.GameStateEvent;
 import technology.sola.acidrain.game.component.PickupComponent;
@@ -48,6 +51,7 @@ public class GameStateSystem extends EcsSystem {
       }
     });
 
+    // TODO should this move to PlayerSystem where the other tile types are checked?
     eventHub.add(CollisionManifoldEvent.class, collisionManifoldEvent -> collisionManifoldEvent.collisionManifold().conditionallyResolveCollision(
       entity -> Constants.EntityNames.PLAYER.equals(entity.getName()),
       entity -> {
@@ -94,6 +98,8 @@ public class GameStateSystem extends EcsSystem {
       new TransformComponent(AcidRainSola.HALF_CANVAS_WIDTH, AcidRainSola.HALF_CANVAS_HEIGHT),
       new SpriteComponent(SpriteCache.get(Constants.Assets.Sprites.DUCK, "top")),
       new PlayerComponent(),
+      new LayerComponent("sprites", -1),
+      new BlendModeComponent(BlendMode.MASK),
       ColliderComponent.circle(5)
     ).setName(Constants.EntityNames.PLAYER);
 

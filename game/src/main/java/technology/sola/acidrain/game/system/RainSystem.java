@@ -10,7 +10,7 @@ import technology.sola.engine.graphics.components.sprite.SpriteComponent;
 import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.acidrain.game.Constants;
 import technology.sola.acidrain.game.AcidRainSola;
-import technology.sola.acidrain.game.rendering.sprite.SpriteCache;
+import technology.sola.acidrain.game.SpriteCache;
 import technology.sola.acidrain.game.system.chunk.Chunk;
 import technology.sola.acidrain.game.component.TileComponent;
 import technology.sola.acidrain.game.component.PlayerComponent;
