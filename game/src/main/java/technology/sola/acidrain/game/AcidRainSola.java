@@ -52,11 +52,11 @@ public class AcidRainSola extends Sola {
       "rain",
       "ui"
     );
-    // solaGraphics.setRenderDebug(true);
+     solaGraphics.setRenderDebug(true);
 
     // Ecs setup
     ChunkSystem chunkSystem = new ChunkSystem();
-    PlayerSystem playerSystem = new PlayerSystem(eventHub, keyboardInput, mouseInput, assetLoaderProvider.get(AudioClip.class));
+    PlayerSystem playerSystem = new PlayerSystem(solaEcs, eventHub, keyboardInput, mouseInput, assetLoaderProvider.get(AudioClip.class));
     eventHub.add(GameStateEvent.class, chunkSystem);
     solaEcs.addSystems(
       chunkSystem,

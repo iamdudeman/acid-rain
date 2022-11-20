@@ -129,8 +129,9 @@ public class RainSystem extends EcsSystem {
       if (wetness > THRESHOLD_EIGHT) {
         if (!spriteComponent.getSpriteId().equals(Constants.Assets.Sprites.ERASED)) {
           spriteComponent.setSpriteKeyFrame(SpriteCache.ERASED);
+          // todo can be a trigger collider when it is implemented in sola engine
           view.entity().addComponent(
-            ColliderComponent.circle(Chunk.HALF_TILE_SIZE * 0.1f, Chunk.HALF_TILE_SIZE * 0.1f, Chunk.HALF_TILE_SIZE * 0.9f)
+            ColliderComponent.aabb(Chunk.TILE_SIZE * 0.1f, Chunk.TILE_SIZE * 0.1f, Chunk.TILE_SIZE * 0.8f, Chunk.TILE_SIZE * 0.8f)
               .setColliderTags(Constants.ColliderTags.TILE).setIgnoreTags(Constants.ColliderTags.TILE)
           );
         }

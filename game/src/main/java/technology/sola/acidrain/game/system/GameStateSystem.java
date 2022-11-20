@@ -17,8 +17,6 @@ import technology.sola.engine.input.KeyboardInput;
 import technology.sola.engine.input.MouseButton;
 import technology.sola.engine.input.MouseInput;
 import technology.sola.engine.physics.component.ColliderComponent;
-import technology.sola.engine.physics.component.DynamicBodyComponent;
-import technology.sola.engine.physics.event.CollisionManifoldEvent;
 import technology.sola.acidrain.game.Constants;
 import technology.sola.acidrain.game.AcidRainSola;
 import technology.sola.acidrain.game.SpriteCache;
@@ -26,7 +24,6 @@ import technology.sola.acidrain.game.event.GameState;
 import technology.sola.acidrain.game.event.GameStateEvent;
 import technology.sola.acidrain.game.component.PickupComponent;
 import technology.sola.acidrain.game.component.PlayerComponent;
-import technology.sola.math.linear.Vector2D;
 
 public class GameStateSystem extends EcsSystem {
   private final MouseInput mouseInput;
@@ -51,29 +48,6 @@ public class GameStateSystem extends EcsSystem {
         solaEcs.setWorld(buildWorld());
       }
     });
-
-    // TODO should this move to PlayerSystem where the other tile types are checked?
-    eventHub.add(CollisionManifoldEvent.class, collisionManifoldEvent -> collisionManifoldEvent.collisionManifold().conditionallyResolveCollision(
-      entity -> Constants.EntityNames.PLAYER.equals(entity.getName()),
-      entity -> {
-        SpriteComponent spriteComponent = entity.getComponent(SpriteComponent.class);
-        if (spriteComponent != null) {
-          return spriteComponent.getSpriteId().equals(Constants.Assets.Sprites.ERASED);
-        }
-        return false;
-      },
-      (player, erasedTile) -> {
-        Vector2D playerTranslate = player.getComponent(TransformComponent.class).getTranslate();
-        // todo this is really hacky, clean up later
-        Vector2D playerTranslateForFallAnimation = playerTranslate.subtract(solaEcs.getWorld().findEntityByName(Constants.EntityNames.CAMERA).get().getComponent(TransformComponent.class).getTranslate());
-
-        eventHub.emit(new GameStateEvent(
-          GameState.GAME_OVER,
-          playerTranslateForFallAnimation,
-          player.getComponent(SpriteComponent.class).getSpriteId()
-        ));
-      }
-    ));
   }
 
   @Override
@@ -102,7 +76,7 @@ public class GameStateSystem extends EcsSystem {
 //      new DynamicBodyComponent(), // TODO reenable this when collider for dirt can be a "trigger"
       new LayerComponent("sprites", -1),
       new BlendModeComponent(BlendMode.MASK),
-      ColliderComponent.circle(5)
+      ColliderComponent.circle(-2, 0, 6)
     ).setName(Constants.EntityNames.PLAYER);
 
     world.createEntity(
