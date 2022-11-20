@@ -129,7 +129,10 @@ public class RainSystem extends EcsSystem {
       if (wetness > THRESHOLD_EIGHT) {
         if (!spriteComponent.getSpriteId().equals(Constants.Assets.Sprites.ERASED)) {
           spriteComponent.setSpriteKeyFrame(SpriteCache.ERASED);
-          view.entity().addComponent(ColliderComponent.circle(Chunk.HALF_TILE_SIZE * 0.1f, Chunk.HALF_TILE_SIZE * 0.1f, Chunk.HALF_TILE_SIZE * 0.9f));
+          view.entity().addComponent(
+            ColliderComponent.circle(Chunk.HALF_TILE_SIZE * 0.1f, Chunk.HALF_TILE_SIZE * 0.1f, Chunk.HALF_TILE_SIZE * 0.9f)
+              .setColliderTags(Constants.ColliderTags.TILE).setIgnoreTags(Constants.ColliderTags.TILE)
+          );
         }
       } else {
         if (tileComponent.getTileType().isErasable) {
@@ -158,7 +161,10 @@ public class RainSystem extends EcsSystem {
               SpriteCache.get(tileComponent.getTileType().assetId, "3")
             );
             if (tileComponent.getTileType().assetId.startsWith(Constants.Assets.Sprites.DIRT)) {
-              view.entity().addComponent(ColliderComponent.circle(Chunk.HALF_TILE_SIZE));
+              view.entity().addComponent(
+                ColliderComponent.circle(Chunk.HALF_TILE_SIZE)
+                  .setColliderTags(Constants.ColliderTags.TILE).setIgnoreTags(Constants.ColliderTags.TILE)
+              );
             }
           } else if (wetness > THRESHOLD_ONE) {
             spriteComponent.setSpriteKeyFrame(

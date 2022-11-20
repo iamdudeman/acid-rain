@@ -46,7 +46,9 @@ public class Chunk {
         );
 
         if (tileType.assetId.equals(Constants.Assets.Sprites.CLIFF)) {
-          newEntity.addComponent(ColliderComponent.circle(Chunk.HALF_TILE_SIZE));
+          newEntity.addComponent(
+            ColliderComponent.circle(Chunk.HALF_TILE_SIZE).setColliderTags(Constants.ColliderTags.TILE).setIgnoreTags(Constants.ColliderTags.TILE)
+          );
         }
 
         if (tileComponent.hasPickup()) {
@@ -55,7 +57,7 @@ public class Chunk {
             new PickupComponent(tileComponent),
             new SpriteComponent(SpriteCache.get(Constants.Assets.Sprites.DONUT, "main")),
             new BlendModeComponent(BlendMode.MASK),
-            ColliderComponent.circle(3)
+            ColliderComponent.circle(3).setColliderTags(Constants.ColliderTags.TILE).setIgnoreTags(Constants.ColliderTags.TILE)
           );
         }
       }

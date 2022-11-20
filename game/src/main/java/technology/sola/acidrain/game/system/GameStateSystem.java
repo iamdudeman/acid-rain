@@ -17,6 +17,7 @@ import technology.sola.engine.input.KeyboardInput;
 import technology.sola.engine.input.MouseButton;
 import technology.sola.engine.input.MouseInput;
 import technology.sola.engine.physics.component.ColliderComponent;
+import technology.sola.engine.physics.component.DynamicBodyComponent;
 import technology.sola.engine.physics.event.CollisionManifoldEvent;
 import technology.sola.acidrain.game.Constants;
 import technology.sola.acidrain.game.AcidRainSola;
@@ -98,6 +99,7 @@ public class GameStateSystem extends EcsSystem {
       new TransformComponent(AcidRainSola.HALF_CANVAS_WIDTH, AcidRainSola.HALF_CANVAS_HEIGHT),
       new SpriteComponent(SpriteCache.get(Constants.Assets.Sprites.DUCK, "top")),
       new PlayerComponent(),
+//      new DynamicBodyComponent(), // TODO reenable this when collider for dirt can be a "trigger"
       new LayerComponent("sprites", -1),
       new BlendModeComponent(BlendMode.MASK),
       ColliderComponent.circle(5)

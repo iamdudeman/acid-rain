@@ -7,13 +7,13 @@ import technology.sola.engine.assets.graphics.SpriteSheet;
 import technology.sola.engine.core.Sola;
 import technology.sola.engine.core.SolaConfiguration;
 import technology.sola.engine.core.module.graphics.SolaGraphics;
+import technology.sola.engine.core.module.physics.SolaPhysics;
 import technology.sola.engine.graphics.renderer.Renderer;
 import technology.sola.engine.graphics.screen.AspectMode;
 import technology.sola.acidrain.game.system.ChunkSystem;
 import technology.sola.acidrain.game.event.GameState;
 import technology.sola.acidrain.game.event.GameStateEvent;
 import technology.sola.acidrain.game.system.CameraSystem;
-import technology.sola.acidrain.game.system.PlayerCollisionDetectionSystem;
 import technology.sola.acidrain.game.system.PlayerSystem;
 import technology.sola.acidrain.game.rendering.RainRenderer;
 import technology.sola.acidrain.game.system.RainSystem;
@@ -28,6 +28,7 @@ public class AcidRainSola extends Sola {
   private final RainRenderer rainRenderer = new RainRenderer();
   private GameUiRenderer gameUiRenderer;
   private SolaGraphics solaGraphics;
+  private SolaPhysics solaPhysics;
 
   public AcidRainSola() {
     super(SolaConfiguration.build("Acid Rain", CANVAS_WIDTH, CANVAS_HEIGHT).withTargetUpdatesPerSecond(30));
@@ -35,28 +36,35 @@ public class AcidRainSola extends Sola {
 
   @Override
   protected void onInit() {
-    solaGraphics = SolaGraphics.createInstance(solaEcs, platform.getRenderer(), assetLoaderProvider);
     solaInitialization.useAsyncInitialization();
 
+    // Initialize physics stuff
+    solaPhysics = SolaPhysics.createInstance(eventHub, solaEcs);
+    solaPhysics.getGravitySystem().setActive(false);
+    eventHub.add(GameStateEvent.class, gameStateEvent -> solaPhysics.getCollisionDetectionSystem().setActive(gameStateEvent.getMessage() == GameState.RESTART));
+
     // Initialize stuff for rendering
+    solaGraphics = SolaGraphics.createInstance(solaEcs, platform.getRenderer(), assetLoaderProvider);
     gameUiRenderer = new GameUiRenderer(eventHub, assetLoaderProvider.get(SpriteSheet.class));
     platform.getViewport().setAspectMode(AspectMode.MAINTAIN);
+    platform.getRenderer().createLayers(
+      "sprites",
+      "rain",
+      "ui"
+    );
+    // solaGraphics.setRenderDebug(true);
 
     // Ecs setup
     ChunkSystem chunkSystem = new ChunkSystem();
     PlayerSystem playerSystem = new PlayerSystem(eventHub, keyboardInput, mouseInput, assetLoaderProvider.get(AudioClip.class));
-    PlayerCollisionDetectionSystem collisionDetectionSystem = new PlayerCollisionDetectionSystem(eventHub);
     eventHub.add(GameStateEvent.class, chunkSystem);
     solaEcs.addSystems(
       chunkSystem,
       new GameStateSystem(solaEcs, mouseInput, keyboardInput, eventHub),
       new RainSystem(),
       new CameraSystem(),
-      playerSystem,
-      collisionDetectionSystem
+      playerSystem
     );
-    eventHub.emit(new GameStateEvent(GameState.RESTART));
-    eventHub.add(GameStateEvent.class, gameStateEvent -> collisionDetectionSystem.setActive(gameStateEvent.getMessage() == GameState.RESTART));
 
     // Load assets
     new BulkAssetLoader(assetLoaderProvider)
@@ -72,13 +80,8 @@ public class AcidRainSola extends Sola {
         }
 
         solaInitialization.completeAsyncInitialization();
+        eventHub.emit(new GameStateEvent(GameState.RESTART));
       });
-
-    platform.getRenderer().createLayers(
-      "sprites",
-      "rain",
-      "ui"
-    );
   }
 
   @Override

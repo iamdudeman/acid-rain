@@ -48,7 +48,7 @@ public class PlayerSystem extends EcsSystem {
 
         TileType tileType = tileComponent.getTileType();
 
-        if (tileType.assetId.equals(Constants.Assets.Sprites.CLIFF)) {
+        if (tileType.assetId.equals(Constants.Assets.Sprites.CLIFF)) { // todo delete this section when colliders can be a "trigger"
           CollisionManifold collisionManifold = collisionManifoldEvent.collisionManifold();
           int scalar = collisionManifold.entityA() == player ? -1 : 1;
           TransformComponent playerTransform = player.getComponent(TransformComponent.class);

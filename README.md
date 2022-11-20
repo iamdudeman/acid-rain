@@ -44,11 +44,11 @@ Your users will not need to have Java installed.
 * ex. C:\Program Files\Java\jdk-17.0.5
 * powershell: $env:JAVA_HOME
 * To test configuration run: `& $env:JAVA_HOME/bin/jpackage.exe --version`
-3. Run from sola-game-engine\examples\swing on Windows Powershell
+3. Run from swing on Windows Powershell
 ```shell
-& $env:JAVA_HOME/bin/jpackage.exe --name GameName --app-version 0.1.0 --vendor sola.technology --dest build --input build/libs --main-jar <gameName>-swing-0.1.1.jar --type app-image
+& $env:JAVA_HOME/bin/jpackage.exe --name AcidRain --app-version 0.1.0 --vendor sola.technology --dest build --input build/libs --main-jar acid-rain-swing-0.1.1.jar --type app-image
 ```
-4. Run from sola-game-engine\examples\javafx on Windows Powershell
+4. Run from javafx on Windows Powershell
 ```shell
-& $env:JAVA_HOME/bin/jpackage.exe --name GameName --app-version 0.1.0 --vendor sola.technology --dest build --input build/libs --main-jar <gameName>-javafx-win-0.1.1.jar --type app-image
+& $env:JAVA_HOME/bin/jpackage.exe --name AcidRain --app-version 1.1.0 --vendor sola.technology --dest build --input build/libs --main-jar acid-rain-javafx-win-1.1.0.jar --type app-image
 ```
