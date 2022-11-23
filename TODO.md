@@ -6,6 +6,7 @@
 * ~~convert erased and dirt tile collisions into triggers~~
   * ~~add DynamicBodyComponent to Player entity at that time~~
 * Check any todo comments
+* Cleanup duck falling animation
 
 ## TODO List
-* [ ] Consider improving world generation
+* Consider improving world generation

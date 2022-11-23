@@ -50,8 +50,8 @@ public class PlayerSystem extends EcsSystem {
         if (tileComponent.getWetness() > RainSystem.THRESHOLD_EIGHT) {
           Vector2D playerTranslate = player.getComponent(TransformComponent.class).getTranslate();
           // todo this is really hacky, clean up later
-          Vector2D playerTranslateForFallAnimation = playerTranslate
-            .subtract(solaEcs.getWorld().findEntityByName(Constants.EntityNames.CAMERA).get().getComponent(TransformComponent.class).getTranslate());
+          Vector2D cameraTranslate = solaEcs.getWorld().findEntityByName(Constants.EntityNames.CAMERA).orElseThrow().getComponent(TransformComponent.class).getTranslate();
+          Vector2D playerTranslateForFallAnimation = playerTranslate.subtract(cameraTranslate);
 
           eventHub.emit(new GameStateEvent(
             GameState.GAME_OVER,

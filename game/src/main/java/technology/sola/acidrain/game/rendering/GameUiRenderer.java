@@ -55,6 +55,7 @@ public class GameUiRenderer {
       Font.TextDimensions distanceTraveledDimensions = font.getDimensionsForText(distanceTraveledText);
       Font.TextDimensions playAgainDimensions = font.getDimensionsForText(PLAY_AGAIN_TEXT);
       float maxWidth = Math.max(playAgainDimensions.width(), distanceTraveledDimensions.width());
+      // todo this is really hacky, clean up later
       if (gameOverDuckAnimation < animationDuration) {
         spriteSheetAssetLoader.get(Constants.Assets.Sprites.SPRITE_SHEET_ID).executeIfLoaded(spriteSheet -> {
           float size = (animationDuration - gameOverDuckAnimation) / animationDuration;
