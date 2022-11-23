@@ -1,6 +1,8 @@
-package technology.sola.acidrain.game.rain;
+package technology.sola.acidrain.game.system;
 
-import technology.sola.acidrain.game.state.GameStatistics;
+import technology.sola.acidrain.game.component.RainComponent;
+import technology.sola.acidrain.game.rendering.RainRenderer;
+import technology.sola.acidrain.game.GameStatistics;
 import technology.sola.ecs.EcsSystem;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
@@ -9,9 +11,9 @@ import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.acidrain.game.Constants;
 import technology.sola.acidrain.game.AcidRainSola;
 import technology.sola.acidrain.game.SpriteCache;
-import technology.sola.acidrain.game.chunk.Chunk;
-import technology.sola.acidrain.game.chunk.TileComponent;
-import technology.sola.acidrain.game.player.PlayerComponent;
+import technology.sola.acidrain.game.system.chunk.Chunk;
+import technology.sola.acidrain.game.component.TileComponent;
+import technology.sola.acidrain.game.component.PlayerComponent;
 import technology.sola.math.linear.Vector2D;
 
 import java.util.Random;
@@ -27,7 +29,9 @@ public class RainSystem extends EcsSystem {
   public static final int THRESHOLD_EIGHT = THRESHOLD_SEVEN + 5;
   private static final float COMMON_WETNESS_THRESHOLD = 0.25f;
   private static final float SOMEWHAT_CLOSE_WETNESS_THRESHOLD = 0.5f;
+  private static final float FAR_WETNESS_THRESHOLD = 0.05f;
   private static final float SOMEWHAT_CLOSE_WETNESS_DISTANCE = 150;
+  private static final float FAR_WETNESS_DISTANCE = 400;
   private static final float CLOSE_WETNESS_THRESHOLD = 0.85f;
   private static final float CLOSE_WETNESS_DISTANCE = 50;
   private static final int BASE_DROPS_PER_UPDATE = 10;
@@ -111,9 +115,8 @@ public class RainSystem extends EcsSystem {
         threshold = SOMEWHAT_CLOSE_WETNESS_THRESHOLD;
       }
 
-      // todo constants maybe?
-      if (distance > 400) {
-        threshold = 0.05f;
+      if (distance > FAR_WETNESS_DISTANCE) {
+        threshold = FAR_WETNESS_THRESHOLD;
       }
 
       for (int i = 0; i < GameStatistics.getIntensityLevel(); i++) {
@@ -127,7 +130,11 @@ public class RainSystem extends EcsSystem {
       if (wetness > THRESHOLD_EIGHT) {
         if (!spriteComponent.getSpriteId().equals(Constants.Assets.Sprites.ERASED)) {
           spriteComponent.setSpriteKeyFrame(SpriteCache.ERASED);
-          view.entity().addComponent(ColliderComponent.circle(Chunk.HALF_TILE_SIZE * 0.1f, Chunk.HALF_TILE_SIZE * 0.1f, Chunk.HALF_TILE_SIZE * 0.9f));
+          view.entity().addComponent(
+            ColliderComponent.aabb(Chunk.TILE_SIZE * 0.1f, Chunk.TILE_SIZE * 0.1f, Chunk.TILE_SIZE * 0.8f, Chunk.TILE_SIZE * 0.8f)
+              .setSensor(true)
+              .setTags(Constants.ColliderTags.TILE).setIgnoreTags(Constants.ColliderTags.TILE)
+          );
         }
       } else {
         if (tileComponent.getTileType().isErasable) {
@@ -156,7 +163,11 @@ public class RainSystem extends EcsSystem {
               SpriteCache.get(tileComponent.getTileType().assetId, "3")
             );
             if (tileComponent.getTileType().assetId.startsWith(Constants.Assets.Sprites.DIRT)) {
-              view.entity().addComponent(ColliderComponent.circle(Chunk.HALF_TILE_SIZE));
+              view.entity().addComponent(
+                ColliderComponent.circle(Chunk.HALF_TILE_SIZE)
+                  .setSensor(true)
+                  .setTags(Constants.ColliderTags.TILE).setIgnoreTags(Constants.ColliderTags.TILE)
+              );
             }
           } else if (wetness > THRESHOLD_ONE) {
             spriteComponent.setSpriteKeyFrame(

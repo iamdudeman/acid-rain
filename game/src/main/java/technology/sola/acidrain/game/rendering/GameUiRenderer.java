@@ -1,5 +1,6 @@
-package technology.sola.acidrain.game.state;
+package technology.sola.acidrain.game.rendering;
 
+import technology.sola.acidrain.game.GameStatistics;
 import technology.sola.ecs.World;
 import technology.sola.engine.assets.AssetLoader;
 import technology.sola.engine.assets.graphics.SpriteSheet;
@@ -13,7 +14,7 @@ import technology.sola.acidrain.game.Constants;
 import technology.sola.acidrain.game.AcidRainSola;
 import technology.sola.acidrain.game.event.GameState;
 import technology.sola.acidrain.game.event.GameStateEvent;
-import technology.sola.acidrain.game.player.PlayerComponent;
+import technology.sola.acidrain.game.component.PlayerComponent;
 import technology.sola.math.linear.Vector2D;
 
 public class GameUiRenderer {
@@ -54,6 +55,7 @@ public class GameUiRenderer {
       Font.TextDimensions distanceTraveledDimensions = font.getDimensionsForText(distanceTraveledText);
       Font.TextDimensions playAgainDimensions = font.getDimensionsForText(PLAY_AGAIN_TEXT);
       float maxWidth = Math.max(playAgainDimensions.width(), distanceTraveledDimensions.width());
+      // todo this is really hacky, clean up later
       if (gameOverDuckAnimation < animationDuration) {
         spriteSheetAssetLoader.get(Constants.Assets.Sprites.SPRITE_SHEET_ID).executeIfLoaded(spriteSheet -> {
           float size = (animationDuration - gameOverDuckAnimation) / animationDuration;

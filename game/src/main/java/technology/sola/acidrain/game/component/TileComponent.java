@@ -1,5 +1,7 @@
-package technology.sola.acidrain.game.chunk;
+package technology.sola.acidrain.game.component;
 
+import technology.sola.acidrain.game.system.chunk.ChunkId;
+import technology.sola.acidrain.game.system.chunk.TileType;
 import technology.sola.ecs.Component;
 
 import java.util.Random;

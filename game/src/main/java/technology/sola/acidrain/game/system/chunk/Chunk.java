@@ -1,13 +1,16 @@
-package technology.sola.acidrain.game.chunk;
+package technology.sola.acidrain.game.system.chunk;
 
+import technology.sola.acidrain.game.component.TileComponent;
 import technology.sola.ecs.Entity;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
+import technology.sola.engine.graphics.components.BlendModeComponent;
 import technology.sola.engine.graphics.components.sprite.SpriteComponent;
+import technology.sola.engine.graphics.renderer.BlendMode;
 import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.acidrain.game.Constants;
 import technology.sola.acidrain.game.SpriteCache;
-import technology.sola.acidrain.game.player.PickupComponent;
+import technology.sola.acidrain.game.component.PickupComponent;
 
 public class Chunk {
   public static final int TILE_SIZE = 20;
@@ -43,7 +46,9 @@ public class Chunk {
         );
 
         if (tileType.assetId.equals(Constants.Assets.Sprites.CLIFF)) {
-          newEntity.addComponent(ColliderComponent.circle(Chunk.HALF_TILE_SIZE));
+          newEntity.addComponent(
+            ColliderComponent.circle(Chunk.HALF_TILE_SIZE).setTags(Constants.ColliderTags.TILE).setIgnoreTags(Constants.ColliderTags.TILE)
+          );
         }
 
         if (tileComponent.hasPickup()) {
@@ -51,7 +56,8 @@ public class Chunk {
             new TransformComponent(x + 6, y + 6),
             new PickupComponent(tileComponent),
             new SpriteComponent(SpriteCache.get(Constants.Assets.Sprites.DONUT, "main")),
-            ColliderComponent.circle(3)
+            new BlendModeComponent(BlendMode.MASK),
+            ColliderComponent.circle(3).setSensor(true).setTags(Constants.ColliderTags.TILE).setIgnoreTags(Constants.ColliderTags.TILE)
           );
         }
       }

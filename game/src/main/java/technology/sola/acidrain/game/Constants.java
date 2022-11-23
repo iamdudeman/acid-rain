@@ -1,5 +1,7 @@
 package technology.sola.acidrain.game;
 
+import technology.sola.engine.physics.component.ColliderComponent;
+
 public class Constants {
   public static final class EntityNames {
     public static final String CAMERA = "camera";
@@ -7,6 +9,10 @@ public class Constants {
 
     private EntityNames() {
     }
+  }
+
+  public enum ColliderTags implements ColliderComponent.ColliderTag {
+    TILE
   }
 
   public static final class Assets {

@@ -1,6 +1,7 @@
-package technology.sola.acidrain.game.chunk;
+package technology.sola.acidrain.game.system.chunk;
 
 import technology.sola.acidrain.game.Constants;
+import technology.sola.acidrain.game.component.TileComponent;
 import technology.sola.math.linear.Vector2D;
 
 import java.util.ArrayList;

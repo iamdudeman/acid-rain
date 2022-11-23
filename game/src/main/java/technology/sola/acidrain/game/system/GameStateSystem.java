@@ -1,27 +1,30 @@
-package technology.sola.acidrain.game.state;
+package technology.sola.acidrain.game.system;
 
+import technology.sola.acidrain.game.GameStatistics;
 import technology.sola.ecs.EcsSystem;
 import technology.sola.ecs.Entity;
 import technology.sola.ecs.SolaEcs;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.event.EventHub;
+import technology.sola.engine.graphics.components.BlendModeComponent;
 import technology.sola.engine.graphics.components.CameraComponent;
+import technology.sola.engine.graphics.components.LayerComponent;
 import technology.sola.engine.graphics.components.sprite.SpriteComponent;
+import technology.sola.engine.graphics.renderer.BlendMode;
 import technology.sola.engine.input.Key;
 import technology.sola.engine.input.KeyboardInput;
 import technology.sola.engine.input.MouseButton;
 import technology.sola.engine.input.MouseInput;
 import technology.sola.engine.physics.component.ColliderComponent;
-import technology.sola.engine.physics.event.CollisionManifoldEvent;
 import technology.sola.acidrain.game.Constants;
 import technology.sola.acidrain.game.AcidRainSola;
 import technology.sola.acidrain.game.SpriteCache;
 import technology.sola.acidrain.game.event.GameState;
 import technology.sola.acidrain.game.event.GameStateEvent;
-import technology.sola.acidrain.game.player.PickupComponent;
-import technology.sola.acidrain.game.player.PlayerComponent;
-import technology.sola.math.linear.Vector2D;
+import technology.sola.acidrain.game.component.PickupComponent;
+import technology.sola.acidrain.game.component.PlayerComponent;
+import technology.sola.engine.physics.component.DynamicBodyComponent;
 
 public class GameStateSystem extends EcsSystem {
   private final MouseInput mouseInput;
@@ -46,28 +49,6 @@ public class GameStateSystem extends EcsSystem {
         solaEcs.setWorld(buildWorld());
       }
     });
-
-    eventHub.add(CollisionManifoldEvent.class, collisionManifoldEvent -> collisionManifoldEvent.collisionManifold().conditionallyResolveCollision(
-      entity -> Constants.EntityNames.PLAYER.equals(entity.getName()),
-      entity -> {
-        SpriteComponent spriteComponent = entity.getComponent(SpriteComponent.class);
-        if (spriteComponent != null) {
-          return spriteComponent.getSpriteId().equals(Constants.Assets.Sprites.ERASED);
-        }
-        return false;
-      },
-      (player, erasedTile) -> {
-        Vector2D playerTranslate = player.getComponent(TransformComponent.class).getTranslate();
-        // todo this is really hacky, clean up later
-        Vector2D playerTranslateForFallAnimation = playerTranslate.subtract(solaEcs.getWorld().findEntityByName(Constants.EntityNames.CAMERA).get().getComponent(TransformComponent.class).getTranslate());
-
-        eventHub.emit(new GameStateEvent(
-          GameState.GAME_OVER,
-          playerTranslateForFallAnimation,
-          player.getComponent(SpriteComponent.class).getSpriteId()
-        ));
-      }
-    ));
   }
 
   @Override
@@ -93,7 +74,10 @@ public class GameStateSystem extends EcsSystem {
       new TransformComponent(AcidRainSola.HALF_CANVAS_WIDTH, AcidRainSola.HALF_CANVAS_HEIGHT),
       new SpriteComponent(SpriteCache.get(Constants.Assets.Sprites.DUCK, "top")),
       new PlayerComponent(),
-      ColliderComponent.circle(5)
+      new DynamicBodyComponent(),
+      new LayerComponent("sprites", -1),
+      new BlendModeComponent(BlendMode.MASK),
+      ColliderComponent.circle(-2, 0, 6)
     ).setName(Constants.EntityNames.PLAYER);
 
     world.createEntity(
