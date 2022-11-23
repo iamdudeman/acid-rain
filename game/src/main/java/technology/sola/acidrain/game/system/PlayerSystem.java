@@ -25,6 +25,7 @@ import technology.sola.acidrain.game.component.TileComponent;
 import technology.sola.acidrain.game.system.chunk.TileType;
 import technology.sola.acidrain.game.rendering.GameUiRenderer;
 import technology.sola.engine.physics.event.CollisionEvent;
+import technology.sola.engine.physics.event.SensorEvent;
 import technology.sola.math.linear.Vector2D;
 
 public class PlayerSystem extends EcsSystem {
@@ -41,7 +42,7 @@ public class PlayerSystem extends EcsSystem {
     this.keyboardInput = keyboardInput;
     this.mouseInput = mouseInput;
 
-    eventHub.add(CollisionEvent.class, collisionManifoldEvent -> collisionManifoldEvent.collisionManifold().conditionallyResolveCollision(
+    eventHub.add(SensorEvent.class, collisionManifoldEvent -> collisionManifoldEvent.collisionManifold().conditionallyResolveCollision(
       entity -> Constants.EntityNames.PLAYER.equals(entity.getName()),
       entity -> entity.hasComponent(TileComponent.class),
       (player, erasedTile) -> {
@@ -60,13 +61,6 @@ public class PlayerSystem extends EcsSystem {
             playerTranslateForFallAnimation,
             player.getComponent(SpriteComponent.class).getSpriteId()
           ));
-        } else if (tileType.assetId.equals(Constants.Assets.Sprites.CLIFF)) { // todo delete this section when colliders can be a "trigger"
-          CollisionManifold collisionManifold = collisionManifoldEvent.collisionManifold();
-          int scalar = collisionManifold.entityA() == player ? -1 : 1;
-          TransformComponent playerTransform = player.getComponent(TransformComponent.class);
-          Vector2D collisionAdjustment = collisionManifold.normal().scalar(scalar * collisionManifold.penetration());
-
-          playerTransform.setTranslate(playerTransform.getTranslate().add(collisionAdjustment));
         } else if (tileType.assetId.equals(Constants.Assets.Sprites.DIRT)) {
           PlayerComponent playerComponent = player.getComponent(PlayerComponent.class);
 

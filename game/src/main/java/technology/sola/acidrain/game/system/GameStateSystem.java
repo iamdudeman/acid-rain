@@ -24,6 +24,7 @@ import technology.sola.acidrain.game.event.GameState;
 import technology.sola.acidrain.game.event.GameStateEvent;
 import technology.sola.acidrain.game.component.PickupComponent;
 import technology.sola.acidrain.game.component.PlayerComponent;
+import technology.sola.engine.physics.component.DynamicBodyComponent;
 
 public class GameStateSystem extends EcsSystem {
   private final MouseInput mouseInput;
@@ -73,7 +74,7 @@ public class GameStateSystem extends EcsSystem {
       new TransformComponent(AcidRainSola.HALF_CANVAS_WIDTH, AcidRainSola.HALF_CANVAS_HEIGHT),
       new SpriteComponent(SpriteCache.get(Constants.Assets.Sprites.DUCK, "top")),
       new PlayerComponent(),
-//      new DynamicBodyComponent(), // TODO reenable this when collider for dirt can be a "trigger"
+      new DynamicBodyComponent(),
       new LayerComponent("sprites", -1),
       new BlendModeComponent(BlendMode.MASK),
       ColliderComponent.circle(-2, 0, 6)
