@@ -18,13 +18,13 @@ import technology.sola.engine.input.KeyboardInput;
 import technology.sola.engine.input.MouseButton;
 import technology.sola.engine.input.MouseInput;
 import technology.sola.engine.physics.CollisionManifold;
-import technology.sola.engine.physics.event.CollisionManifoldEvent;
 import technology.sola.acidrain.game.Constants;
 import technology.sola.acidrain.game.AcidRainSola;
 import technology.sola.acidrain.game.SpriteCache;
 import technology.sola.acidrain.game.component.TileComponent;
 import technology.sola.acidrain.game.system.chunk.TileType;
 import technology.sola.acidrain.game.rendering.GameUiRenderer;
+import technology.sola.engine.physics.event.CollisionEvent;
 import technology.sola.math.linear.Vector2D;
 
 public class PlayerSystem extends EcsSystem {
@@ -41,7 +41,7 @@ public class PlayerSystem extends EcsSystem {
     this.keyboardInput = keyboardInput;
     this.mouseInput = mouseInput;
 
-    eventHub.add(CollisionManifoldEvent.class, collisionManifoldEvent -> collisionManifoldEvent.collisionManifold().conditionallyResolveCollision(
+    eventHub.add(CollisionEvent.class, collisionManifoldEvent -> collisionManifoldEvent.collisionManifold().conditionallyResolveCollision(
       entity -> Constants.EntityNames.PLAYER.equals(entity.getName()),
       entity -> entity.hasComponent(TileComponent.class),
       (player, erasedTile) -> {
@@ -79,7 +79,7 @@ public class PlayerSystem extends EcsSystem {
       }
     ));
 
-    eventHub.add(CollisionManifoldEvent.class, collisionManifoldEvent -> collisionManifoldEvent.collisionManifold().conditionallyResolveCollision(
+    eventHub.add(CollisionEvent.class, collisionManifoldEvent -> collisionManifoldEvent.collisionManifold().conditionallyResolveCollision(
       entity -> Constants.EntityNames.PLAYER.equals(entity.getName()),
       entity -> entity.hasComponent(PickupComponent.class),
       (player, pickup) -> {

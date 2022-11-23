@@ -132,7 +132,7 @@ public class RainSystem extends EcsSystem {
           // todo can be a trigger collider when it is implemented in sola engine
           view.entity().addComponent(
             ColliderComponent.aabb(Chunk.TILE_SIZE * 0.1f, Chunk.TILE_SIZE * 0.1f, Chunk.TILE_SIZE * 0.8f, Chunk.TILE_SIZE * 0.8f)
-              .setColliderTags(Constants.ColliderTags.TILE).setIgnoreTags(Constants.ColliderTags.TILE)
+              .setTags(Constants.ColliderTags.TILE).setIgnoreTags(Constants.ColliderTags.TILE)
           );
         }
       } else {
@@ -164,7 +164,7 @@ public class RainSystem extends EcsSystem {
             if (tileComponent.getTileType().assetId.startsWith(Constants.Assets.Sprites.DIRT)) {
               view.entity().addComponent(
                 ColliderComponent.circle(Chunk.HALF_TILE_SIZE)
-                  .setColliderTags(Constants.ColliderTags.TILE).setIgnoreTags(Constants.ColliderTags.TILE)
+                  .setTags(Constants.ColliderTags.TILE).setIgnoreTags(Constants.ColliderTags.TILE)
               );
             }
           } else if (wetness > THRESHOLD_ONE) {

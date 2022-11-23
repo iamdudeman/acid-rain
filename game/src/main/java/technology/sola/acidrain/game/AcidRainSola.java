@@ -39,12 +39,12 @@ public class AcidRainSola extends Sola {
     solaInitialization.useAsyncInitialization();
 
     // Initialize physics stuff
-    solaPhysics = SolaPhysics.createInstance(eventHub, solaEcs);
+    solaPhysics = SolaPhysics.useModule(eventHub, solaEcs);
     solaPhysics.getGravitySystem().setActive(false);
     eventHub.add(GameStateEvent.class, gameStateEvent -> solaPhysics.getCollisionDetectionSystem().setActive(gameStateEvent.getMessage() == GameState.RESTART));
 
     // Initialize stuff for rendering
-    solaGraphics = SolaGraphics.createInstance(solaEcs, platform.getRenderer(), assetLoaderProvider);
+    solaGraphics = SolaGraphics.useModule(solaEcs, platform.getRenderer(), assetLoaderProvider);
     gameUiRenderer = new GameUiRenderer(eventHub, assetLoaderProvider.get(SpriteSheet.class));
     platform.getViewport().setAspectMode(AspectMode.MAINTAIN);
     platform.getRenderer().createLayers(
@@ -52,7 +52,6 @@ public class AcidRainSola extends Sola {
       "rain",
       "ui"
     );
-     solaGraphics.setRenderDebug(true);
 
     // Ecs setup
     ChunkSystem chunkSystem = new ChunkSystem();
