@@ -57,7 +57,7 @@ public class Chunk {
             new PickupComponent(tileComponent),
             new SpriteComponent(SpriteCache.get(Constants.Assets.Sprites.DONUT, "main")),
             new BlendModeComponent(BlendMode.MASK),
-            ColliderComponent.circle(3).setTags(Constants.ColliderTags.TILE).setIgnoreTags(Constants.ColliderTags.TILE)
+            ColliderComponent.circle(3).setSensor(true).setTags(Constants.ColliderTags.TILE).setIgnoreTags(Constants.ColliderTags.TILE)
           );
         }
       }
