@@ -1,5 +1,6 @@
 package technology.sola.acidrain.game.rendering.gui;
 
+import technology.sola.acidrain.game.AcidRainSola;
 import technology.sola.acidrain.game.rendering.gui.elements.SunlightBarElement;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.module.graphics.gui.SolaGui;
@@ -16,6 +17,18 @@ public class GuiBuilder {
       p -> p.setDirection(StreamGuiElementContainer.Direction.VERTICAL).padding.set(3)
     );
 
+    StreamGuiElementContainer sunlightBarContainer = solaGui.createElement(
+      StreamGuiElementContainer::new,
+      StreamGuiElementContainer.Properties::new,
+      p -> p.setVerticalAlignment(StreamGuiElementContainer.VerticalAlignment.BOTTOM).setHorizontalAlignment(StreamGuiElementContainer.HorizontalAlignment.CENTER)
+        .setHeight(180).setWidth(AcidRainSola.CANVAS_WIDTH)
+    );
+
+    sunlightBarContainer.addChild(solaGui.createElement(
+      SunlightBarElement::new,
+      SunlightBarElement.Properties::new
+    ));
+
     streamGuiElementContainer.addChild(
       solaGui.createElement(
         TextGuiElement::new,
@@ -27,10 +40,7 @@ public class GuiBuilder {
         TextGuiElement.Properties::new,
         p -> p.setText("Donuts: 0")
       ),
-      solaGui.createElement(
-        SunlightBarElement::new,
-        SunlightBarElement.Properties::new
-      )
+      sunlightBarContainer
     );
 
     return streamGuiElementContainer;
