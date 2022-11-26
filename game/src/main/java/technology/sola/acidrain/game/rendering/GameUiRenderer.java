@@ -2,11 +2,8 @@ package technology.sola.acidrain.game.rendering;
 
 import technology.sola.acidrain.game.GameStatistics;
 import technology.sola.ecs.World;
-import technology.sola.engine.assets.AssetLoader;
-import technology.sola.engine.assets.graphics.SpriteSheet;
 import technology.sola.engine.assets.graphics.font.Font;
 import technology.sola.engine.event.EventHub;
-import technology.sola.engine.graphics.AffineTransform;
 import technology.sola.engine.graphics.Color;
 import technology.sola.engine.graphics.renderer.BlendMode;
 import technology.sola.engine.graphics.renderer.Renderer;
@@ -15,7 +12,6 @@ import technology.sola.acidrain.game.AcidRainSola;
 import technology.sola.acidrain.game.event.GameState;
 import technology.sola.acidrain.game.event.GameStateEvent;
 import technology.sola.acidrain.game.component.PlayerComponent;
-import technology.sola.math.linear.Vector2D;
 
 public class GameUiRenderer {
   public static final int SUNLIGHT_BAR_HEIGHT = 12;
@@ -24,24 +20,11 @@ public class GameUiRenderer {
   private static final String PLAY_AGAIN_TEXT = "Space or click to restart";
   private final int sunlightBarWidth = 220;
   private final int sunlightBarHalfWidth = sunlightBarWidth / 2;
-  private final float animationDuration = 100;
-  private final AssetLoader<SpriteSheet> spriteSheetAssetLoader;
   private boolean shouldDrawGameOver = false;
-  private int gameOverDuckAnimation = 0;
-  private Vector2D duckLastPosition;
-  private String spriteId;
 
-  public GameUiRenderer(EventHub eventHub, AssetLoader<SpriteSheet> spriteSheetAssetLoader) {
-    this.spriteSheetAssetLoader = spriteSheetAssetLoader;
+  public GameUiRenderer(EventHub eventHub) {
     eventHub.add(GameStateEvent.class, gameStateEvent -> {
-      shouldDrawGameOver = gameStateEvent.getMessage() == GameState.GAME_OVER;
-
-      if (shouldDrawGameOver) {
-        duckLastPosition = gameStateEvent.getPlayerPosition();
-        spriteId = gameStateEvent.getSpriteId();
-      } else {
-        gameOverDuckAnimation = 0;
-      }
+      shouldDrawGameOver = gameStateEvent.gameState() == GameState.GAME_OVER;
     });
   }
 
@@ -55,18 +38,6 @@ public class GameUiRenderer {
       Font.TextDimensions distanceTraveledDimensions = font.getDimensionsForText(distanceTraveledText);
       Font.TextDimensions playAgainDimensions = font.getDimensionsForText(PLAY_AGAIN_TEXT);
       float maxWidth = Math.max(playAgainDimensions.width(), distanceTraveledDimensions.width());
-      // todo this is really hacky, clean up later
-      if (gameOverDuckAnimation < animationDuration) {
-        spriteSheetAssetLoader.get(Constants.Assets.Sprites.SPRITE_SHEET_ID).executeIfLoaded(spriteSheet -> {
-          float size = (animationDuration - gameOverDuckAnimation) / animationDuration;
-          AffineTransform affineTransform = new AffineTransform()
-            .translate(duckLastPosition.x(), duckLastPosition.y())
-            .scale(size, size);
-
-          renderer.drawImage(spriteSheet.getSprite(spriteId), affineTransform);
-          gameOverDuckAnimation++;
-        });
-      }
       renderer.setBlendMode(BlendMode.NORMAL);
       renderer.fillRect(
         3, 3,

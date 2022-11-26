@@ -6,7 +6,6 @@ import technology.sola.acidrain.game.component.PickupComponent;
 import technology.sola.acidrain.game.component.PlayerComponent;
 import technology.sola.acidrain.game.GameStatistics;
 import technology.sola.ecs.EcsSystem;
-import technology.sola.ecs.SolaEcs;
 import technology.sola.ecs.World;
 import technology.sola.engine.assets.AssetLoader;
 import technology.sola.engine.assets.audio.AudioClip;
@@ -36,7 +35,7 @@ public class PlayerSystem extends EcsSystem {
   private PlayerMovement previousMouseMovement = null;
   private Vector2D previousTranslate = null;
 
-  public PlayerSystem(SolaEcs solaEcs, EventHub eventHub, KeyboardInput keyboardInput, MouseInput mouseInput, AssetLoader<AudioClip> audioClipAssetLoader) {
+  public PlayerSystem(EventHub eventHub, KeyboardInput keyboardInput, MouseInput mouseInput, AssetLoader<AudioClip> audioClipAssetLoader) {
     this.keyboardInput = keyboardInput;
     this.mouseInput = mouseInput;
 
@@ -48,16 +47,7 @@ public class PlayerSystem extends EcsSystem {
         TileType tileType = tileComponent.getTileType();
 
         if (tileComponent.getWetness() > RainSystem.THRESHOLD_EIGHT) {
-          Vector2D playerTranslate = player.getComponent(TransformComponent.class).getTranslate();
-          // todo this is really hacky, clean up later
-          Vector2D cameraTranslate = solaEcs.getWorld().findEntityByName(Constants.EntityNames.CAMERA).orElseThrow().getComponent(TransformComponent.class).getTranslate();
-          Vector2D playerTranslateForFallAnimation = playerTranslate.subtract(cameraTranslate);
-
-          eventHub.emit(new GameStateEvent(
-            GameState.GAME_OVER,
-            playerTranslateForFallAnimation,
-            player.getComponent(SpriteComponent.class).getSpriteId()
-          ));
+          eventHub.emit(new GameStateEvent(GameState.GAME_OVER));
         } else if (tileType.assetId.equals(Constants.Assets.Sprites.DIRT)) {
           PlayerComponent playerComponent = player.getComponent(PlayerComponent.class);
 
@@ -91,11 +81,11 @@ public class PlayerSystem extends EcsSystem {
     ));
 
     eventHub.add(GameStateEvent.class, gameStateEvent -> {
-      if (gameStateEvent.getMessage() == GameState.RESTART) {
+      if (gameStateEvent.gameState() == GameState.RESTART) {
         setActive(true);
         previousTranslate = null;
         previousMouseMovement = null;
-      } else if (gameStateEvent.getMessage() == GameState.GAME_OVER) {
+      } else if (gameStateEvent.gameState() == GameState.GAME_OVER) {
         setActive(false);
       }
     });

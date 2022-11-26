@@ -47,7 +47,7 @@ public class ChunkSystem extends EcsSystem implements EventListener<GameStateEve
 
   @Override
   public void onEvent(GameStateEvent gameStateEvent) {
-    if (gameStateEvent.getMessage() == GameState.RESTART) {
+    if (gameStateEvent.gameState() == GameState.RESTART) {
       isInitialized = false;
     }
   }
