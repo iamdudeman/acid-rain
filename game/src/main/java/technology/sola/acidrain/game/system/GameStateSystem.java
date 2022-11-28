@@ -10,7 +10,8 @@ import technology.sola.engine.event.EventHub;
 import technology.sola.engine.graphics.components.BlendModeComponent;
 import technology.sola.engine.graphics.components.CameraComponent;
 import technology.sola.engine.graphics.components.LayerComponent;
-import technology.sola.engine.graphics.components.sprite.SpriteComponent;
+import technology.sola.engine.graphics.components.SpriteComponent;
+import technology.sola.engine.graphics.components.animation.TransformAnimatorComponent;
 import technology.sola.engine.graphics.renderer.BlendMode;
 import technology.sola.engine.input.Key;
 import technology.sola.engine.input.KeyboardInput;
@@ -25,25 +26,26 @@ import technology.sola.acidrain.game.event.GameStateEvent;
 import technology.sola.acidrain.game.component.PickupComponent;
 import technology.sola.acidrain.game.component.PlayerComponent;
 import technology.sola.engine.physics.component.DynamicBodyComponent;
+import technology.sola.math.EasingFunction;
 
 public class GameStateSystem extends EcsSystem {
+  private static final long fallingAnimationDuration = 1000;
+  private final SolaEcs solaEcs;
   private final MouseInput mouseInput;
   private final KeyboardInput keyboardInput;
   private final EventHub eventHub;
-  private float allowRestartCounter = 0;
 
   public GameStateSystem(SolaEcs solaEcs, MouseInput mouseInput, KeyboardInput keyboardInput, EventHub eventHub) {
+    this.solaEcs = solaEcs;
     this.mouseInput = mouseInput;
     this.keyboardInput = keyboardInput;
     this.eventHub = eventHub;
 
     eventHub.add(GameStateEvent.class, gameStateEvent -> {
-      if (gameStateEvent.getMessage() == GameState.GAME_OVER) {
+      if (gameStateEvent.gameState() == GameState.GAME_OVER) {
         setActive(true);
-        solaEcs.getWorld().findEntityByName(Constants.EntityNames.PLAYER).ifPresent(Entity::destroy);
         solaEcs.getWorld().findEntitiesWithComponents(PickupComponent.class).forEach(Entity::destroy);
-      } else if (gameStateEvent.getMessage() == GameState.RESTART) {
-        allowRestartCounter = 0;
+      } else if (gameStateEvent.gameState() == GameState.RESTART) {
         setActive(false);
         GameStatistics.reset();
         solaEcs.setWorld(buildWorld());
@@ -53,13 +55,19 @@ public class GameStateSystem extends EcsSystem {
 
   @Override
   public void update(World world, float dt) {
-    if (allowRestartCounter > 1) {
+    solaEcs.getWorld().findEntityByName(Constants.EntityNames.PLAYER).ifPresentOrElse(entity -> {
+      if (!entity.hasComponent(TransformAnimatorComponent.class)) {
+        entity.addComponent(
+          new TransformAnimatorComponent.Builder(EasingFunction.EASE_OUT, fallingAnimationDuration).withScale(0.01f).build()
+            .setAnimationCompleteCallback(entity::destroy)
+        );
+      }
+    }, () -> {
       if (mouseInput.isMouseClicked(MouseButton.PRIMARY) || keyboardInput.isKeyPressed(Key.SPACE)) {
+        solaEcs.getWorld().findEntityByName(Constants.EntityNames.PLAYER).ifPresent(Entity::destroy);
         eventHub.emit(new GameStateEvent(GameState.RESTART));
       }
-    } else {
-      allowRestartCounter += dt;
-    }
+    });
   }
 
   @Override

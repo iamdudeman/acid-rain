@@ -1,18 +1,20 @@
 package technology.sola.acidrain.game.system;
 
+import technology.sola.acidrain.game.event.GameStatEvent;
+import technology.sola.acidrain.game.event.GameStatType;
 import technology.sola.acidrain.game.event.GameState;
 import technology.sola.acidrain.game.event.GameStateEvent;
 import technology.sola.acidrain.game.component.PickupComponent;
 import technology.sola.acidrain.game.component.PlayerComponent;
 import technology.sola.acidrain.game.GameStatistics;
+import technology.sola.acidrain.game.rendering.gui.elements.SunlightBarElement;
 import technology.sola.ecs.EcsSystem;
-import technology.sola.ecs.SolaEcs;
 import technology.sola.ecs.World;
 import technology.sola.engine.assets.AssetLoader;
 import technology.sola.engine.assets.audio.AudioClip;
 import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.event.EventHub;
-import technology.sola.engine.graphics.components.sprite.SpriteComponent;
+import technology.sola.engine.graphics.components.SpriteComponent;
 import technology.sola.engine.input.Key;
 import technology.sola.engine.input.KeyboardInput;
 import technology.sola.engine.input.MouseButton;
@@ -22,21 +24,22 @@ import technology.sola.acidrain.game.AcidRainSola;
 import technology.sola.acidrain.game.SpriteCache;
 import technology.sola.acidrain.game.component.TileComponent;
 import technology.sola.acidrain.game.system.chunk.TileType;
-import technology.sola.acidrain.game.rendering.GameUiRenderer;
 import technology.sola.engine.physics.event.SensorEvent;
 import technology.sola.math.linear.Vector2D;
 
 public class PlayerSystem extends EcsSystem {
   private static final float TOUCH_TILE_WIDTH = AcidRainSola.CANVAS_WIDTH / 9f;
   private static final float TOUCH_TILE_HEIGHT = AcidRainSola.CANVAS_HEIGHT / 9f;
-  private static final int TOUCH_CONTROLS_POWER_THRESHOLD = AcidRainSola.CANVAS_HEIGHT - GameUiRenderer.SUNLIGHT_BAR_HEIGHT - 8;
+  private static final int TOUCH_CONTROLS_POWER_THRESHOLD = AcidRainSola.CANVAS_HEIGHT - SunlightBarElement.SUNLIGHT_BAR_HEIGHT - 8;
+  private final EventHub eventHub;
   private final KeyboardInput keyboardInput;
   private final MouseInput mouseInput;
   private long lastQuack = System.currentTimeMillis();
   private PlayerMovement previousMouseMovement = null;
   private Vector2D previousTranslate = null;
 
-  public PlayerSystem(SolaEcs solaEcs, EventHub eventHub, KeyboardInput keyboardInput, MouseInput mouseInput, AssetLoader<AudioClip> audioClipAssetLoader) {
+  public PlayerSystem(EventHub eventHub, KeyboardInput keyboardInput, MouseInput mouseInput, AssetLoader<AudioClip> audioClipAssetLoader) {
+    this.eventHub = eventHub;
     this.keyboardInput = keyboardInput;
     this.mouseInput = mouseInput;
 
@@ -48,16 +51,7 @@ public class PlayerSystem extends EcsSystem {
         TileType tileType = tileComponent.getTileType();
 
         if (tileComponent.getWetness() > RainSystem.THRESHOLD_EIGHT) {
-          Vector2D playerTranslate = player.getComponent(TransformComponent.class).getTranslate();
-          // todo this is really hacky, clean up later
-          Vector2D cameraTranslate = solaEcs.getWorld().findEntityByName(Constants.EntityNames.CAMERA).orElseThrow().getComponent(TransformComponent.class).getTranslate();
-          Vector2D playerTranslateForFallAnimation = playerTranslate.subtract(cameraTranslate);
-
-          eventHub.emit(new GameStateEvent(
-            GameState.GAME_OVER,
-            playerTranslateForFallAnimation,
-            player.getComponent(SpriteComponent.class).getSpriteId()
-          ));
+          eventHub.emit(new GameStateEvent(GameState.GAME_OVER));
         } else if (tileType.assetId.equals(Constants.Assets.Sprites.DIRT)) {
           PlayerComponent playerComponent = player.getComponent(PlayerComponent.class);
 
@@ -91,11 +85,11 @@ public class PlayerSystem extends EcsSystem {
     ));
 
     eventHub.add(GameStateEvent.class, gameStateEvent -> {
-      if (gameStateEvent.getMessage() == GameState.RESTART) {
+      if (gameStateEvent.gameState() == GameState.RESTART) {
         setActive(true);
         previousTranslate = null;
         previousMouseMovement = null;
-      } else if (gameStateEvent.getMessage() == GameState.GAME_OVER) {
+      } else if (gameStateEvent.gameState() == GameState.GAME_OVER) {
         setActive(false);
       }
     });
@@ -171,6 +165,8 @@ public class PlayerSystem extends EcsSystem {
       }
 
       playerComponent.resetSlowed();
+
+      eventHub.emit(new GameStatEvent(GameStatType.SUNLIGHT, playerComponent.getSunlight()));
     });
   }
 

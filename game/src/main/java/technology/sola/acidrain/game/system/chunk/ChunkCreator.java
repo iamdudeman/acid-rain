@@ -34,7 +34,6 @@ public class ChunkCreator {
     stepAddDirtAroundCliffs(tileComponents);
     stepPlacePickups(tileComponents);
     stepTextureGrassAndDirt(tileComponents);
-    stepCleanup(tileComponents);
 
     return new Chunk(chunkId, tileComponents);
   }
@@ -251,10 +250,6 @@ public class ChunkCreator {
         }
       }
     }
-  }
-
-  private void stepCleanup(TileComponent[][] tileComponents) {
-    // todo replace cliff tiles that are not completed
   }
 
 
