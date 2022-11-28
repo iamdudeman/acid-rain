@@ -11,6 +11,7 @@ import technology.sola.engine.graphics.components.BlendModeComponent;
 import technology.sola.engine.graphics.components.CameraComponent;
 import technology.sola.engine.graphics.components.LayerComponent;
 import technology.sola.engine.graphics.components.SpriteComponent;
+import technology.sola.engine.graphics.components.animation.TransformAnimatorComponent;
 import technology.sola.engine.graphics.renderer.BlendMode;
 import technology.sola.engine.input.Key;
 import technology.sola.engine.input.KeyboardInput;
@@ -25,14 +26,14 @@ import technology.sola.acidrain.game.event.GameStateEvent;
 import technology.sola.acidrain.game.component.PickupComponent;
 import technology.sola.acidrain.game.component.PlayerComponent;
 import technology.sola.engine.physics.component.DynamicBodyComponent;
+import technology.sola.math.EasingFunction;
 
 public class GameStateSystem extends EcsSystem {
+  private static final long fallingAnimationDuration = 1000;
   private final SolaEcs solaEcs;
   private final MouseInput mouseInput;
   private final KeyboardInput keyboardInput;
   private final EventHub eventHub;
-  private final float fallingAnimationDuration = 1000;
-  private float fallingAnimationCounter = 0;
 
   public GameStateSystem(SolaEcs solaEcs, MouseInput mouseInput, KeyboardInput keyboardInput, EventHub eventHub) {
     this.solaEcs = solaEcs;
@@ -43,7 +44,6 @@ public class GameStateSystem extends EcsSystem {
     eventHub.add(GameStateEvent.class, gameStateEvent -> {
       if (gameStateEvent.gameState() == GameState.GAME_OVER) {
         setActive(true);
-        fallingAnimationCounter = 0;
         solaEcs.getWorld().findEntitiesWithComponents(PickupComponent.class).forEach(Entity::destroy);
       } else if (gameStateEvent.gameState() == GameState.RESTART) {
         setActive(false);
@@ -56,20 +56,12 @@ public class GameStateSystem extends EcsSystem {
   @Override
   public void update(World world, float dt) {
     solaEcs.getWorld().findEntityByName(Constants.EntityNames.PLAYER).ifPresentOrElse(entity -> {
-      float fallingAnimationPlayed = fallingAnimationCounter * 1000;
-
-      if (fallingAnimationPlayed >= fallingAnimationDuration) {
-        entity.destroy();
-        return;
+      if (!entity.hasComponent(TransformAnimatorComponent.class)) {
+        entity.addComponent(
+          new TransformAnimatorComponent.Builder(EasingFunction.EASE_OUT, fallingAnimationDuration).withScale(0.01f).build()
+            .setAnimationCompleteCallback(entity::destroy)
+        );
       }
-
-      float scale = (fallingAnimationDuration - fallingAnimationPlayed) / fallingAnimationDuration;
-
-      TransformComponent transformComponent = entity.getComponent(TransformComponent.class);
-      transformComponent.setScaleX(scale);
-      transformComponent.setScaleY(scale);
-
-      fallingAnimationCounter += dt;
     }, () -> {
       if (mouseInput.isMouseClicked(MouseButton.PRIMARY) || keyboardInput.isKeyPressed(Key.SPACE)) {
         solaEcs.getWorld().findEntityByName(Constants.EntityNames.PLAYER).ifPresent(Entity::destroy);
