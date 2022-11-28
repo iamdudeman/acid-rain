@@ -19,7 +19,6 @@ import technology.sola.acidrain.game.system.CameraSystem;
 import technology.sola.acidrain.game.system.PlayerSystem;
 import technology.sola.acidrain.game.rendering.RainRenderer;
 import technology.sola.acidrain.game.system.RainSystem;
-import technology.sola.acidrain.game.rendering.GameUiRenderer;
 import technology.sola.acidrain.game.system.GameStateSystem;
 
 public class AcidRainSola extends Sola {
@@ -28,7 +27,6 @@ public class AcidRainSola extends Sola {
   public static final int CANVAS_HEIGHT = 240;
   public static final int HALF_CANVAS_HEIGHT = CANVAS_HEIGHT / 2;
   private final RainRenderer rainRenderer = new RainRenderer();
-  private GameUiRenderer gameUiRenderer;
   private SolaGraphics solaGraphics;
   private SolaPhysics solaPhysics;
   private SolaGui solaGui;
@@ -50,7 +48,6 @@ public class AcidRainSola extends Sola {
     // Initialize stuff for rendering
     solaGui = SolaGui.useModule(assetLoaderProvider, platform, eventHub);
     solaGraphics = SolaGraphics.useModule(solaEcs, platform.getRenderer(), assetLoaderProvider);
-    gameUiRenderer = new GameUiRenderer(eventHub);
     platform.getViewport().setAspectMode(AspectMode.MAINTAIN);
     platform.getRenderer().createLayers(
       "sprites",
@@ -98,7 +95,6 @@ public class AcidRainSola extends Sola {
     solaGraphics.render();
 
     renderer.drawToLayer("rain", r -> rainRenderer.render(r, world));
-//    renderer.drawToLayer("ui", r -> gameUiRenderer.render(r, world));
 
     solaGui.render();
   }
