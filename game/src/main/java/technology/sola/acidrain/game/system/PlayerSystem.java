@@ -1,5 +1,7 @@
 package technology.sola.acidrain.game.system;
 
+import technology.sola.acidrain.game.event.GameStatEvent;
+import technology.sola.acidrain.game.event.GameStatType;
 import technology.sola.acidrain.game.event.GameState;
 import technology.sola.acidrain.game.event.GameStateEvent;
 import technology.sola.acidrain.game.component.PickupComponent;
@@ -29,6 +31,7 @@ public class PlayerSystem extends EcsSystem {
   private static final float TOUCH_TILE_WIDTH = AcidRainSola.CANVAS_WIDTH / 9f;
   private static final float TOUCH_TILE_HEIGHT = AcidRainSola.CANVAS_HEIGHT / 9f;
   private static final int TOUCH_CONTROLS_POWER_THRESHOLD = AcidRainSola.CANVAS_HEIGHT - GameUiRenderer.SUNLIGHT_BAR_HEIGHT - 8;
+  private final EventHub eventHub;
   private final KeyboardInput keyboardInput;
   private final MouseInput mouseInput;
   private long lastQuack = System.currentTimeMillis();
@@ -36,6 +39,7 @@ public class PlayerSystem extends EcsSystem {
   private Vector2D previousTranslate = null;
 
   public PlayerSystem(EventHub eventHub, KeyboardInput keyboardInput, MouseInput mouseInput, AssetLoader<AudioClip> audioClipAssetLoader) {
+    this.eventHub = eventHub;
     this.keyboardInput = keyboardInput;
     this.mouseInput = mouseInput;
 
@@ -161,6 +165,8 @@ public class PlayerSystem extends EcsSystem {
       }
 
       playerComponent.resetSlowed();
+
+      eventHub.emit(new GameStatEvent(GameStatType.SUNLIGHT, playerComponent.getSunlight()));
     });
   }
 

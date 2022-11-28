@@ -39,6 +39,7 @@ public class AcidRainSola extends Sola {
 
   @Override
   protected void onInit() {
+    GameStatistics.setEventHub(eventHub);
     solaInitialization.useAsyncInitialization();
 
     // Initialize physics stuff
@@ -83,7 +84,7 @@ public class AcidRainSola extends Sola {
         }
 
         solaInitialization.completeAsyncInitialization();
-        solaGui.setGuiRoot(new GuiBuilder().buildInGameGui(solaGui, solaEcs.getWorld()));
+        solaGui.setGuiRoot(new GuiBuilder(solaGui).getRoot());
         eventHub.emit(new GameStateEvent(GameState.RESTART));
       });
   }
@@ -97,8 +98,8 @@ public class AcidRainSola extends Sola {
     solaGraphics.render();
 
     renderer.drawToLayer("rain", r -> rainRenderer.render(r, world));
-    renderer.drawToLayer("ui", r -> gameUiRenderer.render(r, world));
+//    renderer.drawToLayer("ui", r -> gameUiRenderer.render(r, world));
 
-//    solaGui.render();
+    solaGui.render();
   }
 }
