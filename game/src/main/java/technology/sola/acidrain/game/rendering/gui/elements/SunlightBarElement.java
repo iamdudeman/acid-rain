@@ -4,8 +4,8 @@ import technology.sola.acidrain.game.component.PlayerComponent;
 import technology.sola.engine.core.module.graphics.gui.SolaGui;
 import technology.sola.engine.graphics.Color;
 import technology.sola.engine.graphics.gui.GuiElement;
+import technology.sola.engine.graphics.gui.properties.DefaultGuiElementProperties;
 import technology.sola.engine.graphics.gui.properties.GuiElementGlobalProperties;
-import technology.sola.engine.graphics.gui.properties.GuiElementProperties;
 import technology.sola.engine.graphics.renderer.BlendMode;
 import technology.sola.engine.graphics.renderer.Renderer;
 
@@ -45,7 +45,7 @@ public class SunlightBarElement extends GuiElement<SunlightBarElement.Properties
     renderer.drawRect(x, y, SUNLIGHT_BAR_WIDTH, SUNLIGHT_BAR_HEIGHT, Color.BLACK);
   }
 
-  public static class Properties extends GuiElementProperties {
+  public static class Properties extends DefaultGuiElementProperties {
     private float filledPercentage;
 
     public Properties(GuiElementGlobalProperties globalProperties) {

@@ -47,7 +47,7 @@ public class AcidRainSola extends Sola {
     eventHub.add(GameStateEvent.class, gameStateEvent -> solaPhysics.getCollisionDetectionSystem().setActive(gameStateEvent.gameState() == GameState.RESTART));
 
     // Initialize stuff for rendering
-    solaGui = SolaGui.useModule(assetLoaderProvider, platform);
+    solaGui = SolaGui.useModule(assetLoaderProvider, platform, eventHub);
     solaGraphics = SolaGraphics.useModule(solaEcs, platform.getRenderer(), assetLoaderProvider);
     gameUiRenderer = new GameUiRenderer(eventHub);
     platform.getViewport().setAspectMode(AspectMode.MAINTAIN);

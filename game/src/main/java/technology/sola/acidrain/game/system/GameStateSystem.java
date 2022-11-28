@@ -10,7 +10,7 @@ import technology.sola.engine.event.EventHub;
 import technology.sola.engine.graphics.components.BlendModeComponent;
 import technology.sola.engine.graphics.components.CameraComponent;
 import technology.sola.engine.graphics.components.LayerComponent;
-import technology.sola.engine.graphics.components.sprite.SpriteComponent;
+import technology.sola.engine.graphics.components.SpriteComponent;
 import technology.sola.engine.graphics.renderer.BlendMode;
 import technology.sola.engine.input.Key;
 import technology.sola.engine.input.KeyboardInput;

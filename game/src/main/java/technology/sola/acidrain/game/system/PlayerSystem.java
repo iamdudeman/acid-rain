@@ -11,7 +11,7 @@ import technology.sola.engine.assets.AssetLoader;
 import technology.sola.engine.assets.audio.AudioClip;
 import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.event.EventHub;
-import technology.sola.engine.graphics.components.sprite.SpriteComponent;
+import technology.sola.engine.graphics.components.SpriteComponent;
 import technology.sola.engine.input.Key;
 import technology.sola.engine.input.KeyboardInput;
 import technology.sola.engine.input.MouseButton;
