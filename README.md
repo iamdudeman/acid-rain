@@ -46,9 +46,9 @@ Your users will not need to have Java installed.
 * To test configuration run: `& $env:JAVA_HOME/bin/jpackage.exe --version`
 3. Run from swing on Windows Powershell
 ```shell
-& $env:JAVA_HOME/bin/jpackage.exe --name AcidRain --app-version 0.1.0 --vendor sola.technology --dest build --input build/libs --main-jar acid-rain-swing-0.1.1.jar --type app-image
+& $env:JAVA_HOME/bin/jpackage.exe --name AcidRain --app-version 1.1.1 --vendor sola.technology --dest build --input build/libs --main-jar acid-rain-swing-1.1.1.jar --type app-image
 ```
 4. Run from javafx on Windows Powershell
 ```shell
-& $env:JAVA_HOME/bin/jpackage.exe --name AcidRain --app-version 1.1.0 --vendor sola.technology --dest build --input build/libs --main-jar acid-rain-javafx-win-1.1.0.jar --type app-image
+& $env:JAVA_HOME/bin/jpackage.exe --name AcidRain --app-version 1.1.1 --vendor sola.technology --dest build --input build/libs --main-jar acid-rain-javafx-win-1.1.1.jar --type app-image
 ```
