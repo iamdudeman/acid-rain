@@ -16,8 +16,8 @@ public class SunlightBarElement extends GuiElement<SunlightBarElement.Properties
   private static final int SUNLIGHT_BAR_WIDTH = 220;
   private static final Color SUNLIGHT_BAR_COLOR = new Color(200, 255, 215, 0);
 
-  public SunlightBarElement(SolaGui solaGui, Properties properties) {
-    super(solaGui, properties);
+  public SunlightBarElement(SolaGui solaGui) {
+    super(solaGui, new Properties(solaGui.globalProperties));
     properties.setFocusable(false);
 
     solaGui.eventHub.add(GameStatEvent.class, event -> {
