@@ -41,12 +41,10 @@ public class GuiBuilder {
   private GuiElement<?> buildInGameGui() {
     TextGuiElement intensityElement = solaGui.createElement(
       TextGuiElement::new,
-      TextGuiElement.Properties::new,
       p -> p.setText("Intensity: 1")
     );
     TextGuiElement donutsEatedElement = solaGui.createElement(
       TextGuiElement::new,
-      TextGuiElement.Properties::new,
       p -> p.setText("Donuts: 0")
     );
 
@@ -59,26 +57,19 @@ public class GuiBuilder {
 
     return solaGui.createElement(
       StreamGuiElementContainer::new,
-      StreamGuiElementContainer.Properties::new,
-      p -> p.setDirection(StreamGuiElementContainer.Direction.VERTICAL)
-    ).addChild(
+      p -> p.setDirection(StreamGuiElementContainer.Direction.VERTICAL),
       solaGui.createElement(
         StreamGuiElementContainer::new,
-        StreamGuiElementContainer.Properties::new,
-        p -> p.setDirection(StreamGuiElementContainer.Direction.VERTICAL).padding.set(3).setBackgroundColor(new Color(150, 255, 255, 255))
-      ).addChild(
+        p -> p.setDirection(StreamGuiElementContainer.Direction.VERTICAL).padding.set(3).setBackgroundColor(new Color(150, 255, 255, 255)),
         intensityElement,
         donutsEatedElement
       ),
       solaGui.createElement(
         StreamGuiElementContainer::new,
-        StreamGuiElementContainer.Properties::new,
         p -> p.setVerticalAlignment(StreamGuiElementContainer.VerticalAlignment.BOTTOM).setHorizontalAlignment(StreamGuiElementContainer.HorizontalAlignment.CENTER)
-          .setHeight(188).setWidth(AcidRainSola.CANVAS_WIDTH)
-      ).addChild(
+          .setHeight(188).setWidth(AcidRainSola.CANVAS_WIDTH),
         solaGui.createElement(
-          SunlightBarElement::new,
-          SunlightBarElement.Properties::new
+          SunlightBarElement::new
         )
       )
     );
@@ -87,7 +78,6 @@ public class GuiBuilder {
   private GuiElement<?> buildGameOverGui() {
     TextGuiElement donutsEatedElement = solaGui.createElement(
       TextGuiElement::new,
-      TextGuiElement.Properties::new,
       p -> p.setText("Donuts eated: 0")
     );
 
@@ -99,23 +89,18 @@ public class GuiBuilder {
 
     return solaGui.createElement(
       StreamGuiElementContainer::new,
-      StreamGuiElementContainer.Properties::new,
-      p -> p.setDirection(StreamGuiElementContainer.Direction.VERTICAL).padding.set(3).setBackgroundColor(new Color(150, 255, 255, 255))
-    ).addChild(
+      p -> p.setDirection(StreamGuiElementContainer.Direction.VERTICAL).padding.set(3).setBackgroundColor(new Color(150, 255, 255, 255)),
       solaGui.createElement(
         TextGuiElement::new,
-        TextGuiElement.Properties::new,
         p -> p.setText("Game over")
       ),
       donutsEatedElement,
       solaGui.createElement(
         TextGuiElement::new,
-        TextGuiElement.Properties::new,
         p -> p.setText("Distance traveled: 0").setId("distance")
       ),
       solaGui.createElement(
         TextGuiElement::new,
-        TextGuiElement.Properties::new,
         p -> p.setText("Space or click to restart")
       )
     );
