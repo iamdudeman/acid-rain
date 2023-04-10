@@ -25,16 +25,5 @@ public class CameraSystem extends EcsSystem {
         );
       }
     }
-
-//    world.findEntityByName(Constants.EntityNames.CAMERA).ifPresent(cameraEntity -> {
-//      world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(playerEntity -> {
-//        TransformComponent cameraTransform = cameraEntity.getComponent(TransformComponent.class);
-//        TransformComponent playerTransform = playerEntity.getComponent(TransformComponent.class);
-//
-//        cameraTransform.setTranslate(
-//          playerTransform.getTranslate().subtract(new Vector2D(AcidRainSola.HALF_CANVAS_WIDTH, AcidRainSola.HALF_CANVAS_HEIGHT))
-//        );
-//      });
-//    });
   }
 }

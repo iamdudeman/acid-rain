@@ -30,13 +30,11 @@ import technology.sola.math.EasingFunction;
 
 public class GameStateSystem extends EcsSystem {
   private static final long fallingAnimationDuration = 1000;
-  private final SolaEcs solaEcs;
   private final MouseInput mouseInput;
   private final KeyboardInput keyboardInput;
   private final EventHub eventHub;
 
   public GameStateSystem(SolaEcs solaEcs, MouseInput mouseInput, KeyboardInput keyboardInput, EventHub eventHub) {
-    this.solaEcs = solaEcs;
     this.mouseInput = mouseInput;
     this.keyboardInput = keyboardInput;
     this.eventHub = eventHub;
@@ -59,7 +57,6 @@ public class GameStateSystem extends EcsSystem {
 
     if (playerEntity == null) {
       if (mouseInput.isMouseClicked(MouseButton.PRIMARY) || keyboardInput.isKeyPressed(Key.SPACE)) {
-//        solaEcs.getWorld().findEntityByName(Constants.EntityNames.PLAYER).ifPresent(Entity::destroy);
         eventHub.emit(new GameStateEvent(GameState.RESTART));
       }
     } else {
@@ -70,20 +67,6 @@ public class GameStateSystem extends EcsSystem {
         );
       }
     }
-
-//    solaEcs.getWorld().findEntityByName(Constants.EntityNames.PLAYER).ifPresentOrElse(entity -> {
-//      if (!entity.hasComponent(TransformAnimatorComponent.class)) {
-//        entity.addComponent(
-//          new TransformAnimatorComponent.Builder(EasingFunction.EASE_OUT, fallingAnimationDuration).withScale(0.01f).build()
-//            .setAnimationCompleteCallback(entity::destroy)
-//        );
-//      }
-//    }, () -> {
-//      if (mouseInput.isMouseClicked(MouseButton.PRIMARY) || keyboardInput.isKeyPressed(Key.SPACE)) {
-//        solaEcs.getWorld().findEntityByName(Constants.EntityNames.PLAYER).ifPresent(Entity::destroy);
-//        eventHub.emit(new GameStateEvent(GameState.RESTART));
-//      }
-//    });
   }
 
   @Override
