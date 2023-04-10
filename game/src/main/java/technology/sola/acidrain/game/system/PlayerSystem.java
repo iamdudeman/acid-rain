@@ -9,6 +9,7 @@ import technology.sola.acidrain.game.component.PlayerComponent;
 import technology.sola.acidrain.game.GameStatistics;
 import technology.sola.acidrain.game.rendering.gui.elements.SunlightBarElement;
 import technology.sola.ecs.EcsSystem;
+import technology.sola.ecs.Entity;
 import technology.sola.ecs.World;
 import technology.sola.engine.assets.AssetLoader;
 import technology.sola.engine.assets.audio.AudioClip;
@@ -97,7 +98,9 @@ public class PlayerSystem extends EcsSystem {
 
   @Override
   public void update(World world, float dt) {
-    world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(entity -> {
+    Entity entity = world.findEntityByName(Constants.EntityNames.PLAYER);
+
+    if (entity != null) {
       if (previousTranslate == null) {
         previousTranslate = entity.getComponent(TransformComponent.class).getTranslate();
       }
@@ -167,7 +170,79 @@ public class PlayerSystem extends EcsSystem {
       playerComponent.resetSlowed();
 
       eventHub.emit(new GameStatEvent(GameStatType.SUNLIGHT, playerComponent.getSunlight()));
-    });
+    }
+
+//    world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(entity -> {
+//      if (previousTranslate == null) {
+//        previousTranslate = entity.getComponent(TransformComponent.class).getTranslate();
+//      }
+//
+//      Vector2D currentTranslate = entity.getComponent(TransformComponent.class).getTranslate();
+//
+//      GameStatistics.increaseDistanceTraveled(currentTranslate.distance(previousTranslate));
+//      previousTranslate = currentTranslate;
+//
+//      PlayerComponent playerComponent = entity.getComponent(PlayerComponent.class);
+//      int xMod = 0;
+//      int yMod = 0;
+//
+//      if (keyboardInput.isKeyHeld(Key.W) || keyboardInput.isKeyHeld(Key.UP)) {
+//        yMod--;
+//        previousMouseMovement = null;
+//      }
+//
+//      if (keyboardInput.isKeyHeld(Key.S) || keyboardInput.isKeyHeld(Key.DOWN)) {
+//        yMod++;
+//        previousMouseMovement = null;
+//      }
+//
+//      if (keyboardInput.isKeyHeld(Key.A) || keyboardInput.isKeyHeld(Key.LEFT)) {
+//        xMod--;
+//        previousMouseMovement = null;
+//      }
+//
+//      if (keyboardInput.isKeyHeld(Key.D) || keyboardInput.isKeyHeld(Key.RIGHT)) {
+//        xMod++;
+//        previousMouseMovement = null;
+//      }
+//
+//      if (mouseInput.isMouseClicked(MouseButton.PRIMARY)) {
+//        PlayerMovement temp = manipulateModsByMouse();
+//
+//        if (temp != null) {
+//          previousMouseMovement = temp;
+//        }
+//      }
+//
+//      if (previousMouseMovement != null) {
+//        xMod = previousMouseMovement.xMod();
+//        yMod = previousMouseMovement.yMod();
+//      }
+//
+//      if (xMod != 0 || yMod != 0) {
+//        TransformComponent transformComponent = entity.getComponent(TransformComponent.class);
+//        SpriteComponent theDuck = entity.getComponent(SpriteComponent.class);
+//        String variation = getSpriteVariation(xMod, yMod);
+//        float speed = playerComponent.getSpeed();
+//
+//        Vector2D velocity = new Vector2D(xMod * speed, yMod * speed).scalar(dt);
+//
+//        transformComponent.setTranslate(transformComponent.getTranslate().add(velocity));
+//        theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, variation));
+//      }
+//
+//      if (keyboardInput.isKeyPressed(Key.SPACE) || (mouseInput.isMouseClicked(MouseButton.PRIMARY) && mouseInput.getMousePosition().y() > (TOUCH_CONTROLS_POWER_THRESHOLD))) {
+//        playerComponent.setUsingSunlight(!playerComponent.isUsingSunlight());
+//      }
+//
+//      if (playerComponent.isUsingSunlight()) {
+//        playerComponent.useSunlight();
+//      }
+//
+//      playerComponent.resetSlowed();
+//
+//      eventHub.emit(new GameStatEvent(GameStatType.SUNLIGHT, playerComponent.getSunlight()));
+//    });
   }
 
   private PlayerMovement manipulateModsByMouse() {

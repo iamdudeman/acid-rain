@@ -20,13 +20,23 @@ public class RainRenderer {
   public void render(Renderer renderer, World world) {
     renderer.setBlendMode(BlendMode.NORMAL);
 
-    world.findEntityByName(Constants.EntityNames.CAMERA).ifPresent(cameraEntity -> {
+    Entity cameraEntity = world.findEntityByName(Constants.EntityNames.CAMERA);
+
+    if (cameraEntity != null) {
       TransformComponent cameraTransform = cameraEntity.getComponent(TransformComponent.class);
 
       for (Entity entity : world.findEntitiesWithComponents(RainComponent.class)) {
         drawRain(renderer, entity.getComponent(RainComponent.class), cameraTransform.getX(), cameraTransform.getY());
       }
-    });
+    }
+
+//    world.findEntityByName(Constants.EntityNames.CAMERA).ifPresent(cameraEntity -> {
+//      TransformComponent cameraTransform = cameraEntity.getComponent(TransformComponent.class);
+//
+//      for (Entity entity : world.findEntitiesWithComponents(RainComponent.class)) {
+//        drawRain(renderer, entity.getComponent(RainComponent.class), cameraTransform.getX(), cameraTransform.getY());
+//      }
+//    });
   }
 
   /**

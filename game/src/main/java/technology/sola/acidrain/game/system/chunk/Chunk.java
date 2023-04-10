@@ -71,13 +71,13 @@ public class Chunk {
       return;
     }
 
-    for (var view : world.createView().of(TileComponent.class)) {
+    for (var view : world.createView().of(TileComponent.class).getEntries()) {
       if (view.c1().getChunkId().equals(chunkId)) {
         view.entity().destroy();
       }
     }
 
-    for (var view : world.createView().of(PickupComponent.class)) {
+    for (var view : world.createView().of(PickupComponent.class).getEntries()) {
       if (view.c1().hostTile().getChunkId().equals(chunkId)) {
         view.entity().destroy();
       }

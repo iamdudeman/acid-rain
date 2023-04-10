@@ -4,6 +4,7 @@ import technology.sola.acidrain.game.system.chunk.Chunk;
 import technology.sola.acidrain.game.system.chunk.ChunkCreator;
 import technology.sola.acidrain.game.system.chunk.ChunkId;
 import technology.sola.ecs.EcsSystem;
+import technology.sola.ecs.Entity;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.event.EventListener;
@@ -24,7 +25,9 @@ public class ChunkSystem extends EcsSystem implements EventListener<GameStateEve
 
   @Override
   public void update(World world, float v) {
-    world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(playerEntity -> {
+    Entity playerEntity = world.findEntityByName(Constants.EntityNames.PLAYER);
+
+    if (playerEntity != null) {
       TransformComponent playerTransform = playerEntity.getComponent(TransformComponent.class);
       Vector2D playerTranslate = playerTransform.getTranslate();
 
@@ -42,7 +45,27 @@ public class ChunkSystem extends EcsSystem implements EventListener<GameStateEve
         processPlayerPositionChange(world, lastPlayerChunkId, playerTranslate);
         isInitialized = true;
       }
-    });
+    }
+
+//    world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(playerEntity -> {
+//      TransformComponent playerTransform = playerEntity.getComponent(TransformComponent.class);
+//      Vector2D playerTranslate = playerTransform.getTranslate();
+//
+//      if (isInitialized) {
+//        ChunkId playerChunkId = getChunkIdForPlayer(playerTransform);
+//        boolean hasPlayerChunkChanged = !playerChunkId.equals(lastPlayerChunkId);
+//
+//        if (hasPlayerChunkChanged) {
+//          processPlayerPositionChange(world, playerChunkId, playerTranslate);
+//
+//          lastPlayerChunkId = playerChunkId;
+//        }
+//      } else {
+//        chunkCache.clear();
+//        processPlayerPositionChange(world, lastPlayerChunkId, playerTranslate);
+//        isInitialized = true;
+//      }
+//    });
   }
 
   @Override
