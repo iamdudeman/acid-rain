@@ -1,19 +1,18 @@
 package technology.sola.acidrain.game;
 
+import technology.sola.acidrain.game.rendering.RainRendererGraphicsModule;
 import technology.sola.acidrain.game.rendering.gui.GuiBuilder;
 import technology.sola.engine.assets.BulkAssetLoader;
 import technology.sola.engine.assets.audio.AudioClip;
 import technology.sola.engine.assets.graphics.SpriteSheet;
 import technology.sola.engine.core.SolaConfiguration;
 import technology.sola.engine.defaults.SolaWithDefaults;
-import technology.sola.engine.graphics.renderer.Renderer;
 import technology.sola.engine.graphics.screen.AspectMode;
 import technology.sola.acidrain.game.system.ChunkSystem;
 import technology.sola.acidrain.game.event.GameState;
 import technology.sola.acidrain.game.event.GameStateEvent;
 import technology.sola.acidrain.game.system.CameraSystem;
 import technology.sola.acidrain.game.system.PlayerSystem;
-import technology.sola.acidrain.game.rendering.RainRenderer;
 import technology.sola.acidrain.game.system.RainSystem;
 import technology.sola.acidrain.game.system.GameStateSystem;
 
@@ -22,12 +21,6 @@ public class AcidRainSola extends SolaWithDefaults {
   public static final int HALF_CANVAS_WIDTH = CANVAS_WIDTH / 2;
   public static final int CANVAS_HEIGHT = 240;
   public static final int HALF_CANVAS_HEIGHT = CANVAS_HEIGHT / 2;
-
-  // todo convert RainRenderer to graphics module
-  private final RainRenderer rainRenderer = new RainRenderer();
-//  private SolaGraphics solaGraphics;
-//  private SolaPhysics solaPhysics;
-//  private SolaGui solaGui;
 
   public AcidRainSola() {
     super(SolaConfiguration.build("Acid Rain", CANVAS_WIDTH, CANVAS_HEIGHT).withTargetUpdatesPerSecond(30));
@@ -44,7 +37,7 @@ public class AcidRainSola extends SolaWithDefaults {
     eventHub.add(GameStateEvent.class, gameStateEvent -> solaPhysics.getCollisionDetectionSystem().setActive(gameStateEvent.gameState() == GameState.RESTART));
 
     // Initialize rendering stuff
-//    solaGraphics.addGraphicsModules(new RainRendererGraphicsModule());
+    solaGraphics.addGraphicsModules(new RainRendererGraphicsModule());
     platform.getViewport().setAspectMode(AspectMode.MAINTAIN);
     platform.getRenderer().createLayers(
       "sprites",
@@ -85,75 +78,4 @@ public class AcidRainSola extends SolaWithDefaults {
         eventHub.emit(new GameStateEvent(GameState.RESTART));
       });
   }
-
-  @Override
-  protected void onRender(Renderer renderer) {
-    super.onRender(renderer);
-
-    rainRenderer.render(renderer, solaEcs.getWorld());
-  }
-
-  //  @Override
-//  protected void onInit() {
-//    GameStatistics.setEventHub(eventHub);
-//    solaInitialization.useAsyncInitialization();
-//
-//    // Initialize physics stuff
-//    solaPhysics = SolaPhysics.useModule(eventHub, solaEcs);
-//    solaPhysics.getGravitySystem().setActive(false);
-//    eventHub.add(GameStateEvent.class, gameStateEvent -> solaPhysics.getCollisionDetectionSystem().setActive(gameStateEvent.gameState() == GameState.RESTART));
-//
-//    // Initialize stuff for rendering
-//    solaGui = SolaGui.useModule(assetLoaderProvider, platform, eventHub);
-//    solaGraphics = SolaGraphics.useModule(solaEcs, platform.getRenderer(), assetLoaderProvider);
-//    platform.getViewport().setAspectMode(AspectMode.MAINTAIN);
-//    platform.getRenderer().createLayers(
-//      "sprites",
-//      "rain",
-//      "ui"
-//    );
-//
-//    // Ecs setup
-//    ChunkSystem chunkSystem = new ChunkSystem();
-//    PlayerSystem playerSystem = new PlayerSystem(eventHub, keyboardInput, mouseInput, assetLoaderProvider.get(AudioClip.class));
-//    eventHub.add(GameStateEvent.class, chunkSystem);
-//    solaEcs.addSystems(
-//      chunkSystem,
-//      new GameStateSystem(solaEcs, mouseInput, keyboardInput, eventHub),
-//      new RainSystem(),
-//      new CameraSystem(),
-//      playerSystem
-//    );
-//
-//    // Load assets
-//    new BulkAssetLoader(assetLoaderProvider)
-//      .addAsset(SpriteSheet.class, Constants.Assets.Sprites.SPRITE_SHEET_ID, "assets/sprites.json")
-//      .addAsset(AudioClip.class, Constants.Assets.Audio.GAME, "assets/Boopbooploopable.wav")
-//      .addAsset(AudioClip.class, Constants.Assets.Audio.QUACK, "assets/Quack.wav")
-//      .loadAll()
-//      .onComplete(assets -> {
-//        if (assets[1] instanceof AudioClip audioClip) {
-//          audioClip.setVolume(.5f);
-//
-//          audioClip.loop(AudioClip.CONTINUOUS_LOOPING);
-//        }
-//
-//        solaInitialization.completeAsyncInitialization();
-//        solaGui.setGuiRoot(new GuiBuilder(solaGui).getInitialRoot());
-//        eventHub.emit(new GameStateEvent(GameState.RESTART));
-//      });
-//  }
-
-//  @Override
-//  protected void onRender(Renderer renderer) {
-//    renderer.clear();
-//
-//    World world = solaEcs.getWorld();
-//
-//    solaGraphics.render();
-//
-//    renderer.drawToLayer("rain", r -> rainRenderer.render(r, world));
-//
-//    solaGui.render();
-//  }
 }

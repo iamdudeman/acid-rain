@@ -1,8 +1,8 @@
 package technology.sola.acidrain.game.system;
 
 import technology.sola.acidrain.game.component.RainComponent;
-import technology.sola.acidrain.game.rendering.RainRenderer;
 import technology.sola.acidrain.game.GameStatistics;
+import technology.sola.acidrain.game.rendering.RainRendererGraphicsModule;
 import technology.sola.ecs.EcsSystem;
 import technology.sola.ecs.Entity;
 import technology.sola.ecs.World;
@@ -61,28 +61,6 @@ public class RainSystem extends EcsSystem {
         updateTileWetness(world, playerTranslate);
       }
     }
-
-//    playerEntityOptional.ifPresentOrElse(
-//      playerEntity -> {
-//        Vector2D playerTranslate = playerEntity.getComponent(TransformComponent.class).getTranslate();
-//        PlayerComponent playerComponent = playerEntity.getComponent(PlayerComponent.class);
-//
-//        updateDropsPerUpdateForSunlight(playerComponent.isUsingSunlight());
-//        updateRainHeight(world, true);
-//
-//        if (!playerComponent.isUsingSunlight()) {
-//          GameStatistics.incrementIntensityLevel(dt);
-//          createNewRain(world);
-//          updateTileWetness(world, playerTranslate);
-//        }
-//      },
-//      () -> {
-//        updateDropsPerUpdateForSunlight(false);
-//        updateRainHeight(world, false);
-//        createNewRain(world);
-//        updateTileWetness(world, null);
-//      }
-//    );
   }
 
   private void updateRainHeight(World world, boolean showAnimation) {
@@ -91,7 +69,7 @@ public class RainSystem extends EcsSystem {
 
       rainComponent.height--;
 
-      int heightThreshold = showAnimation ? RainRenderer.RAIN_ANIMATION_HEIGHT_THRESHOLD_2 - 2 : 0;
+      int heightThreshold = showAnimation ? RainRendererGraphicsModule.RAIN_ANIMATION_HEIGHT_THRESHOLD_2 - 2 : 0;
 
       if (rainComponent.height <= heightThreshold) {
         view.entity().destroy();
@@ -107,12 +85,6 @@ public class RainSystem extends EcsSystem {
 
       createRain(world, cameraTransform.getX(), cameraTransform.getY());
     }
-
-//    world.findEntityByName(Constants.EntityNames.CAMERA).ifPresent(cameraEntity -> {
-//      TransformComponent cameraTransform = cameraEntity.getComponent(TransformComponent.class);
-//
-//      createRain(world, cameraTransform.getX(), cameraTransform.getY());
-//    });
   }
 
   private void createRain(World world, float cameraX, float cameraY) {
@@ -123,7 +95,8 @@ public class RainSystem extends EcsSystem {
       float y = random.nextFloat(-edge, AcidRainSola.CANVAS_HEIGHT + edge);
 
       world.createEntity(
-        new RainComponent(x + cameraX, y + cameraY)
+        new RainComponent(),
+        new TransformComponent(x + cameraX, y + cameraY)
       );
     }
   }

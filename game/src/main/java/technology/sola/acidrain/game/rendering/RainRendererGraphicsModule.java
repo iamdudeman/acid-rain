@@ -1,56 +1,41 @@
 package technology.sola.acidrain.game.rendering;
 
-import technology.sola.acidrain.game.component.RainComponent;
-import technology.sola.ecs.Entity;
-import technology.sola.ecs.World;
-import technology.sola.engine.core.component.TransformComponent;
-import technology.sola.engine.graphics.Color;
-import technology.sola.engine.graphics.renderer.BlendMode;
-import technology.sola.engine.graphics.renderer.Renderer;
-import technology.sola.acidrain.game.Constants;
 import technology.sola.acidrain.game.AcidRainSola;
+import technology.sola.acidrain.game.component.RainComponent;
+import technology.sola.ecs.World;
+import technology.sola.ecs.view.View;
+import technology.sola.ecs.view.View1Entry;
+import technology.sola.engine.core.component.TransformComponent;
+import technology.sola.engine.defaults.graphics.modules.SolaGraphicsModule;
+import technology.sola.engine.graphics.Color;
+import technology.sola.engine.graphics.renderer.Renderer;
 
-public class RainRenderer {
+public class RainRendererGraphicsModule extends SolaGraphicsModule<View1Entry<RainComponent>> {
   public static final int RAIN_ANIMATION_HEIGHT_THRESHOLD_1 = -2;
   public static final int RAIN_ANIMATION_HEIGHT_THRESHOLD_2 = -4;
   private static final int RAIN_LENGTH = 64;
   private static final Color RAIN_COLOR = new Color(153, 220, 220, 220);
   private boolean animationToggle = false;
 
-  public void render(Renderer renderer, World world) {
-    renderer.setBlendMode(BlendMode.NORMAL);
+  @Override
+  public View<View1Entry<RainComponent>> getViewToRender(World world) {
+    return world.createView().of(RainComponent.class);
+  }
 
-    Entity cameraEntity = world.findEntityByName(Constants.EntityNames.CAMERA);
-
-    if (cameraEntity != null) {
-      TransformComponent cameraTransform = cameraEntity.getComponent(TransformComponent.class);
-
-      for (Entity entity : world.findEntitiesWithComponents(RainComponent.class)) {
-        drawRain(renderer, entity.getComponent(RainComponent.class), cameraTransform.getX(), cameraTransform.getY());
-      }
-    }
-
-//    world.findEntityByName(Constants.EntityNames.CAMERA).ifPresent(cameraEntity -> {
-//      TransformComponent cameraTransform = cameraEntity.getComponent(TransformComponent.class);
-//
-//      for (Entity entity : world.findEntitiesWithComponents(RainComponent.class)) {
-//        drawRain(renderer, entity.getComponent(RainComponent.class), cameraTransform.getX(), cameraTransform.getY());
-//      }
-//    });
+  @Override
+  public void renderMethod(Renderer renderer, View1Entry<RainComponent> viewEntry, TransformComponent cameraModifiedEntityTransform) {
+    drawRain(renderer, viewEntry.c1(), cameraModifiedEntityTransform.getX(), cameraModifiedEntityTransform.getY());
   }
 
   /**
-   *
-   * @see <a href="https://www.youtube.com/watch?v=66f6bI2uIdQ&list=WL&index=39&ab_channel=CameronPenner">Math based on this video</a>
    * @param renderer
    * @param rainComponent
-   * @param cameraX
-   * @param cameraY
+   * @param x
+   * @param y
+   * @see <a href="https://www.youtube.com/watch?v=66f6bI2uIdQ&list=WL&index=39&ab_channel=CameronPenner">Math based on this video</a>
    */
-  private void drawRain(Renderer renderer, RainComponent rainComponent, float cameraX, float cameraY) {
+  private void drawRain(Renderer renderer, RainComponent rainComponent, float x, float y) {
     float height = rainComponent.height;
-    float x = rainComponent.x - cameraX;
-    float y = rainComponent.y - cameraY;
 
     if (height > 0) {
       float halfCameraWidth = AcidRainSola.CANVAS_WIDTH * 0.5f;
