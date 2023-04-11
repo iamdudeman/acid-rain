@@ -46,26 +46,6 @@ public class ChunkSystem extends EcsSystem implements EventListener<GameStateEve
         isInitialized = true;
       }
     }
-
-//    world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(playerEntity -> {
-//      TransformComponent playerTransform = playerEntity.getComponent(TransformComponent.class);
-//      Vector2D playerTranslate = playerTransform.getTranslate();
-//
-//      if (isInitialized) {
-//        ChunkId playerChunkId = getChunkIdForPlayer(playerTransform);
-//        boolean hasPlayerChunkChanged = !playerChunkId.equals(lastPlayerChunkId);
-//
-//        if (hasPlayerChunkChanged) {
-//          processPlayerPositionChange(world, playerChunkId, playerTranslate);
-//
-//          lastPlayerChunkId = playerChunkId;
-//        }
-//      } else {
-//        chunkCache.clear();
-//        processPlayerPositionChange(world, lastPlayerChunkId, playerTranslate);
-//        isInitialized = true;
-//      }
-//    });
   }
 
   @Override

@@ -39,7 +39,6 @@ public class SunlightBarElement extends GuiElement<SunlightBarElement.Properties
 
   @Override
   public void recalculateLayout() {
-
   }
 
   @Override
