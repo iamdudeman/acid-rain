@@ -7,68 +7,69 @@ import technology.sola.acidrain.game.event.GameStatType;
 import technology.sola.acidrain.game.event.GameState;
 import technology.sola.acidrain.game.event.GameStateEvent;
 import technology.sola.acidrain.game.rendering.gui.elements.SunlightBarElement;
-import technology.sola.engine.core.module.graphics.gui.SolaGui;
 import technology.sola.engine.graphics.Color;
 import technology.sola.engine.graphics.gui.GuiElement;
+import technology.sola.engine.graphics.gui.SolaGuiDocument;
 import technology.sola.engine.graphics.gui.elements.TextGuiElement;
 import technology.sola.engine.graphics.gui.elements.container.StreamGuiElementContainer;
 
 public class GuiBuilder {
-  private final SolaGui solaGui;
+  private final SolaGuiDocument solaGuiDocument;
   private final GuiElement<?> inGameRoot;
   private final GuiElement<?> gameOverRoot;
 
-  public GuiBuilder(SolaGui solaGui) {
-    this.solaGui = solaGui;
+  public GuiBuilder(SolaGuiDocument solaGuiDocument) {
+    this.solaGuiDocument = solaGuiDocument;
 
     inGameRoot = buildInGameGui();
     gameOverRoot = buildGameOverGui();
 
-    solaGui.eventHub.add(GameStateEvent.class, event -> {
+    solaGuiDocument.eventHub.add(GameStateEvent.class, event -> {
       if (event.gameState() == GameState.GAME_OVER) {
-        ((TextGuiElement)gameOverRoot.getElementById("distance")).properties().setText("Distance traveled: " + Math.round(GameStatistics.getDistanceTraveled()));
-        solaGui.setGuiRoot(gameOverRoot);
+        ((TextGuiElement) gameOverRoot.getElementById("distance"))
+          .properties().setText("Distance traveled: " + Math.round(GameStatistics.getDistanceTraveled()));
+        solaGuiDocument.setGuiRoot(gameOverRoot);
       } else if (event.gameState() == GameState.RESTART) {
-        solaGui.setGuiRoot(inGameRoot);
+        solaGuiDocument.setGuiRoot(inGameRoot);
       }
     });
   }
 
-  public GuiElement<?> getRoot() {
+  public GuiElement<?> getInitialRoot() {
     return inGameRoot;
   }
 
   private GuiElement<?> buildInGameGui() {
-    TextGuiElement intensityElement = solaGui.createElement(
+    TextGuiElement intensityElement = solaGuiDocument.createElement(
       TextGuiElement::new,
       p -> p.setText("Intensity: 1")
     );
-    TextGuiElement donutsEatedElement = solaGui.createElement(
+    TextGuiElement donutsEatedElement = solaGuiDocument.createElement(
       TextGuiElement::new,
       p -> p.setText("Donuts: 0")
     );
 
-    solaGui.eventHub.add(GameStatEvent.class, event -> {
+    solaGuiDocument.eventHub.add(GameStatEvent.class, event -> {
       switch (event.type()) {
         case DONUTS_EATED -> donutsEatedElement.properties().setText("Donuts: " + event.newValue());
         case INTENSITY -> intensityElement.properties().setText("Intensity: " + event.newValue());
       }
     });
 
-    return solaGui.createElement(
+    return solaGuiDocument.createElement(
       StreamGuiElementContainer::new,
       p -> p.setDirection(StreamGuiElementContainer.Direction.VERTICAL),
-      solaGui.createElement(
+      solaGuiDocument.createElement(
         StreamGuiElementContainer::new,
         p -> p.setDirection(StreamGuiElementContainer.Direction.VERTICAL).padding.set(3).setBackgroundColor(new Color(150, 255, 255, 255)),
         intensityElement,
         donutsEatedElement
       ),
-      solaGui.createElement(
+      solaGuiDocument.createElement(
         StreamGuiElementContainer::new,
         p -> p.setVerticalAlignment(StreamGuiElementContainer.VerticalAlignment.BOTTOM).setHorizontalAlignment(StreamGuiElementContainer.HorizontalAlignment.CENTER)
           .setHeight(188).setWidth(AcidRainSola.CANVAS_WIDTH),
-        solaGui.createElement(
+        solaGuiDocument.createElement(
           SunlightBarElement::new
         )
       )
@@ -76,30 +77,30 @@ public class GuiBuilder {
   }
 
   private GuiElement<?> buildGameOverGui() {
-    TextGuiElement donutsEatedElement = solaGui.createElement(
+    TextGuiElement donutsEatedElement = solaGuiDocument.createElement(
       TextGuiElement::new,
       p -> p.setText("Donuts eated: 0")
     );
 
-    solaGui.eventHub.add(GameStatEvent.class, event -> {
+    solaGuiDocument.eventHub.add(GameStatEvent.class, event -> {
       if (event.type() == GameStatType.DONUTS_EATED) {
         donutsEatedElement.properties().setText("Donuts eated: " + event.newValue());
       }
     });
 
-    return solaGui.createElement(
+    return solaGuiDocument.createElement(
       StreamGuiElementContainer::new,
       p -> p.setDirection(StreamGuiElementContainer.Direction.VERTICAL).padding.set(3).setBackgroundColor(new Color(150, 255, 255, 255)),
-      solaGui.createElement(
+      solaGuiDocument.createElement(
         TextGuiElement::new,
         p -> p.setText("Game over")
       ),
       donutsEatedElement,
-      solaGui.createElement(
+      solaGuiDocument.createElement(
         TextGuiElement::new,
         p -> p.setText("Distance traveled: 0").setId("distance")
       ),
-      solaGui.createElement(
+      solaGuiDocument.createElement(
         TextGuiElement::new,
         p -> p.setText("Space or click to restart")
       )

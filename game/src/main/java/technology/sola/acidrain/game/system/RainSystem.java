@@ -1,9 +1,10 @@
 package technology.sola.acidrain.game.system;
 
 import technology.sola.acidrain.game.component.RainComponent;
-import technology.sola.acidrain.game.rendering.RainRenderer;
 import technology.sola.acidrain.game.GameStatistics;
+import technology.sola.acidrain.game.rendering.RainRendererGraphicsModule;
 import technology.sola.ecs.EcsSystem;
+import technology.sola.ecs.Entity;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.graphics.components.SpriteComponent;
@@ -40,38 +41,35 @@ public class RainSystem extends EcsSystem {
 
   @Override
   public void update(World world, float dt) {
-    var playerEntityOptional = world.findEntityByName(Constants.EntityNames.PLAYER);
+    Entity playerEntity = world.findEntityByName(Constants.EntityNames.PLAYER);
 
-    playerEntityOptional.ifPresentOrElse(
-      playerEntity -> {
-        Vector2D playerTranslate = playerEntity.getComponent(TransformComponent.class).getTranslate();
-        PlayerComponent playerComponent = playerEntity.getComponent(PlayerComponent.class);
+    if (playerEntity == null) {
+      updateDropsPerUpdateForSunlight(false);
+      updateRainHeight(world, false);
+      createNewRain(world);
+      updateTileWetness(world, null);
+    } else {
+      Vector2D playerTranslate = playerEntity.getComponent(TransformComponent.class).getTranslate();
+      PlayerComponent playerComponent = playerEntity.getComponent(PlayerComponent.class);
 
-        updateDropsPerUpdateForSunlight(playerComponent.isUsingSunlight());
-        updateRainHeight(world, true);
+      updateDropsPerUpdateForSunlight(playerComponent.isUsingSunlight());
+      updateRainHeight(world, true);
 
-        if (!playerComponent.isUsingSunlight()) {
-          GameStatistics.incrementIntensityLevel(dt);
-          createNewRain(world);
-          updateTileWetness(world, playerTranslate);
-        }
-      },
-      () -> {
-        updateDropsPerUpdateForSunlight(false);
-        updateRainHeight(world, false);
+      if (!playerComponent.isUsingSunlight()) {
+        GameStatistics.incrementIntensityLevel(dt);
         createNewRain(world);
-        updateTileWetness(world, null);
+        updateTileWetness(world, playerTranslate);
       }
-    );
+    }
   }
 
   private void updateRainHeight(World world, boolean showAnimation) {
-    for (var view : world.createView().of(RainComponent.class)) {
+    for (var view : world.createView().of(RainComponent.class).getEntries()) {
       RainComponent rainComponent = view.c1();
 
       rainComponent.height--;
 
-      int heightThreshold = showAnimation ? RainRenderer.RAIN_ANIMATION_HEIGHT_THRESHOLD_2 - 2 : 0;
+      int heightThreshold = showAnimation ? RainRendererGraphicsModule.RAIN_ANIMATION_HEIGHT_THRESHOLD_2 - 2 : 0;
 
       if (rainComponent.height <= heightThreshold) {
         view.entity().destroy();
@@ -80,11 +78,13 @@ public class RainSystem extends EcsSystem {
   }
 
   private void createNewRain(World world) {
-    world.findEntityByName(Constants.EntityNames.CAMERA).ifPresent(cameraEntity -> {
+    Entity cameraEntity = world.findEntityByName(Constants.EntityNames.CAMERA);
+
+    if (cameraEntity != null) {
       TransformComponent cameraTransform = cameraEntity.getComponent(TransformComponent.class);
 
       createRain(world, cameraTransform.getX(), cameraTransform.getY());
-    });
+    }
   }
 
   private void createRain(World world, float cameraX, float cameraY) {
@@ -95,13 +95,14 @@ public class RainSystem extends EcsSystem {
       float y = random.nextFloat(-edge, AcidRainSola.CANVAS_HEIGHT + edge);
 
       world.createEntity(
-        new RainComponent(x + cameraX, y + cameraY)
+        new RainComponent(),
+        new TransformComponent(x + cameraX, y + cameraY)
       );
     }
   }
 
   private void updateTileWetness(World world, Vector2D playerTranslate) {
-    for (var view : world.createView().of(TileComponent.class, SpriteComponent.class, TransformComponent.class)) {
+    for (var view : world.createView().of(TileComponent.class, SpriteComponent.class, TransformComponent.class).getEntries()) {
       TileComponent tileComponent = view.c1();
       SpriteComponent spriteComponent = view.c2();
       TransformComponent transformComponent = view.c3();

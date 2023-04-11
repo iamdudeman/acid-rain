@@ -9,6 +9,7 @@ import technology.sola.acidrain.game.component.PlayerComponent;
 import technology.sola.acidrain.game.GameStatistics;
 import technology.sola.acidrain.game.rendering.gui.elements.SunlightBarElement;
 import technology.sola.ecs.EcsSystem;
+import technology.sola.ecs.Entity;
 import technology.sola.ecs.World;
 import technology.sola.engine.assets.AssetLoader;
 import technology.sola.engine.assets.audio.AudioClip;
@@ -97,17 +98,19 @@ public class PlayerSystem extends EcsSystem {
 
   @Override
   public void update(World world, float dt) {
-    world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(entity -> {
+    Entity playerEntity = world.findEntityByName(Constants.EntityNames.PLAYER);
+
+    if (playerEntity != null) {
       if (previousTranslate == null) {
-        previousTranslate = entity.getComponent(TransformComponent.class).getTranslate();
+        previousTranslate = playerEntity.getComponent(TransformComponent.class).getTranslate();
       }
 
-      Vector2D currentTranslate = entity.getComponent(TransformComponent.class).getTranslate();
+      Vector2D currentTranslate = playerEntity.getComponent(TransformComponent.class).getTranslate();
 
       GameStatistics.increaseDistanceTraveled(currentTranslate.distance(previousTranslate));
       previousTranslate = currentTranslate;
 
-      PlayerComponent playerComponent = entity.getComponent(PlayerComponent.class);
+      PlayerComponent playerComponent = playerEntity.getComponent(PlayerComponent.class);
       int xMod = 0;
       int yMod = 0;
 
@@ -145,8 +148,8 @@ public class PlayerSystem extends EcsSystem {
       }
 
       if (xMod != 0 || yMod != 0) {
-        TransformComponent transformComponent = entity.getComponent(TransformComponent.class);
-        SpriteComponent theDuck = entity.getComponent(SpriteComponent.class);
+        TransformComponent transformComponent = playerEntity.getComponent(TransformComponent.class);
+        SpriteComponent theDuck = playerEntity.getComponent(SpriteComponent.class);
         String variation = getSpriteVariation(xMod, yMod);
         float speed = playerComponent.getSpeed();
 
@@ -167,7 +170,7 @@ public class PlayerSystem extends EcsSystem {
       playerComponent.resetSlowed();
 
       eventHub.emit(new GameStatEvent(GameStatType.SUNLIGHT, playerComponent.getSunlight()));
-    });
+    }
   }
 
   private PlayerMovement manipulateModsByMouse() {

@@ -4,8 +4,10 @@ import technology.sola.acidrain.game.system.chunk.Chunk;
 import technology.sola.acidrain.game.system.chunk.ChunkCreator;
 import technology.sola.acidrain.game.system.chunk.ChunkId;
 import technology.sola.ecs.EcsSystem;
+import technology.sola.ecs.Entity;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
+import technology.sola.engine.event.EventHub;
 import technology.sola.engine.event.EventListener;
 import technology.sola.acidrain.game.Constants;
 import technology.sola.acidrain.game.event.GameState;
@@ -22,9 +24,15 @@ public class ChunkSystem extends EcsSystem implements EventListener<GameStateEve
   private ChunkId lastPlayerChunkId = new ChunkId(0, 0);
   private boolean isInitialized = false;
 
+  public ChunkSystem(EventHub eventHub) {
+    eventHub.add(GameStateEvent.class, this);
+  }
+
   @Override
   public void update(World world, float v) {
-    world.findEntityByName(Constants.EntityNames.PLAYER).ifPresent(playerEntity -> {
+    Entity playerEntity = world.findEntityByName(Constants.EntityNames.PLAYER);
+
+    if (playerEntity != null) {
       TransformComponent playerTransform = playerEntity.getComponent(TransformComponent.class);
       Vector2D playerTranslate = playerTransform.getTranslate();
 
@@ -42,7 +50,7 @@ public class ChunkSystem extends EcsSystem implements EventListener<GameStateEve
         processPlayerPositionChange(world, lastPlayerChunkId, playerTranslate);
         isInitialized = true;
       }
-    });
+    }
   }
 
   @Override

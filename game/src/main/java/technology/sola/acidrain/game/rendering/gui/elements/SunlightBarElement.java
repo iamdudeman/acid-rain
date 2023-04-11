@@ -3,9 +3,9 @@ package technology.sola.acidrain.game.rendering.gui.elements;
 import technology.sola.acidrain.game.component.PlayerComponent;
 import technology.sola.acidrain.game.event.GameStatEvent;
 import technology.sola.acidrain.game.event.GameStatType;
-import technology.sola.engine.core.module.graphics.gui.SolaGui;
 import technology.sola.engine.graphics.Color;
 import technology.sola.engine.graphics.gui.GuiElement;
+import technology.sola.engine.graphics.gui.SolaGuiDocument;
 import technology.sola.engine.graphics.gui.properties.DefaultGuiElementProperties;
 import technology.sola.engine.graphics.gui.properties.GuiElementGlobalProperties;
 import technology.sola.engine.graphics.renderer.BlendMode;
@@ -16,11 +16,11 @@ public class SunlightBarElement extends GuiElement<SunlightBarElement.Properties
   private static final int SUNLIGHT_BAR_WIDTH = 220;
   private static final Color SUNLIGHT_BAR_COLOR = new Color(200, 255, 215, 0);
 
-  public SunlightBarElement(SolaGui solaGui) {
-    super(solaGui, new Properties(solaGui.globalProperties));
+  public SunlightBarElement(SolaGuiDocument solaGuiDocument) {
+    super(solaGuiDocument, new Properties(solaGuiDocument.globalProperties));
     properties.setFocusable(false);
 
-    solaGui.eventHub.add(GameStatEvent.class, event -> {
+    solaGuiDocument.eventHub.add(GameStatEvent.class, event -> {
       if (event.type() == GameStatType.SUNLIGHT) {
         properties.setFilledPercentage(event.newValue() / (float) PlayerComponent.MAX_SUNLIGHT);
       }
@@ -39,7 +39,6 @@ public class SunlightBarElement extends GuiElement<SunlightBarElement.Properties
 
   @Override
   public void recalculateLayout() {
-
   }
 
   @Override

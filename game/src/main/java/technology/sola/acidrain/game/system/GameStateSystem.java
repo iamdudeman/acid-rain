@@ -30,13 +30,11 @@ import technology.sola.math.EasingFunction;
 
 public class GameStateSystem extends EcsSystem {
   private static final long fallingAnimationDuration = 1000;
-  private final SolaEcs solaEcs;
   private final MouseInput mouseInput;
   private final KeyboardInput keyboardInput;
   private final EventHub eventHub;
 
   public GameStateSystem(SolaEcs solaEcs, MouseInput mouseInput, KeyboardInput keyboardInput, EventHub eventHub) {
-    this.solaEcs = solaEcs;
     this.mouseInput = mouseInput;
     this.keyboardInput = keyboardInput;
     this.eventHub = eventHub;
@@ -55,19 +53,20 @@ public class GameStateSystem extends EcsSystem {
 
   @Override
   public void update(World world, float dt) {
-    solaEcs.getWorld().findEntityByName(Constants.EntityNames.PLAYER).ifPresentOrElse(entity -> {
-      if (!entity.hasComponent(TransformAnimatorComponent.class)) {
-        entity.addComponent(
-          new TransformAnimatorComponent.Builder(EasingFunction.EASE_OUT, fallingAnimationDuration).withScale(0.01f).build()
-            .setAnimationCompleteCallback(entity::destroy)
-        );
-      }
-    }, () -> {
+    Entity playerEntity = world.findEntityByName(Constants.EntityNames.PLAYER);
+
+    if (playerEntity == null) {
       if (mouseInput.isMouseClicked(MouseButton.PRIMARY) || keyboardInput.isKeyPressed(Key.SPACE)) {
-        solaEcs.getWorld().findEntityByName(Constants.EntityNames.PLAYER).ifPresent(Entity::destroy);
         eventHub.emit(new GameStateEvent(GameState.RESTART));
       }
-    });
+    } else {
+      if (!playerEntity.hasComponent(TransformAnimatorComponent.class)) {
+        playerEntity.addComponent(
+          new TransformAnimatorComponent.Builder(EasingFunction.EASE_OUT, fallingAnimationDuration).withScale(0.01f).build()
+            .setAnimationCompleteCallback(playerEntity::destroy)
+        );
+      }
+    }
   }
 
   @Override
@@ -83,7 +82,7 @@ public class GameStateSystem extends EcsSystem {
       new SpriteComponent(SpriteCache.get(Constants.Assets.Sprites.DUCK, "top")),
       new PlayerComponent(),
       new DynamicBodyComponent(),
-      new LayerComponent("sprites", -1),
+      new LayerComponent(Constants.Layers.FOREGROUND),
       new BlendModeComponent(BlendMode.MASK),
       ColliderComponent.circle(-2, 0, 6)
     ).setName(Constants.EntityNames.PLAYER);
