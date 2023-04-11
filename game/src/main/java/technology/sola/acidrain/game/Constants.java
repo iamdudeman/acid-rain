@@ -15,6 +15,13 @@ public class Constants {
     TILE
   }
 
+  public static final class Layers {
+    public static final String FOREGROUND = "foreground";
+
+    private Layers() {
+    }
+  }
+
   public static final class Assets {
     public static final class Sprites {
       public static final String SPRITE_SHEET_ID = "sprites";

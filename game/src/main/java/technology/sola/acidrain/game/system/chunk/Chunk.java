@@ -5,6 +5,7 @@ import technology.sola.ecs.Entity;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
 import technology.sola.engine.graphics.components.BlendModeComponent;
+import technology.sola.engine.graphics.components.LayerComponent;
 import technology.sola.engine.graphics.components.SpriteComponent;
 import technology.sola.engine.graphics.renderer.BlendMode;
 import technology.sola.engine.physics.component.ColliderComponent;
@@ -55,6 +56,7 @@ public class Chunk {
           world.createEntity(
             new TransformComponent(x + 6, y + 6),
             new PickupComponent(tileComponent),
+            new LayerComponent(Constants.Layers.FOREGROUND),
             new SpriteComponent(SpriteCache.get(Constants.Assets.Sprites.DONUT, "main")),
             new BlendModeComponent(BlendMode.MASK),
             ColliderComponent.circle(3).setSensor(true).setTags(Constants.ColliderTags.TILE).setIgnoreTags(Constants.ColliderTags.TILE)

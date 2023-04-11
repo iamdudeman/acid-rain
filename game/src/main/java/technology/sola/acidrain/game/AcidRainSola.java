@@ -40,21 +40,16 @@ public class AcidRainSola extends SolaWithDefaults {
     solaGraphics.addGraphicsModules(new RainRendererGraphicsModule());
     platform.getViewport().setAspectMode(AspectMode.MAINTAIN);
     platform.getRenderer().createLayers(
-      "sprites",
-      "rain",
-      "ui"
+      Constants.Layers.FOREGROUND
     );
 
     // Ecs setup
-    ChunkSystem chunkSystem = new ChunkSystem();
-    PlayerSystem playerSystem = new PlayerSystem(eventHub, keyboardInput, mouseInput, assetLoaderProvider.get(AudioClip.class));
-    eventHub.add(GameStateEvent.class, chunkSystem);
     solaEcs.addSystems(
-      chunkSystem,
+      new ChunkSystem(eventHub),
       new GameStateSystem(solaEcs, mouseInput, keyboardInput, eventHub),
       new RainSystem(),
       new CameraSystem(),
-      playerSystem
+      new PlayerSystem(eventHub, keyboardInput, mouseInput, assetLoaderProvider.get(AudioClip.class))
     );
   }
 
