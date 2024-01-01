@@ -5,7 +5,7 @@
       "backgroundColor": "argb(150, 255, 255, 255)",
       "borderColor": "#ffffff",
       "padding": 3,
-      "gap": 10
+      "gap": 5
     }
   ],
   "children": [

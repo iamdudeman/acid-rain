@@ -7,7 +7,6 @@ import technology.sola.acidrain.game.event.GameStateEvent;
 import technology.sola.acidrain.game.component.PickupComponent;
 import technology.sola.acidrain.game.component.PlayerComponent;
 import technology.sola.acidrain.game.GameStatistics;
-import technology.sola.acidrain.game.rendering.gui.elements.SunlightBarElement;
 import technology.sola.ecs.EcsSystem;
 import technology.sola.ecs.Entity;
 import technology.sola.ecs.World;
@@ -31,7 +30,8 @@ import technology.sola.math.linear.Vector2D;
 public class PlayerSystem extends EcsSystem {
   private static final float TOUCH_TILE_WIDTH = AcidRainSola.CANVAS_WIDTH / 9f;
   private static final float TOUCH_TILE_HEIGHT = AcidRainSola.CANVAS_HEIGHT / 9f;
-  private static final int TOUCH_CONTROLS_POWER_THRESHOLD = AcidRainSola.CANVAS_HEIGHT - SunlightBarElement.SUNLIGHT_BAR_HEIGHT - 8;
+  private static final int SUNLIGHT_BAR_HEIGHT = 12;
+  private static final int TOUCH_CONTROLS_POWER_THRESHOLD = AcidRainSola.CANVAS_HEIGHT - SUNLIGHT_BAR_HEIGHT - 8;
   private final EventHub eventHub;
   private final KeyboardInput keyboardInput;
   private final MouseInput mouseInput;

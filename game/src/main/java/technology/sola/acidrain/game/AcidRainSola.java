@@ -85,7 +85,6 @@ public class AcidRainSola extends SolaWithDefaults {
         }
 
         completeAsyncInit.run();
-//        solaGuiDocument.setGuiRoot(new GuiBuilder(solaGuiDocument).getInitialRoot());
         eventHub.emit(new GameStateEvent(GameState.RESTART));
       });
   }
@@ -95,14 +94,15 @@ public class AcidRainSola extends SolaWithDefaults {
   private void addGuiEventListeners(GuiJsonDocument inGameDocument, GuiJsonDocument gameOverDocument) {
      eventHub.add(GameStatEvent.class, event -> {
       if (event.type() == GameStatType.SUNLIGHT) {
-        if (widthStyle.style().width().getValue(PlayerComponent.MAX_SUNLIGHT) != event.newValue()) {
-          var styles = inGameDocument.rootElement().findElementById("sunlight", SectionGuiElement.class).getStyles();
-          var newWidth = Math.round(100.0 * event.newValue() / (double) PlayerComponent.MAX_SUNLIGHT) + "%";
+        var newWidth = Math.round(100.0 * event.newValue() / (double) PlayerComponent.MAX_SUNLIGHT);
 
-          System.out.println(newWidth);
+        if (widthStyle.style().width().getValue(100) != newWidth) {
+          var styles = inGameDocument.rootElement().findElementById("sunlight", SectionGuiElement.class).getStyles();
+
           styles.removeStyle(widthStyle);
           widthStyle = ConditionalStyle.always(BaseStyles.create().setWidth(newWidth + "%").build());
           styles.addStyle(widthStyle);
+          styles.invalidate();
         }
       }
     });
