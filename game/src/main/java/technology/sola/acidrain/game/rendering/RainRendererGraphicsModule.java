@@ -6,11 +6,11 @@ import technology.sola.ecs.World;
 import technology.sola.ecs.view.View;
 import technology.sola.ecs.view.View1Entry;
 import technology.sola.engine.core.component.TransformComponent;
-import technology.sola.engine.defaults.graphics.modules.SolaGraphicsModule;
+import technology.sola.engine.defaults.graphics.modules.SolaEntityGraphicsModule;
 import technology.sola.engine.graphics.Color;
 import technology.sola.engine.graphics.renderer.Renderer;
 
-public class RainRendererGraphicsModule extends SolaGraphicsModule<View1Entry<RainComponent>> {
+public class RainRendererGraphicsModule extends SolaEntityGraphicsModule<View1Entry<RainComponent>> {
   public static final int RAIN_ANIMATION_HEIGHT_THRESHOLD_1 = -2;
   public static final int RAIN_ANIMATION_HEIGHT_THRESHOLD_2 = -4;
   private static final int RAIN_LENGTH = 64;

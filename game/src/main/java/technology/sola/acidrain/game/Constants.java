@@ -49,6 +49,14 @@ public class Constants {
       }
     }
 
+    public static final class Gui {
+      public static final String IN_GAME = "in-game";
+      public static final String GAME_OVER = "game-over";
+
+      private Gui() {
+      }
+    }
+
     private Assets() {
     }
   }
