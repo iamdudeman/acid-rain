@@ -109,7 +109,8 @@ public class AcidRainSola extends SolaWithDefaults {
 
     eventHub.add(GameStateEvent.class, event -> {
       if (event.gameState() == GameState.GAME_OVER) {
-        gameOverDocument.rootElement().findElementById("distance", technology.sola.engine.graphics.guiv2.elements.TextGuiElement.class)
+        gameOverDocument.rootElement()
+          .findElementById("distance", TextGuiElement.class)
           .setText("Distance traveled: " + Math.round(GameStatistics.getDistanceTraveled()));
 
         guiDocument.setRootElement(gameOverDocument.rootElement());

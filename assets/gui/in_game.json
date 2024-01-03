@@ -5,6 +5,7 @@
       "crossAxisChildren": "center",
       "mainAxisChildren": "end",
       "height": "100%",
+      "padding": 8,
       "width": "100%"
     }
   ],
