@@ -14,7 +14,7 @@ public class RainRendererGraphicsModule extends SolaEntityGraphicsModule<View1En
   public static final int RAIN_ANIMATION_HEIGHT_THRESHOLD_1 = -2;
   public static final int RAIN_ANIMATION_HEIGHT_THRESHOLD_2 = -4;
   private static final int RAIN_LENGTH = 64;
-  private static final Color RAIN_COLOR = new Color(153, 220, 220, 220);
+  private static final Color RAIN_COLOR = new Color(255, 220, 220, 220);
   private boolean animationToggle = false;
 
   @Override
