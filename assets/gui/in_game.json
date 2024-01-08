@@ -25,13 +25,6 @@
       "children": [
         {
           "tag": "Text",
-          "id": "intensity",
-          "props": {
-            "text": "Intensity: 1"
-          }
-        },
-        {
-          "tag": "Text",
           "id": "donuts",
           "props": {
             "text": "Donuts: 0"

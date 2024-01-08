@@ -28,6 +28,7 @@ public class AcidRainSola extends SolaWithDefaults {
   public static final int HALF_CANVAS_WIDTH = CANVAS_WIDTH / 2;
   public static final int CANVAS_HEIGHT = 240;
   public static final int HALF_CANVAS_HEIGHT = CANVAS_HEIGHT / 2;
+  private ConditionalStyle<BaseStyles> sunlightBarWidthStyle = ConditionalStyle.always(BaseStyles.create().setWidth("0").build());
 
   public AcidRainSola() {
     super(SolaConfiguration.build("Acid Rain", CANVAS_WIDTH, CANVAS_HEIGHT).withTargetUpdatesPerSecond(30));
@@ -54,7 +55,7 @@ public class AcidRainSola extends SolaWithDefaults {
     solaEcs.addSystems(
       new ChunkSystem(eventHub),
       new GameStateSystem(solaEcs, mouseInput, keyboardInput, eventHub),
-      new RainSystem(),
+      new RainSystem(eventHub),
       new CameraSystem(),
       new PlayerSystem(eventHub, keyboardInput, mouseInput, assetLoaderProvider.get(AudioClip.class))
     );
@@ -89,19 +90,17 @@ public class AcidRainSola extends SolaWithDefaults {
       });
   }
 
-  private ConditionalStyle<BaseStyles> widthStyle = ConditionalStyle.always(BaseStyles.create().setWidth("0").build());
-
   private void addGuiEventListeners(GuiJsonDocument inGameDocument, GuiJsonDocument gameOverDocument) {
-     eventHub.add(GameStatEvent.class, event -> {
+    eventHub.add(GameStatEvent.class, event -> {
       if (event.type() == GameStatType.SUNLIGHT) {
         var newWidth = Math.round(100.0 * event.newValue() / (double) PlayerComponent.MAX_SUNLIGHT);
 
-        if (widthStyle.style().width().getValue(100) != newWidth) {
+        if (sunlightBarWidthStyle.style().width().getValue(100) != newWidth) {
           var styles = inGameDocument.rootElement().findElementById("sunlight", SectionGuiElement.class).getStyles();
 
-          styles.removeStyle(widthStyle);
-          widthStyle = ConditionalStyle.always(BaseStyles.create().setWidth(newWidth + "%").build());
-          styles.addStyle(widthStyle);
+          styles.removeStyle(sunlightBarWidthStyle);
+          sunlightBarWidthStyle = ConditionalStyle.always(BaseStyles.create().setWidth(newWidth + "%").build());
+          styles.addStyle(sunlightBarWidthStyle);
           styles.invalidate();
         }
       }
@@ -109,6 +108,9 @@ public class AcidRainSola extends SolaWithDefaults {
 
     eventHub.add(GameStateEvent.class, event -> {
       if (event.gameState() == GameState.GAME_OVER) {
+        gameOverDocument.rootElement()
+            .findElementById("donuts", TextGuiElement.class)
+              .setText("Donuts eated: " + GameStatistics.getDonutsConsumed());
         gameOverDocument.rootElement()
           .findElementById("distance", TextGuiElement.class)
           .setText("Distance traveled: " + Math.round(GameStatistics.getDistanceTraveled()));
@@ -120,9 +122,8 @@ public class AcidRainSola extends SolaWithDefaults {
     });
 
     eventHub.add(GameStatEvent.class, event -> {
-      switch (event.type()) {
-        case DONUTS_EATED -> inGameDocument.rootElement().findElementById("donuts", TextGuiElement.class).setText("Donuts: " + event.newValue());
-        case INTENSITY -> inGameDocument.rootElement().findElementById("intensity", TextGuiElement.class).setText("Intensity: " + event.newValue());
+      if (event.type() == GameStatType.DONUTS_EATED) {
+        inGameDocument.rootElement().findElementById("donuts", TextGuiElement.class).setText("Donuts: " + event.newValue());
       }
     });
   }

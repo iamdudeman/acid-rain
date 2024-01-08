@@ -5,8 +5,9 @@ import technology.sola.acidrain.game.event.GameStatType;
 import technology.sola.engine.event.EventHub;
 
 public class GameStatistics {
-  private static final int DONUT_THRESHOLD = 3;
-  private static final float INTENSITY_SECONDS = 10;
+  public static final int MAX_INTENSITY = 15;
+  private static final int DONUT_THRESHOLD = 8;
+  private static final float INTENSITY_SECONDS = 5;
   private static int donutsConsumed;
   private static double distanceTraveled;
   private static int intensityLevel = 1;
@@ -21,7 +22,7 @@ public class GameStatistics {
   public static void reset() {
     donutsConsumed = 0;
     distanceTraveled = 0;
-    intensityLevel = 1;
+    intensityLevel = 0;
     intensityAccumulator = 0;
     decreaseIntensityCounter = 0;
 
@@ -41,7 +42,7 @@ public class GameStatistics {
       intensityAccumulator = 0;
 
       if (intensityLevel <= 0) {
-        intensityLevel = 1;
+        intensityLevel = 0;
       }
 
       eventHub.emit(new GameStatEvent(GameStatType.INTENSITY, intensityLevel));
@@ -53,12 +54,14 @@ public class GameStatistics {
   }
 
   public static void incrementIntensityLevel(float dt) {
-    intensityAccumulator += dt;
+    if (intensityLevel < MAX_INTENSITY) {
+      intensityAccumulator += dt;
 
-    if (intensityAccumulator > INTENSITY_SECONDS) {
-      intensityLevel++;
-      intensityAccumulator -= INTENSITY_SECONDS;
-      eventHub.emit(new GameStatEvent(GameStatType.INTENSITY, intensityLevel));
+      if (intensityAccumulator > INTENSITY_SECONDS) {
+        intensityLevel++;
+        intensityAccumulator -= INTENSITY_SECONDS;
+        eventHub.emit(new GameStatEvent(GameStatType.INTENSITY, intensityLevel));
+      }
     }
   }
 

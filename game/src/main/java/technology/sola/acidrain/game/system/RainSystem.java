@@ -2,11 +2,14 @@ package technology.sola.acidrain.game.system;
 
 import technology.sola.acidrain.game.component.RainComponent;
 import technology.sola.acidrain.game.GameStatistics;
+import technology.sola.acidrain.game.event.GameState;
+import technology.sola.acidrain.game.event.GameStateEvent;
 import technology.sola.acidrain.game.rendering.RainRendererGraphicsModule;
 import technology.sola.ecs.EcsSystem;
 import technology.sola.ecs.Entity;
 import technology.sola.ecs.World;
 import technology.sola.engine.core.component.TransformComponent;
+import technology.sola.engine.event.EventHub;
 import technology.sola.engine.graphics.components.SpriteComponent;
 import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.acidrain.game.Constants;
@@ -35,9 +38,16 @@ public class RainSystem extends EcsSystem {
   private static final float FAR_WETNESS_DISTANCE = 400;
   private static final float CLOSE_WETNESS_THRESHOLD = 0.85f;
   private static final float CLOSE_WETNESS_DISTANCE = 50;
-  private static final int BASE_DROPS_PER_UPDATE = 10;
   private final Random random = new Random();
-  private int dropsPerUpdate = BASE_DROPS_PER_UPDATE;
+  private int dropsPerUpdate = 0;
+
+  public RainSystem(EventHub eventHub) {
+    eventHub.add(GameStateEvent.class, gameStateEvent -> {
+      if (gameStateEvent.gameState() == GameState.RESTART) {
+        dropsPerUpdate = 0;
+      }
+    });
+  }
 
   @Override
   public void update(World world, float dt) {
@@ -121,7 +131,9 @@ public class RainSystem extends EcsSystem {
       }
 
       for (int i = 0; i < GameStatistics.getIntensityLevel(); i++) {
-        if (random.nextFloat() < threshold) {
+        boolean isIntensityApplied = random.nextInt(0, GameStatistics.MAX_INTENSITY) >= GameStatistics.MAX_INTENSITY - 3;
+
+        if (isIntensityApplied && random.nextFloat() < threshold) {
           tileComponent.increaseWetness();
         }
       }
@@ -186,7 +198,7 @@ public class RainSystem extends EcsSystem {
         dropsPerUpdate--;
       }
     } else {
-      if (dropsPerUpdate < (3 * (GameStatistics.getIntensityLevel() - 1) + BASE_DROPS_PER_UPDATE)) {
+      if (dropsPerUpdate < GameStatistics.getIntensityLevel()) {
         dropsPerUpdate++;
       }
     }

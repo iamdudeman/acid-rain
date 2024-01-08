@@ -19,14 +19,14 @@
       "tag": "Text",
       "id": "donuts",
       "props": {
-        "text": "Donuts eated: 2"
+        "text": "Donuts eated: 0"
       }
     },
     {
       "tag": "Text",
       "id": "distance",
       "props": {
-        "text": "Distance traveled for noms: 1124"
+        "text": "Distance traveled for noms: 0"
       }
     },
     {
