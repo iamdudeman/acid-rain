@@ -1,0 +1,39 @@
+{
+  "tag": "Section",
+  "styles": [
+    {
+      "backgroundColor": "argb(150, 255, 255, 255)",
+      "borderColor": "#ffffff",
+      "padding": 3,
+      "gap": 5
+    }
+  ],
+  "children": [
+    {
+      "tag": "Text",
+      "props": {
+        "text": "Game over"
+      }
+    },
+    {
+      "tag": "Text",
+      "id": "donuts",
+      "props": {
+        "text": "Donuts eated: 2"
+      }
+    },
+    {
+      "tag": "Text",
+      "id": "distance",
+      "props": {
+        "text": "Distance traveled for noms: 1124"
+      }
+    },
+    {
+      "tag": "Text",
+      "props": {
+        "text": "Click anywhere to play again"
+      }
+    }
+  ]
+}

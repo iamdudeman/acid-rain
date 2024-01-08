@@ -1,0 +1,73 @@
+{
+  "tag": "Section",
+  "styles": [
+    {
+      "crossAxisChildren": "center",
+      "mainAxisChildren": "end",
+      "height": "100%",
+      "padding": 8,
+      "width": "100%"
+    }
+  ],
+  "children": [
+    {
+      "tag": "Section",
+      "styles": [
+        {
+          "backgroundColor": "argb(150, 255, 255, 255)",
+          "borderColor": "#ffffff",
+          "padding": 3,
+          "positionX": 0,
+          "positionY": 0,
+          "gap": 5
+        }
+      ],
+      "children": [
+        {
+          "tag": "Text",
+          "id": "intensity",
+          "props": {
+            "text": "Intensity: 1"
+          }
+        },
+        {
+          "tag": "Text",
+          "id": "donuts",
+          "props": {
+            "text": "Donuts: 0"
+          }
+        }
+      ]
+    },
+    {
+      "tag": "Section",
+      "styles": [
+        {
+          "height": 12,
+          "width": 220
+        }
+      ],
+      "children": [
+        {
+          "tag": "Section",
+          "id": "sunlight",
+          "styles": [
+            {
+              "backgroundColor": "argb(200, 255, 215, 0)",
+              "positionX": 0,
+              "width": 0
+            }
+          ]
+        },
+        {
+          "tag": "Section",
+          "styles": [
+            {
+              "borderColor": "rgb(0, 0, 0)"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
