@@ -28,8 +28,6 @@ import technology.sola.engine.physics.event.SensorEvent;
 import technology.sola.math.linear.Vector2D;
 
 public class PlayerSystem extends EcsSystem {
-  private static final float TOUCH_TILE_WIDTH = AcidRainSola.CANVAS_WIDTH / 9f;
-  private static final float TOUCH_TILE_HEIGHT = AcidRainSola.CANVAS_HEIGHT / 9f;
   private static final int SUNLIGHT_BAR_HEIGHT = 12;
   private static final int TOUCH_CONTROLS_POWER_THRESHOLD = AcidRainSola.CANVAS_HEIGHT - SUNLIGHT_BAR_HEIGHT - 8;
   private final EventHub eventHub;
@@ -174,56 +172,17 @@ public class PlayerSystem extends EcsSystem {
   }
 
   private PlayerMovement manipulateModsByMouse() {
-    /*      cursor click box map
-         _____________________________________________________
-        |  ↖  |  ↖  |  ↖  |  ↑  |  ↑  |  ↑  |  ↗  |  ↗  |  ↗  |
-        +-----+-----+-----+-----+-----+-----+-----+-----+-----+
-        |  ↖  |  ↖  |  ↖  |  ↑  |  ↑  |  ↑  |  ↗  |  ↗  |  ↗  |
-        +-----+-----+-----+-----+-----+-----+-----+-----+-----+
-        |  ↖  |  ↖  |  ↖  |  ↑  |  ↑  |  ↑  |  ↗  |  ↗  |  ↗  |
-        +-----+-----+-----+-----+-----+-----+-----+-----+-----+
-        |  <  |  <  |  <  |  ↖  |  ↑  |  ↗  |  →  |  →  |  →  |
-        +-----+-----+-----+-----+-----+-----+-----+-----+-----+
-        |  <  |  <  |  <  |  <  |duck |  →  |  →  |  →  |  →  |
-        +-----+-----+-----+-----+-----+-----+-----+-----+-----+
-        |  <  |  <  |  <  |  ↙  |  ↓  |  ↘  |  →  |  →  |  →  |
-        +-----+-----+-----+-----+-----+-----+-----+-----+-----+
-        |  ↙  |  ↙  |  ↙  |  ↓  |  ↓  |  ↓  |  ↘  |  ↘  |  ↘  |
-        +-----+-----+-----+-----+-----+-----+-----+-----+-----+
-        |  ↙  |  ↙  |  ↙  |  ↓  |  ↓  |  ↓  |  ↘  |  ↘  |  ↘  |
-        +-----+-----+-----+-----+-----+-----+-----+-----+-----+
-        |  ↙  |  ↙  |  ↙  |  ↓  |  ↓  |  ↓  |  ↘  |  ↘  |  ↘  |
-        |_____________________________________________________|
-    */
-
-    int xMod = 0;
-    int yMod = 0;
     Vector2D mousePosition = mouseInput.getMousePosition();
 
     if (mousePosition.y() > TOUCH_CONTROLS_POWER_THRESHOLD) {
       return null;
     }
 
-    int x = (int) (mousePosition.x() / TOUCH_TILE_WIDTH);
-    int y = (int) (mousePosition.y() / TOUCH_TILE_HEIGHT);
-    boolean isInDuckX = x >= 3 && x <= 5;
-    boolean isInDuckY = y >= 3 && y <= 5;
+    Vector2D normalized = mousePosition.subtract(new Vector2D(AcidRainSola.HALF_CANVAS_WIDTH, AcidRainSola.HALF_CANVAS_HEIGHT)).normalize();
+    final float threshold = 0.35f;
 
-    if (y < 3 || (y == 3 && isInDuckX)) {
-      yMod--;
-    }
-
-    if (y >= 6 || (y == 5 && isInDuckX)) {
-      yMod++;
-    }
-
-    if (x < 3 || (x == 3 && isInDuckY)) {
-      xMod--;
-    }
-
-    if (x > 5 || (x == 5 && isInDuckY)) {
-      xMod++;
-    }
+    int xMod = normalized.x() > threshold ? 1 : normalized.x() < -threshold ? -1 : 0;
+    int yMod = normalized.y() > threshold ? 1 : normalized.y() < -threshold ? -1 : 0;
 
     return new PlayerMovement(xMod, yMod);
   }
