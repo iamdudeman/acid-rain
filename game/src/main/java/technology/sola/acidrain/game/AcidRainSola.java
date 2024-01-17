@@ -3,7 +3,7 @@ package technology.sola.acidrain.game;
 import technology.sola.acidrain.game.component.PlayerComponent;
 import technology.sola.acidrain.game.event.GameStatEvent;
 import technology.sola.acidrain.game.event.GameStatType;
-import technology.sola.acidrain.game.rendering.RainRendererGraphicsModule;
+import technology.sola.acidrain.game.rendering.RainRendererEntityGraphicsModule;
 import technology.sola.engine.assets.BulkAssetLoader;
 import technology.sola.engine.assets.audio.AudioClip;
 import technology.sola.engine.assets.graphics.SpriteSheet;
@@ -45,7 +45,7 @@ public class AcidRainSola extends SolaWithDefaults {
     eventHub.add(GameStateEvent.class, gameStateEvent -> solaPhysics.getCollisionDetectionSystem().setActive(gameStateEvent.gameState() == GameState.RESTART));
 
     // Initialize rendering stuff
-    solaGraphics.addGraphicsModules(new RainRendererGraphicsModule());
+    solaGraphics.addGraphicsModules(new RainRendererEntityGraphicsModule());
     platform.getViewport().setAspectMode(AspectMode.MAINTAIN);
     platform.getRenderer().createLayers(
       Constants.Layers.FOREGROUND
@@ -53,8 +53,8 @@ public class AcidRainSola extends SolaWithDefaults {
 
     // Ecs setup
     solaEcs.addSystems(
-      new ChunkSystem(eventHub),
       new GameStateSystem(solaEcs, mouseInput, keyboardInput, eventHub),
+      new ChunkSystem(eventHub),
       new RainSystem(eventHub),
       new CameraSystem(),
       new PlayerSystem(eventHub, keyboardInput, mouseInput, assetLoaderProvider.get(AudioClip.class))

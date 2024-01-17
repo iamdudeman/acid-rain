@@ -1,6 +1,7 @@
 package technology.sola.acidrain.game.system;
 
 import technology.sola.acidrain.game.GameStatistics;
+import technology.sola.acidrain.game.component.RainCloudComponent;
 import technology.sola.ecs.EcsSystem;
 import technology.sola.ecs.Entity;
 import technology.sola.ecs.SolaEcs;
@@ -75,7 +76,7 @@ public class GameStateSystem extends EcsSystem {
   }
 
   private World buildWorld() {
-    World world = new World(10000);
+    World world = new World(3500);
 
     world.createEntity(
       new TransformComponent(AcidRainSola.HALF_CANVAS_WIDTH, AcidRainSola.HALF_CANVAS_HEIGHT),
@@ -86,6 +87,11 @@ public class GameStateSystem extends EcsSystem {
       new BlendModeComponent(BlendMode.MASK),
       ColliderComponent.circle(-2, 0, 6)
     ).setName(Constants.EntityNames.PLAYER);
+
+    world.createEntity(
+      new TransformComponent(),
+      new RainCloudComponent()
+    ).setName(Constants.EntityNames.RAIN);
 
     world.createEntity(
       new TransformComponent(),

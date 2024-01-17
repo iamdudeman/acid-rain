@@ -56,7 +56,11 @@ public class ChunkSystem extends EcsSystem implements EventListener<GameStateEve
   @Override
   public void onEvent(GameStateEvent gameStateEvent) {
     if (gameStateEvent.gameState() == GameState.RESTART) {
+      lastPlayerChunkId = new ChunkId(0, 0);
       isInitialized = false;
+      setActive(true);
+    } else if (gameStateEvent.gameState() == GameState.GAME_OVER) {
+      setActive(false);
     }
   }
 

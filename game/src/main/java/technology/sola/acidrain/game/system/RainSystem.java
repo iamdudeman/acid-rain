@@ -1,10 +1,9 @@
 package technology.sola.acidrain.game.system;
 
-import technology.sola.acidrain.game.component.RainComponent;
+import technology.sola.acidrain.game.component.RainCloudComponent;
 import technology.sola.acidrain.game.GameStatistics;
 import technology.sola.acidrain.game.event.GameState;
 import technology.sola.acidrain.game.event.GameStateEvent;
-import technology.sola.acidrain.game.rendering.RainRendererGraphicsModule;
 import technology.sola.ecs.EcsSystem;
 import technology.sola.ecs.Entity;
 import technology.sola.ecs.World;
@@ -52,62 +51,50 @@ public class RainSystem extends EcsSystem {
   @Override
   public void update(World world, float dt) {
     Entity playerEntity = world.findEntityByName(Constants.EntityNames.PLAYER);
+    RainCloudComponent rainCloudComponent = world.findEntityByName(Constants.EntityNames.RAIN).getComponent(RainCloudComponent.class);
 
     if (playerEntity == null) {
       updateDropsPerUpdateForSunlight(false);
-      updateRainHeight(world, false);
-      createNewRain(world);
+      updateRainHeight(false, rainCloudComponent);
+      createNewRain(world, rainCloudComponent);
       updateTileWetness(world, null);
     } else {
       Vector2D playerTranslate = playerEntity.getComponent(TransformComponent.class).getTranslate();
       PlayerComponent playerComponent = playerEntity.getComponent(PlayerComponent.class);
 
       updateDropsPerUpdateForSunlight(playerComponent.isUsingSunlight());
-      updateRainHeight(world, true);
+      updateRainHeight(true, rainCloudComponent);
 
       if (!playerComponent.isUsingSunlight()) {
         GameStatistics.incrementIntensityLevel(dt);
-        createNewRain(world);
+        createNewRain(world, rainCloudComponent);
         updateTileWetness(world, playerTranslate);
       }
     }
   }
 
-  private void updateRainHeight(World world, boolean showAnimation) {
-    for (var view : world.createView().of(RainComponent.class).getEntries()) {
-      RainComponent rainComponent = view.c1();
-
-      rainComponent.height--;
-
-      int heightThreshold = showAnimation ? RainRendererGraphicsModule.RAIN_ANIMATION_HEIGHT_THRESHOLD_2 - 2 : 0;
-
-      if (rainComponent.height <= heightThreshold) {
-        view.entity().destroy();
-      }
-    }
+  private void updateRainHeight(boolean showAnimation, RainCloudComponent rainCloudComponent) {
+    rainCloudComponent.updateDrops(showAnimation);
   }
 
-  private void createNewRain(World world) {
+  private void createNewRain(World world, RainCloudComponent rainCloudComponent) {
     Entity cameraEntity = world.findEntityByName(Constants.EntityNames.CAMERA);
 
     if (cameraEntity != null) {
       TransformComponent cameraTransform = cameraEntity.getComponent(TransformComponent.class);
 
-      createRain(world, cameraTransform.getX(), cameraTransform.getY());
+      createRain(cameraTransform.getX(), cameraTransform.getY(), rainCloudComponent);
     }
   }
 
-  private void createRain(World world, float cameraX, float cameraY) {
+  private void createRain(float cameraX, float cameraY, RainCloudComponent rainCloudComponent) {
     final int edge = Chunk.TILE_SIZE * 3;
 
     for (int i = 0; i < dropsPerUpdate; i++) {
       float x = random.nextFloat(-edge, AcidRainSola.CANVAS_WIDTH + edge);
       float y = random.nextFloat(-edge, AcidRainSola.CANVAS_HEIGHT + edge);
 
-      world.createEntity(
-        new RainComponent(),
-        new TransformComponent(x + cameraX, y + cameraY)
-      );
+      rainCloudComponent.createDrop(x + cameraX, y + cameraY);
     }
   }
 
@@ -179,7 +166,8 @@ public class RainSystem extends EcsSystem {
               view.entity().addComponent(
                 ColliderComponent.circle(Chunk.HALF_TILE_SIZE)
                   .setSensor(true)
-                  .setTags(Constants.ColliderTags.TILE).setIgnoreTags(Constants.ColliderTags.TILE)
+                  .setTags(Constants.ColliderTags.TILE)
+                  .setIgnoreTags(Constants.ColliderTags.TILE)
               );
             }
           } else if (wetness > THRESHOLD_ONE) {

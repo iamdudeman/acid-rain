@@ -13,8 +13,8 @@ public class ChunkCreator {
   private static final int CULTURE_GENERATIONS = 5;
   private static final int JOIN_CLIFFS_TILES_AWAY = 2;
   private static final int MIN_CLIFF_TILES_FROM_PLAYER = 6;
-  private static final float BASE_INIT_CLIFF_PERCENT = 0.15f;
-  private static final float BASE_INIT_DIRT_PERCENT = 0.07f;
+  private static final float BASE_INIT_CLIFF_PERCENT = 0.14f;
+  private static final float BASE_INIT_DIRT_PERCENT = 0.06f;
   private static final float BASE_CULTURE_CLIFF_PERCENT = 0.05f;
   private static final float BASE_CULTURE_CLIFF_CLEAR_PERCENT = 0.05f;
   private static final float BASE_CULTURE_DIRT_PERCENT = 0.02f;

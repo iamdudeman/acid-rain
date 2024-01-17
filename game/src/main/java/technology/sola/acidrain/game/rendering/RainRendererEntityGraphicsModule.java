@@ -1,7 +1,7 @@
 package technology.sola.acidrain.game.rendering;
 
 import technology.sola.acidrain.game.AcidRainSola;
-import technology.sola.acidrain.game.component.RainComponent;
+import technology.sola.acidrain.game.component.RainCloudComponent;
 import technology.sola.ecs.World;
 import technology.sola.ecs.view.View;
 import technology.sola.ecs.view.View1Entry;
@@ -10,7 +10,7 @@ import technology.sola.engine.defaults.graphics.modules.SolaEntityGraphicsModule
 import technology.sola.engine.graphics.Color;
 import technology.sola.engine.graphics.renderer.Renderer;
 
-public class RainRendererGraphicsModule extends SolaEntityGraphicsModule<View1Entry<RainComponent>> {
+public class RainRendererEntityGraphicsModule extends SolaEntityGraphicsModule<View1Entry<RainCloudComponent>> {
   public static final int RAIN_ANIMATION_HEIGHT_THRESHOLD_1 = -2;
   public static final int RAIN_ANIMATION_HEIGHT_THRESHOLD_2 = -4;
   private static final int RAIN_LENGTH = 64;
@@ -18,25 +18,31 @@ public class RainRendererGraphicsModule extends SolaEntityGraphicsModule<View1En
   private boolean animationToggle = false;
 
   @Override
-  public View<View1Entry<RainComponent>> getViewToRender(World world) {
-    return world.createView().of(RainComponent.class);
+  public View<View1Entry<RainCloudComponent>> getViewToRender(World world) {
+    return world.createView().of(RainCloudComponent.class);
   }
 
   @Override
-  public void renderMethod(Renderer renderer, View1Entry<RainComponent> viewEntry, TransformComponent cameraModifiedEntityTransform) {
-    drawRain(renderer, viewEntry.c1(), cameraModifiedEntityTransform.getX(), cameraModifiedEntityTransform.getY());
+  public void renderMethod(Renderer renderer, View1Entry<RainCloudComponent> viewEntry, TransformComponent cameraModifiedEntityTransform) {
+    viewEntry.c1()
+      .rainDrops()
+      .forEach(drop -> drawRain(
+          renderer,
+          cameraModifiedEntityTransform.getX() + drop.x,
+          cameraModifiedEntityTransform.getY() + drop.y,
+          drop.getHeight()
+        )
+      );
   }
 
   /**
    * @param renderer
-   * @param rainComponent
    * @param x
    * @param y
+   * @param height
    * @see <a href="https://www.youtube.com/watch?v=66f6bI2uIdQ&list=WL&index=39&ab_channel=CameronPenner">Math based on this video</a>
    */
-  private void drawRain(Renderer renderer, RainComponent rainComponent, float x, float y) {
-    float height = rainComponent.height;
-
+  private void drawRain(Renderer renderer, float x, float y, float height) {
     if (height > 0) {
       float halfCameraWidth = AcidRainSola.CANVAS_WIDTH * 0.5f;
       float halfCameraHeight = AcidRainSola.CANVAS_HEIGHT * 0.5f;
