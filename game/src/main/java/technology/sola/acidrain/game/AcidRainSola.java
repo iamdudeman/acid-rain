@@ -10,10 +10,10 @@ import technology.sola.engine.assets.graphics.SpriteSheet;
 import technology.sola.engine.assets.graphics.gui.GuiJsonDocument;
 import technology.sola.engine.core.SolaConfiguration;
 import technology.sola.engine.defaults.SolaWithDefaults;
-import technology.sola.engine.graphics.guiv2.elements.SectionGuiElement;
-import technology.sola.engine.graphics.guiv2.elements.TextGuiElement;
-import technology.sola.engine.graphics.guiv2.style.BaseStyles;
-import technology.sola.engine.graphics.guiv2.style.ConditionalStyle;
+import technology.sola.engine.graphics.gui.elements.SectionGuiElement;
+import technology.sola.engine.graphics.gui.elements.TextGuiElement;
+import technology.sola.engine.graphics.gui.style.BaseStyles;
+import technology.sola.engine.graphics.gui.style.ConditionalStyle;
 import technology.sola.engine.graphics.screen.AspectMode;
 import technology.sola.acidrain.game.system.ChunkSystem;
 import technology.sola.acidrain.game.event.GameState;
@@ -36,7 +36,7 @@ public class AcidRainSola extends SolaWithDefaults {
 
   @Override
   protected void onInit(DefaultsConfigurator defaultsConfigurator) {
-    defaultsConfigurator.useGraphics().usePhysics().useGuiV2();
+    defaultsConfigurator.useGraphics().usePhysics().useGui();
 
     GameStatistics.setEventHub(eventHub);
 
