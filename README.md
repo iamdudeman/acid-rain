@@ -16,6 +16,30 @@ Play it on [itch.io](https://iamdudeman.itch.io/acid-rain)!
 * [JavaFX platform code](javafx/src)
 * [Browser platform code](browser/src)
 
+## JSON Schema
+
+[JSON schema definitions](https://github.com/iamdudeman/sola-game-engine/tree/master/json-schema) are provided for
+various
+asset types. These can assist you in creating valid assets for the sola game engine to load when manually creating or
+updating them.
+
+* SpriteSheet
+    * https://raw.githubusercontent.com/iamdudeman/sola-game-engine/master/json-schema/SpriteSheet.schema.json
+* Font
+    * https://raw.githubusercontent.com/iamdudeman/sola-game-engine/master/json-schema/Font.schema.json
+* GuiDocument
+    * https://raw.githubusercontent.com/iamdudeman/sola-game-engine/master/json-schema/GuiDocument.schema.json
+
+### IntelliJ setup
+
+1. Open settings
+2. Go to `Languages & Frameworks | Schemas and DTDs | JSON Schema Mappings`
+3. Click `+` and select the schema file to add
+4. Add by file path pattern (recommendations below)
+    * SpriteSheet -> `*.sprites.json`
+    * Font -> `*.font.json`
+    * GuiDocument -> `*.gui.json`
+
 ## Screenshots
 
 ![Acid Rain screen shot new game](images/screenshot_0.png)
