@@ -57,7 +57,7 @@ public class GameStateSystem extends EcsSystem {
     Entity playerEntity = world.findEntityByName(Constants.EntityNames.PLAYER);
 
     if (playerEntity == null) {
-      if (mouseInput.isMouseClicked(MouseButton.PRIMARY) || keyboardInput.isKeyPressed(Key.SPACE)) {
+      if (mouseInput.isMousePressed(MouseButton.PRIMARY) || keyboardInput.isKeyPressed(Key.SPACE)) {
         eventHub.emit(new GameStateEvent(GameState.RESTART));
       }
     } else {

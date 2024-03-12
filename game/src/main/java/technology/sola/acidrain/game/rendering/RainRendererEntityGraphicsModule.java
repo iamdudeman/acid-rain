@@ -23,7 +23,7 @@ public class RainRendererEntityGraphicsModule extends SolaEntityGraphicsModule<V
   }
 
   @Override
-  public void renderMethod(Renderer renderer, View1Entry<RainCloudComponent> viewEntry, TransformComponent cameraModifiedEntityTransform) {
+  public void renderEntity(Renderer renderer, View1Entry<RainCloudComponent> viewEntry, TransformComponent cameraModifiedEntityTransform) {
     viewEntry.c1()
       .rainDrops()
       .forEach(drop -> drawRain(

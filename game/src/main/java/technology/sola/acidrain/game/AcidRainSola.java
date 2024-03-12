@@ -96,7 +96,7 @@ public class AcidRainSola extends SolaWithDefaults {
         var newWidth = Math.round(100.0 * event.newValue() / (double) PlayerComponent.MAX_SUNLIGHT);
 
         if (sunlightBarWidthStyle.style().width().getValue(100) != newWidth) {
-          var styles = inGameDocument.rootElement().findElementById("sunlight", SectionGuiElement.class).getStyles();
+          var styles = inGameDocument.rootElement().findElementById("sunlight", SectionGuiElement.class).styles();
 
           styles.removeStyle(sunlightBarWidthStyle);
           sunlightBarWidthStyle = ConditionalStyle.always(BaseStyles.create().setWidth(newWidth + "%").build());
