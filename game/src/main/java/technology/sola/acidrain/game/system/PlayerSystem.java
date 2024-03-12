@@ -132,7 +132,7 @@ public class PlayerSystem extends EcsSystem {
         previousMouseMovement = null;
       }
 
-      if (mouseInput.isMouseClicked(MouseButton.PRIMARY)) {
+      if (mouseInput.isMousePressed(MouseButton.PRIMARY)) {
         PlayerMovement temp = manipulateModsByMouse();
 
         if (temp != null) {
@@ -157,7 +157,7 @@ public class PlayerSystem extends EcsSystem {
         theDuck.setSpriteKeyFrame(SpriteCache.get(Constants.Assets.Sprites.DUCK, variation));
       }
 
-      if (keyboardInput.isKeyPressed(Key.SPACE) || (mouseInput.isMouseClicked(MouseButton.PRIMARY) && mouseInput.getMousePosition().y() > (TOUCH_CONTROLS_POWER_THRESHOLD))) {
+      if (keyboardInput.isKeyPressed(Key.SPACE) || (mouseInput.isMousePressed(MouseButton.PRIMARY) && mouseInput.getMousePosition().y() > (TOUCH_CONTROLS_POWER_THRESHOLD))) {
         playerComponent.setUsingSunlight(!playerComponent.isUsingSunlight());
       }
 
