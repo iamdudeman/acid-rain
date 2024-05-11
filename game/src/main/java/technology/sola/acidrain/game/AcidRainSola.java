@@ -3,6 +3,7 @@ package technology.sola.acidrain.game;
 import technology.sola.acidrain.game.component.PlayerComponent;
 import technology.sola.acidrain.game.event.GameStatEvent;
 import technology.sola.acidrain.game.event.GameStatType;
+import technology.sola.acidrain.game.rendering.LoadingScreen;
 import technology.sola.acidrain.game.rendering.RainRendererEntityGraphicsModule;
 import technology.sola.engine.assets.BulkAssetLoader;
 import technology.sola.engine.assets.audio.AudioClip;
@@ -14,6 +15,7 @@ import technology.sola.engine.graphics.gui.elements.SectionGuiElement;
 import technology.sola.engine.graphics.gui.elements.TextGuiElement;
 import technology.sola.engine.graphics.gui.style.BaseStyles;
 import technology.sola.engine.graphics.gui.style.ConditionalStyle;
+import technology.sola.engine.graphics.renderer.Renderer;
 import technology.sola.engine.graphics.screen.AspectMode;
 import technology.sola.acidrain.game.system.ChunkSystem;
 import technology.sola.acidrain.game.event.GameState;
@@ -29,6 +31,8 @@ public class AcidRainSola extends SolaWithDefaults {
   public static final int CANVAS_HEIGHT = 240;
   public static final int HALF_CANVAS_HEIGHT = CANVAS_HEIGHT / 2;
   private ConditionalStyle<BaseStyles> sunlightBarWidthStyle = ConditionalStyle.always(BaseStyles.create().setWidth("0").build());
+  private LoadingScreen loadingScreen = new LoadingScreen();
+  private boolean isLoading = true;
 
   public AcidRainSola() {
     super(SolaConfiguration.build("Acid Rain", CANVAS_WIDTH, CANVAS_HEIGHT).withTargetUpdatesPerSecond(30));
@@ -85,9 +89,20 @@ public class AcidRainSola extends SolaWithDefaults {
           }
         }
 
+        isLoading = false;
+        loadingScreen = null;
         completeAsyncInit.run();
         eventHub.emit(new GameStateEvent(GameState.RESTART));
       });
+  }
+
+  @Override
+  protected void onRender(Renderer renderer) {
+    if (isLoading) {
+      loadingScreen.drawLoading(renderer);
+    } else {
+      super.onRender(renderer);
+    }
   }
 
   private void addGuiEventListeners(GuiJsonDocument inGameDocument, GuiJsonDocument gameOverDocument) {

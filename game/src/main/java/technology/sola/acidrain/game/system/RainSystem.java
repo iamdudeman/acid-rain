@@ -17,6 +17,8 @@ import technology.sola.acidrain.game.SpriteCache;
 import technology.sola.acidrain.game.system.chunk.Chunk;
 import technology.sola.acidrain.game.component.TileComponent;
 import technology.sola.acidrain.game.component.PlayerComponent;
+import technology.sola.engine.physics.component.collider.ColliderShapeAABB;
+import technology.sola.engine.physics.component.collider.ColliderShapeCircle;
 import technology.sola.math.linear.Vector2D;
 
 import java.util.Random;
@@ -131,7 +133,7 @@ public class RainSystem extends EcsSystem {
         if (!spriteComponent.getSpriteId().equals(Constants.Assets.Sprites.ERASED)) {
           spriteComponent.setSpriteKeyFrame(SpriteCache.ERASED);
           view.entity().addComponent(
-            ColliderComponent.aabb(Chunk.TILE_SIZE * 0.1f, Chunk.TILE_SIZE * 0.1f, Chunk.TILE_SIZE * 0.8f, Chunk.TILE_SIZE * 0.8f)
+            new ColliderComponent(new ColliderShapeAABB(Chunk.TILE_SIZE * 0.8f, Chunk.TILE_SIZE * 0.8f), Chunk.TILE_SIZE * 0.1f, Chunk.TILE_SIZE * 0.1f)
               .setSensor(true)
               .setTags(Constants.ColliderTags.TILE).setIgnoreTags(Constants.ColliderTags.TILE)
           );
@@ -164,7 +166,7 @@ public class RainSystem extends EcsSystem {
             );
             if (tileComponent.getTileType().assetId.startsWith(Constants.Assets.Sprites.DIRT)) {
               view.entity().addComponent(
-                ColliderComponent.circle(Chunk.HALF_TILE_SIZE)
+                new ColliderComponent(new ColliderShapeCircle(Chunk.HALF_TILE_SIZE))
                   .setSensor(true)
                   .setTags(Constants.ColliderTags.TILE)
                   .setIgnoreTags(Constants.ColliderTags.TILE)
