@@ -18,9 +18,9 @@ repositories {
 
 dependencies {
   // Test
-  testImplementation("org.mockito:mockito-inline:4.2.0")
-  testImplementation("org.mockito:mockito-junit-jupiter:4.2.0")
-  testImplementation(platform("org.junit:junit-bom:5.7.1"))
+  testImplementation("org.mockito:mockito-inline:5.2.0")
+  testImplementation("org.mockito:mockito-junit-jupiter:5.11.0")
+  testImplementation(platform("org.junit:junit-bom:5.10.1"))
   testImplementation("org.junit.jupiter:junit-jupiter")
 }
 

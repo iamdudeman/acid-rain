@@ -11,14 +11,11 @@ public final class SpriteCache {
 
   public static SpriteKeyFrame get(String assetId, String variation) {
     SpriteCacheKey spriteCacheKey = new SpriteCacheKey(assetId, variation);
-    SpriteKeyFrame spriteKeyFrame = SPRITE_CACHE.get(spriteCacheKey);
 
-    if (spriteKeyFrame == null) {
-      spriteKeyFrame = new SpriteKeyFrame(Constants.Assets.Sprites.SPRITE_SHEET_ID, assetId + "-" + variation);
-      SPRITE_CACHE.put(spriteCacheKey, spriteKeyFrame);
-    }
-
-    return spriteKeyFrame;
+    return SPRITE_CACHE.computeIfAbsent(spriteCacheKey, k -> new SpriteKeyFrame(
+      Constants.Assets.Sprites.SPRITE_SHEET_ID,
+      assetId + "-" + variation
+    ));
   }
 
   private record SpriteCacheKey(String assetId, String variation) {

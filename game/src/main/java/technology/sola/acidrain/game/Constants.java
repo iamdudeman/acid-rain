@@ -1,6 +1,6 @@
 package technology.sola.acidrain.game;
 
-import technology.sola.engine.physics.component.ColliderComponent;
+import technology.sola.engine.physics.component.collider.ColliderTag;
 
 public class Constants {
   public static final class EntityNames {
@@ -12,7 +12,7 @@ public class Constants {
     }
   }
 
-  public enum ColliderTags implements ColliderComponent.ColliderTag {
+  public enum ColliderTags implements ColliderTag {
     TILE
   }
 
