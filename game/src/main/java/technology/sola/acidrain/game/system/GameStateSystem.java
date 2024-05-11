@@ -27,6 +27,7 @@ import technology.sola.acidrain.game.event.GameStateEvent;
 import technology.sola.acidrain.game.component.PickupComponent;
 import technology.sola.acidrain.game.component.PlayerComponent;
 import technology.sola.engine.physics.component.DynamicBodyComponent;
+import technology.sola.engine.physics.component.collider.ColliderShapeCircle;
 import technology.sola.math.EasingFunction;
 
 public class GameStateSystem extends EcsSystem {
@@ -76,7 +77,7 @@ public class GameStateSystem extends EcsSystem {
   }
 
   private World buildWorld() {
-    World world = new World(3500);
+    World world = new World(4000);
 
     world.createEntity(
       new TransformComponent(AcidRainSola.HALF_CANVAS_WIDTH, AcidRainSola.HALF_CANVAS_HEIGHT),
@@ -85,7 +86,7 @@ public class GameStateSystem extends EcsSystem {
       new DynamicBodyComponent(),
       new LayerComponent(Constants.Layers.FOREGROUND),
       new BlendModeComponent(BlendMode.MASK),
-      ColliderComponent.circle(-2, 0, 6)
+      new ColliderComponent(new ColliderShapeCircle(6), -2, 0)
     ).setName(Constants.EntityNames.PLAYER);
 
     world.createEntity(

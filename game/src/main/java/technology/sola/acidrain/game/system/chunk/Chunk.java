@@ -12,6 +12,7 @@ import technology.sola.engine.physics.component.ColliderComponent;
 import technology.sola.acidrain.game.Constants;
 import technology.sola.acidrain.game.SpriteCache;
 import technology.sola.acidrain.game.component.PickupComponent;
+import technology.sola.engine.physics.component.collider.ColliderShapeCircle;
 
 public class Chunk {
   public static final int TILE_SIZE = 20;
@@ -48,7 +49,7 @@ public class Chunk {
 
         if (tileType.assetId.equals(Constants.Assets.Sprites.CLIFF)) {
           newEntity.addComponent(
-            ColliderComponent.circle(Chunk.HALF_TILE_SIZE)
+            new ColliderComponent(new ColliderShapeCircle(Chunk.HALF_TILE_SIZE))
               .setTags(Constants.ColliderTags.TILE)
               .setIgnoreTags(Constants.ColliderTags.TILE)
           );
@@ -61,7 +62,7 @@ public class Chunk {
             new LayerComponent(Constants.Layers.FOREGROUND),
             new SpriteComponent(SpriteCache.get(Constants.Assets.Sprites.DONUT, "main")),
             new BlendModeComponent(BlendMode.MASK),
-            ColliderComponent.circle(3)
+            new ColliderComponent(new ColliderShapeCircle(3))
               .setSensor(true)
               .setTags(Constants.ColliderTags.TILE)
               .setIgnoreTags(Constants.ColliderTags.TILE)

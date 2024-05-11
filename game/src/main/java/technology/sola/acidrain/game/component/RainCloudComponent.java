@@ -3,7 +3,6 @@ package technology.sola.acidrain.game.component;
 import technology.sola.acidrain.game.rendering.RainRendererEntityGraphicsModule;
 import technology.sola.ecs.Component;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
