@@ -64,8 +64,8 @@ public class GameStateSystem extends EcsSystem {
     } else {
       if (!playerEntity.hasComponent(TransformAnimatorComponent.class)) {
         playerEntity.addComponent(
-          new TransformAnimatorComponent.Builder(EasingFunction.EASE_OUT, fallingAnimationDuration).withScale(0.01f).build()
-            .setAnimationCompleteCallback(playerEntity::destroy)
+          new TransformAnimatorComponent(EasingFunction.EASE_OUT, fallingAnimationDuration).setScale(0.01f)
+            .setAnimationCompleteCallback(transformAnimatorComponent -> playerEntity.destroy())
         );
       }
     }
