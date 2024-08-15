@@ -35,7 +35,7 @@ public class AcidRainSola extends SolaWithDefaults {
   private boolean isLoading = true;
 
   public AcidRainSola() {
-    super(SolaConfiguration.build("Acid Rain", CANVAS_WIDTH, CANVAS_HEIGHT).withTargetUpdatesPerSecond(30));
+    super(new SolaConfiguration("Acid Rain", CANVAS_WIDTH, CANVAS_HEIGHT, 30));
   }
 
   @Override
